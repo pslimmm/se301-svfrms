@@ -347,47 +347,6 @@ public class SVFRMS {
     }
 
     public static void main(String[] args) throws Exception {
-        Thread activateControlThread = new ControlThread();
-        Thread t1 = new ChamberThread("CH1","Tomato");
-        Thread t2 = new ChamberThread("CH2","Strawberry");
-        Thread t3 = new ChamberThread("CH3","Lettuce");
-        Thread t4 = new ChamberThread("CH4","Chili");
-
-        activateControlThread.start();
-        t1.start();
-        t2.start();
-        t3.start();
-        t4.start();
-
-        t1.join();
-        t2.join();
-        t3.join();
-        t4.join();
-
-        synchronized(controlQueue){
-            controlThreadRunning = false;
-            controlQueue.notifyAll();
-        }
-        activateControlThread.join();
-
-        Thread genReport = new Thread(new Runnable() {
-            public void run() {
-                generateDailyReport();
-            }
-        });
-        Thread archiveAlerts = new Thread(new Runnable() {
-            public void run() {
-                archiveAlerts();
-            }
-        });
-
-        archiveAlerts.start();
-        //Thread.sleep(20);
-        genReport.start();
-
-        genReport.join();
-        archiveAlerts.join();
-        System.out.println("System finished sensor processing.");
-        saveArchiveReport();
+        org.example.svfrms.SvfrmsApplication.main(args);
     }
 }
