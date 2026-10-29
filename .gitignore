@@ -26,3 +26,7 @@ replay_pid*
 target/
 archive/
 .superpowers/
+
+docs/*
+!docs/SE301-Project-Specification.pdf
+!docs/se301_project_specification.md
