@@ -25,4 +25,6 @@ replay_pid*
 target/
 archive/
 
-docs/
+docs/*
+!docs/SE301-Project-Specification.pdf
+!docs/se301_project_specification.md
