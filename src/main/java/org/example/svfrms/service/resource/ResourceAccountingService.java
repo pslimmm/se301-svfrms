@@ -1,13 +1,11 @@
 package org.example.svfrms.service.resource;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
 
-/** Loss-resistant accounting for resources and generated alerts. */
+/** Loss-resistant resource accounting; AlertManagementService owns alert counts. */
 public final class ResourceAccountingService {
     private final LongAdder waterUsage = new LongAdder();
     private final LongAdder energyUsage = new LongAdder();
-    private final AtomicInteger generatedAlerts = new AtomicInteger();
 
     public void recordWater(long amount) {
         requireNonNegative(amount, "water");
@@ -29,20 +27,12 @@ public final class ResourceAccountingService {
         recordEnergy(20);
     }
 
-    public void recordAlert() {
-        generatedAlerts.incrementAndGet();
-    }
-
     public long waterUsage() {
         return waterUsage.sum();
     }
 
     public long energyUsage() {
         return energyUsage.sum();
-    }
-
-    public int generatedAlerts() {
-        return generatedAlerts.get();
     }
 
     private static void requireNonNegative(long value, String resource) {

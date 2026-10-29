@@ -8,6 +8,7 @@ import org.example.svfrms.service.telemetry.TelemetryPublisher;
 
 import java.time.Clock;
 import java.util.Objects;
+import java.util.concurrent.CancellationException;
 import java.util.random.RandomGenerator;
 
 /** Emits the same five sensor streams and per-cycle resource use as the legacy chamber thread. */
@@ -35,7 +36,8 @@ public final class ChamberSimulationTask implements Runnable {
 
     @Override
     public void run() {
-        for (int i = 0; i < iterations && !Thread.currentThread().isInterrupted(); i++) {
+        requireActive();
+        for (int i = 0; i < iterations; i++) {
             publish(SensorType.TEMPERATURE, 10 + random.nextInt(30));
             publish(SensorType.HUMIDITY, 40 + random.nextInt(60));
             publish(SensorType.SOIL_MOISTURE, 20 + random.nextInt(60));
@@ -47,6 +49,14 @@ public final class ChamberSimulationTask implements Runnable {
     }
 
     private void publish(SensorType type, double value) {
+        requireActive();
         telemetry.publish(new SensorReading(chamberId, crop, type, value, clock.instant()));
+        requireActive();
+    }
+
+    private static void requireActive() {
+        if (Thread.currentThread().isInterrupted()) {
+            throw new CancellationException("Chamber simulation interrupted");
+        }
     }
 }

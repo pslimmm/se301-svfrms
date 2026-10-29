@@ -3,7 +3,6 @@ package org.example.svfrms.command;
 import org.example.svfrms.domain.chamber.ChamberSnapshot;
 import org.example.svfrms.domain.chamber.ChamberStateTracker;
 import org.example.svfrms.domain.actuator.ActuatorType;
-import org.example.svfrms.service.resource.ResourceAccountingService;
 
 import java.util.Optional;
 
@@ -13,7 +12,7 @@ public interface DeviceCommand {
 
     String actionName();
 
-    void execute(ChamberStateTracker tracker, ResourceAccountingService metrics);
+    ChamberSnapshot execute(ChamberStateTracker tracker);
 
     String stateDescription(ChamberSnapshot state);
 

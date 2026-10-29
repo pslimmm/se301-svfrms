@@ -1,6 +1,6 @@
 package org.example.svfrms.domain.crop;
 
-/** Resource charges associated with a crop's out-of-range sensor mitigations. */
+/** Resource charges applied when a crop's out-of-range condition is detected, before control execution. */
 public record MitigationResourceCosts(long highTemperatureEnergy, long lowTemperatureEnergy,
                                       long lowHumidityWater, long lowSoilMoistureWater) {
     public MitigationResourceCosts {

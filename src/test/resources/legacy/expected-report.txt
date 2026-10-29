@@ -1,0 +1,78 @@
+===== DAILY REPORT =====
+Timestamp: <TIMESTAMP>
+Generated Alerts: 52
+Active Alerts: 0
+Water Usage: 565 L
+Energy Usage: 205 kWh
+Archived alerts: 52
+---
+No alerts to archive
+Daily Report
+Archived 52 alerts
+No alerts to archive
+--- chamber wise summary ---
+Chili -> Alerts=4, Actions=3, Last Action=Nutrient Injector Activated, Last Alert=Chili Low Nutrient Level
+Cucumber -> Alerts=4, Actions=3, Last Action=Nutrient Injector Activated, Last Alert=Cucumber Low Nutrient Level
+DIRECT -> Alerts=0, Actions=60, Last Action=Grow Light Activated, Last Alert=None
+INITIAL -> Alerts=0, Actions=0, Last Action=No action, Last Alert=None
+Lettuce -> Alerts=4, Actions=3, Last Action=Nutrient Injector Activated, Last Alert=Lettuce Low Nutrient Level
+NUMERIC -> Alerts=17, Actions=14, Last Action=Nutrient Injector Activated, Last Alert=NUMERIC Low Nutrient Level
+Removed -> Alerts=2, Actions=2, Last Action=Nutrient Injector Activated, Last Alert=Removed Low Nutrient Level
+Spinach -> Alerts=4, Actions=3, Last Action=Nutrient Injector Activated, Last Alert=Spinach Low Nutrient Level
+Strawberry -> Alerts=6, Actions=5, Last Action=Nutrient Injector Activated, Last Alert=Strawberry Low Nutrient Level
+Tomato -> Alerts=7, Actions=6, Last Action=Nutrient Injector Activated, Last Alert=Tomato Low Nutrient Level
+Unknown -> Alerts=2, Actions=2, Last Action=Nutrient Injector Activated, Last Alert=Unknown Low Nutrient Level
+tomato -> Alerts=2, Actions=2, Last Action=Nutrient Injector Activated, Last Alert=tomato Low Nutrient Level
+--- archived alerts ---
+Tomato Tomato Low Temp
+Tomato Tomato High Temp
+Tomato Tomato Low Humidity
+Tomato Tomato High Humidity
+Tomato Tomato Low Soil Moisture
+Tomato Low Light Level
+Tomato Low Nutrient Level
+Strawberry Strawberry Low Temp
+Strawberry Strawberry High Temp
+Strawberry Strawberry Low Humidity
+Strawberry Strawberry High Humidity
+Strawberry Low Light Level
+Strawberry Low Nutrient Level
+Lettuce Lettuce Low Temp
+Lettuce Lettuce High Temp
+Lettuce Low Light Level
+Lettuce Low Nutrient Level
+Spinach Spinach Low Temp
+Spinach Spinach High Temp
+Spinach Low Light Level
+Spinach Low Nutrient Level
+Chili Chili Low Temp
+Chili Chili High Temp
+Chili Low Light Level
+Chili Low Nutrient Level
+Cucumber Cucumber Low Temp
+Cucumber Cucumber High Temp
+Cucumber Low Light Level
+Cucumber Low Nutrient Level
+Unknown Low Light Level
+Unknown Low Nutrient Level
+tomato Low Light Level
+tomato Low Nutrient Level
+Removed Low Light Level
+Removed Low Nutrient Level
+NUMERIC Tomato Low Temp
+NUMERIC Tomato High Temp
+NUMERIC Tomato Low Temp
+NUMERIC Tomato Low Temp
+NUMERIC Tomato Low Humidity
+NUMERIC Tomato High Humidity
+NUMERIC Tomato Low Humidity
+NUMERIC Tomato Low Humidity
+NUMERIC Tomato Low Soil Moisture
+NUMERIC Tomato Low Soil Moisture
+NUMERIC Tomato Low Soil Moisture
+NUMERIC Low Light Level
+NUMERIC Low Light Level
+NUMERIC Low Light Level
+NUMERIC Low Nutrient Level
+NUMERIC Low Nutrient Level
+NUMERIC Low Nutrient Level

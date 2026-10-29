@@ -1,6 +1,7 @@
 package org.example.svfrms.domain.crop;
 
-import java.util.Locale;
+import java.util.Set;
+import org.example.svfrms.domain.sensor.SensorType;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -32,9 +33,10 @@ public final class CropRegistry {
         ThresholdRange lowLight = new ThresholdRange(500, OPEN_MAX);
         ThresholdRange lowNutrient = new ThresholdRange(40, OPEN_MAX);
         registry.register(profile("Tomato", new ThresholdRange(22, 28), new ThresholdRange(60, 80), new ThresholdRange(45, 60), lowLight, lowNutrient,
-                new MitigationResourceCosts(10, 15, 20, 50)));
+                new MitigationResourceCosts(10, 15, 20, 50), Set.of(SensorType.values())));
         registry.register(profile("Strawberry", new ThresholdRange(18, 24), new ThresholdRange(70, 85), open, lowLight, lowNutrient,
-                new MitigationResourceCosts(10, 15, 25, 0)));
+                new MitigationResourceCosts(10, 15, 25, 0),
+                Set.of(SensorType.TEMPERATURE, SensorType.HUMIDITY, SensorType.LIGHT, SensorType.NUTRIENT)));
         registry.register(profile("Lettuce", new ThresholdRange(15, 21), open, open, lowLight, lowNutrient));
         registry.register(profile("Spinach", new ThresholdRange(10, 20), open, open, lowLight, lowNutrient));
         registry.register(profile("Chili", new ThresholdRange(24, 32), open, open, lowLight, lowNutrient));
@@ -44,16 +46,17 @@ public final class CropRegistry {
 
     private static CropProfile profile(String name, ThresholdRange temperature, ThresholdRange humidity,
                                        ThresholdRange soil, ThresholdRange light, ThresholdRange nutrient) {
-        return new CropProfile(name, temperature, humidity, soil, light, nutrient);
+        return profile(name, temperature, humidity, soil, light, nutrient, MitigationResourceCosts.none(),
+                Set.of(SensorType.TEMPERATURE, SensorType.LIGHT, SensorType.NUTRIENT));
     }
 
     private static CropProfile profile(String name, ThresholdRange temperature, ThresholdRange humidity,
                                        ThresholdRange soil, ThresholdRange light, ThresholdRange nutrient,
-                                       MitigationResourceCosts costs) {
-        return new CropProfile(name, temperature, humidity, soil, light, nutrient, costs);
+                                       MitigationResourceCosts costs, Set<SensorType> enabledSensors) {
+        return new CropProfile(name, temperature, humidity, soil, light, nutrient, costs, enabledSensors);
     }
 
     private static String key(String name) {
-        return new CropName(name).value().toLowerCase(Locale.ROOT);
+        return new CropName(name).key();
     }
 }

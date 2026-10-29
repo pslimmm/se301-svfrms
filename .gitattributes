@@ -1,0 +1,4 @@
+# Preserve generated deliverables byte-for-byte on Windows and Unix checkouts.
+*.pdf binary
+*.jar binary
+*.zip binary

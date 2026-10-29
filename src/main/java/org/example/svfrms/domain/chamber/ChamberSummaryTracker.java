@@ -2,27 +2,21 @@ package org.example.svfrms.domain.chamber;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.atomic.LongAdder;
 
-/** Concurrent counters and latest status for one chamber. */
+/** Counts and corresponding last messages commit as one immutable state. */
 public final class ChamberSummaryTracker {
-    private final LongAdder alerts = new LongAdder();
-    private final LongAdder mitigationActions = new LongAdder();
-    private final AtomicReference<String> lastAction = new AtomicReference<>("No action");
-    private final AtomicReference<String> lastAlert = new AtomicReference<>("None");
+    private final AtomicReference<ChamberSummarySnapshot> summary = new AtomicReference<>(
+            new ChamberSummarySnapshot(0, 0, "No action", "None"));
 
     public void recordAlert(String message) {
-        alerts.increment();
-        lastAlert.set(Objects.requireNonNull(message, "message"));
+        Objects.requireNonNull(message, "message");
+        summary.updateAndGet(s -> new ChamberSummarySnapshot(s.alerts() + 1, s.mitigationActions(), s.lastAction(), message));
     }
 
     public void recordMitigationAction(String action) {
-        mitigationActions.increment();
-        lastAction.set(Objects.requireNonNull(action, "action"));
+        Objects.requireNonNull(action, "action");
+        summary.updateAndGet(s -> new ChamberSummarySnapshot(s.alerts(), s.mitigationActions() + 1, action, s.lastAlert()));
     }
 
-    public ChamberSummarySnapshot snapshot() {
-        return new ChamberSummarySnapshot(Math.toIntExact(alerts.sum()), Math.toIntExact(mitigationActions.sum()),
-                lastAction.get(), lastAlert.get());
-    }
+    public ChamberSummarySnapshot snapshot() { return summary.get(); }
 }

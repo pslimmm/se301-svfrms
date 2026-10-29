@@ -32,7 +32,7 @@ public final class DailyReportService extends AbstractReportGenerator {
         super(formatter, storage);
         this.resources = Objects.requireNonNull(resources, "resources");
         this.alerts = Objects.requireNonNull(alerts, "alerts");
-        this.chamberSummaries = Map.copyOf(chamberSummaries);
+        this.chamberSummaries = Objects.requireNonNull(chamberSummaries, "chamberSummaries");
         this.clock = Objects.requireNonNull(clock, "clock");
         this.output = Objects.requireNonNull(output, "output");
     }
@@ -66,6 +66,8 @@ public final class DailyReportService extends AbstractReportGenerator {
     public List<String> saveArchiveReport() throws java.io.IOException {
         return generate();
     }
+
+    public List<String> reportEntries() { return List.copyOf(reportEntries); }
 
     @Override
     protected DailyReportSnapshot extractMetrics() {

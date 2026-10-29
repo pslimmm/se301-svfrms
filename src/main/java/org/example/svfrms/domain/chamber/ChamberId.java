@@ -6,8 +6,5 @@ import java.util.Objects;
 public record ChamberId(String value) {
     public ChamberId {
         Objects.requireNonNull(value, "value");
-        if (value.isBlank()) {
-            throw new IllegalArgumentException("Chamber id must not be blank");
-        }
     }
 }

@@ -16,6 +16,42 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class AlertManagementServiceTest {
     @Test
+    @org.junit.jupiter.api.Timeout(10)
+    void alertSnapshotsNeverObservePartialArchival() throws Exception {
+        var service = new AlertManagementService();
+        var executor = Executors.newFixedThreadPool(4);
+        var start = new CountDownLatch(1);
+        try {
+            var producers = new java.util.ArrayList<java.util.concurrent.Future<?>>();
+            for (int producer=0;producer<2;producer++) {
+                int offset=producer*250;
+                producers.add(executor.submit(() -> {
+                    start.await();
+                    for (int index=0;index<250;index++) service.publishAlert(alert(offset+index));
+                    return null;
+                }));
+            }
+            var archiver=executor.submit(() -> { start.await(); for (int i=0;i<250;i++) service.archiveAlerts(); return null; });
+            var reader=executor.submit(() -> {
+                start.await();
+                for (int i=0;i<250;i++) {
+                    var snapshot=service.snapshot();
+                    var combined=new java.util.ArrayList<>(snapshot.activeAlerts()); combined.addAll(snapshot.archivedAlerts());
+                    assertThat(snapshot.generatedAlertCount()).isEqualTo(combined.size());
+                    assertThat(new HashSet<>(combined)).hasSize(combined.size());
+                }
+                return null;
+            });
+            start.countDown();
+            for (var producer:producers) producer.get(2,java.util.concurrent.TimeUnit.SECONDS);
+            archiver.get(2,java.util.concurrent.TimeUnit.SECONDS); reader.get(2,java.util.concurrent.TimeUnit.SECONDS);
+            service.archiveAlerts();
+            var expected=java.util.stream.IntStream.range(0,500).mapToObj(AlertManagementServiceTest::alert).toList();
+            assertThat(service.snapshot().archivedAlerts()).containsExactlyInAnyOrderElementsOf(expected);
+            assertThat(service.snapshot().activeAlerts()).isEmpty();
+        } finally { start.countDown(); executor.shutdownNow(); assertThat(executor.awaitTermination(2,java.util.concurrent.TimeUnit.SECONDS)).isTrue(); }
+    }
+    @Test
     void snapshotsStayImmutableWhileArchiveDrainsTheActiveQueue() throws Exception {
         AlertManagementService service = new AlertManagementService();
         for (int index = 0; index < 1_000; index++) {

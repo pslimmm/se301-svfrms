@@ -12,9 +12,6 @@ public record SensorReading(ChamberId chamberId, String crop, SensorType sensorT
         Objects.requireNonNull(crop, "crop");
         Objects.requireNonNull(sensorType, "sensorType");
         Objects.requireNonNull(timestamp, "timestamp");
-        if (crop.isBlank()) {
-            throw new IllegalArgumentException("Crop name must not be blank");
-        }
     }
 
     public SensorReading(SensorReading source) {

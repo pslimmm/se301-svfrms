@@ -1,6 +1,8 @@
 package org.example.svfrms.domain.crop;
 
 import java.util.Objects;
+import java.util.Set;
+import org.example.svfrms.domain.sensor.SensorType;
 
 /** Immutable growing conditions for a crop. */
 public record CropProfile(
@@ -10,7 +12,14 @@ public record CropProfile(
         ThresholdRange soilMoisture,
         ThresholdRange light,
         ThresholdRange nutrient,
-        MitigationResourceCosts mitigationResourceCosts) {
+        MitigationResourceCosts mitigationResourceCosts,
+        Set<SensorType> enabledSensors) {
+
+    public CropProfile(String name, ThresholdRange temperature, ThresholdRange humidity,
+                       ThresholdRange soilMoisture, ThresholdRange light, ThresholdRange nutrient,
+                       MitigationResourceCosts costs) {
+        this(name, temperature, humidity, soilMoisture, light, nutrient, costs, Set.of(SensorType.values()));
+    }
 
     public CropProfile(String name, ThresholdRange temperature, ThresholdRange humidity,
                        ThresholdRange soilMoisture, ThresholdRange light, ThresholdRange nutrient) {
@@ -25,6 +34,7 @@ public record CropProfile(
         Objects.requireNonNull(light, "light");
         Objects.requireNonNull(nutrient, "nutrient");
         Objects.requireNonNull(mitigationResourceCosts, "mitigationResourceCosts");
+        enabledSensors = Set.copyOf(enabledSensors);
     }
 
     public static Builder builder(String name) {
@@ -39,6 +49,7 @@ public record CropProfile(
         private ThresholdRange light;
         private ThresholdRange nutrient;
         private MitigationResourceCosts mitigationResourceCosts = MitigationResourceCosts.none();
+        private Set<SensorType> enabledSensors = Set.of(SensorType.values());
 
         private Builder(String name) {
             this.name = name;
@@ -74,8 +85,13 @@ public record CropProfile(
             return this;
         }
 
+        public Builder enabledSensors(Set<SensorType> sensors) {
+            enabledSensors = Set.copyOf(sensors);
+            return this;
+        }
+
         public CropProfile build() {
-            return new CropProfile(name, temperature, humidity, soilMoisture, light, nutrient, mitigationResourceCosts);
+            return new CropProfile(name, temperature, humidity, soilMoisture, light, nutrient, mitigationResourceCosts, enabledSensors);
         }
     }
 }

@@ -31,13 +31,42 @@ class ReportServiceTest {
     Path tempDir;
 
     @Test
+    void reportSnapshotsRespectPhaseOrdering() throws Exception {
+        for (int count : new int[]{0,7}) {
+            var alerts=new AlertManagementService();
+            for (int i=0;i<count;i++) alerts.publishAlert(new AlertEvent(new ChamberId("CH1"),"Tomato",AlertSeverity.WARNING,"unique "+i,NOW));
+            var resources=new ResourceAccountingService(); resources.recordWater(37); resources.recordEnergy(19);
+            var console=new java.util.ArrayList<String>();
+            var reports=new DailyReportService(resources,alerts,Map.of(),new PlainTextReportFormatter(),
+                    new FileReportStorageAdapter(tempDir.resolve("nested/phase-"+count+".txt")),Clock.fixed(NOW,ZoneOffset.UTC),console::add);
+            reports.recordDailyReport();
+            assertThat(console).contains("Active Alerts: "+count,"Generated Alerts: "+count,"Water Usage: 37 L","Energy Usage: 19 kWh");
+            reports.archiveAlerts();
+            var file=reports.saveArchiveReport();
+            assertThat(file).contains("Active Alerts: 0","Archived alerts: "+count,"Generated Alerts: "+count,"Water Usage: 37 L","Energy Usage: 19 kWh");
+            assertThat(reports.reportEntries()).containsExactly("Daily Report",count==0?"No alerts to archive":"Archived 7 alerts");
+            reports.archiveAlerts();
+            assertThat(reports.reportEntries()).endsWith("No alerts to archive");
+            assertThat(alerts.snapshot().archivedAlerts()).hasSize(count);
+        }
+    }
+
+    @Test
+    void storageCreatesDirectoriesTruncatesStaleContentAndPreservesUtf8() throws Exception {
+        var path=tempDir.resolve("new/nested/report.txt");
+        var storage=new FileReportStorageAdapter(path);
+        storage.writeLines(List.of("stale", "discard this"));
+        storage.writeLines(List.of("===== DAILY REPORT =====", "生菜 α"));
+        assertThat(Files.readAllLines(path,StandardCharsets.UTF_8)).containsExactly("===== DAILY REPORT =====","生菜 α");
+    }
+
+    @Test
     void generatedReportMatchesLegacyLineFormatAndWritesThroughStoragePort() throws Exception {
         ChamberId chamber = new ChamberId("CH1");
         ChamberSummaryTracker summary = new ChamberSummaryTracker();
         summary.recordAlert("CH1 Tomato High Temp");
         summary.recordMitigationAction("Cooling Fan Activated");
         ResourceAccountingService resources = new ResourceAccountingService();
-        resources.recordAlert();
         resources.recordWater(50);
         resources.recordEnergy(10);
         AlertManagementService alerts = new AlertManagementService();

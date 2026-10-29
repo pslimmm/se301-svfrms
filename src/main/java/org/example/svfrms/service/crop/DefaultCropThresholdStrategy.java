@@ -32,8 +32,12 @@ public final class DefaultCropThresholdStrategy implements CropThresholdStrategy
     public EvaluationResult evaluate(SensorReading reading, CropProfile profile) {
         Objects.requireNonNull(reading, "reading");
         Objects.requireNonNull(profile, "profile");
-        if (!reading.crop().equalsIgnoreCase(profile.name())) {
+        if (!reading.crop().equals(profile.name())) {
             throw new IllegalArgumentException("Reading crop does not match the supplied profile");
+        }
+
+        if (!profile.enabledSensors().contains(reading.sensorType())) {
+            return EvaluationResult.none();
         }
 
         ThresholdRange range = rangeFor(profile, reading.sensorType());
@@ -85,6 +89,24 @@ public final class DefaultCropThresholdStrategy implements CropThresholdStrategy
 
     public Optional<CropProfile> profileFor(String cropName) {
         return registry.get(cropName);
+    }
+
+    @Override
+    public EvaluationResult evaluateWithoutProfile(SensorReading reading) {
+        Objects.requireNonNull(reading, "reading");
+        String message;
+        ActuatorType actuator;
+        if (reading.sensorType() == SensorType.LIGHT && reading.value() < 500) {
+            message = reading.chamberId().value() + " Low Light Level";
+            actuator = ActuatorType.GROW_LIGHT;
+        } else if (reading.sensorType() == SensorType.NUTRIENT && reading.value() < 40) {
+            message = reading.chamberId().value() + " Low Nutrient Level";
+            actuator = ActuatorType.NUTRIENT_INJECTOR;
+        } else {
+            return EvaluationResult.none();
+        }
+        return new EvaluationResult(Optional.of(new AlertEvent(reading.chamberId(), reading.crop(),
+                AlertSeverity.WARNING, message, reading.timestamp())), Optional.of(actuator), 0, 0);
     }
 
     private static ThresholdRange rangeFor(CropProfile profile, SensorType type) {

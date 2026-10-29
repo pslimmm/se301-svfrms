@@ -32,7 +32,7 @@ class FullSystemIntegrationTest {
             assertThat(context.sensorLogs()).hasSize(4 * 20 * 5);
             assertThat(context.resources().waterUsage()).isGreaterThanOrEqualTo(160);
             assertThat(context.resources().energyUsage()).isGreaterThanOrEqualTo(80);
-            assertThat(context.resources().generatedAlerts()).isGreaterThan(0);
+            assertThat(context.alerts().generatedAlertCount()).isGreaterThan(0);
             assertThat(context.alerts().getActiveAlertsSnapshot()).isEmpty();
             assertThat(context.alerts().getArchivedAlertsSnapshot()).isNotEmpty();
             assertThat(context.actuatorService().isTerminated()).isTrue();

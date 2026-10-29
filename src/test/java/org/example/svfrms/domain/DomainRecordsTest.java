@@ -28,7 +28,8 @@ class DomainRecordsTest {
         assertThat(new ChamberSummarySnapshot(summary)).isEqualTo(summary);
         assertThat(snapshot.getClass().isRecord()).isTrue();
         assertThat(snapshot.getClass().getModifiers()).matches(m -> java.lang.reflect.Modifier.isFinal(m));
-        assertThatIllegalArgumentException().isThrownBy(() -> new ChamberId("  "));
+        assertThat(new ChamberId("  ").value()).isEqualTo("  ");
+        assertThat(new ChamberId("").value()).isEmpty();
         assertThatIllegalArgumentException().isThrownBy(() -> new ChamberSummarySnapshot(-1, 0, "None", "None"));
     }
 
@@ -42,7 +43,8 @@ class DomainRecordsTest {
         assertThat(new AlertEvent(alert)).isEqualTo(alert);
         assertThatNullPointerException().isThrownBy(() -> new SensorReading(null, "Tomato", SensorType.TEMPERATURE, 29, NOW));
         assertThatNullPointerException().isThrownBy(() -> new AlertEvent(chamber, "Tomato", null, "Alert", NOW));
-        assertThatIllegalArgumentException().isThrownBy(() -> new SensorReading(chamber, " ", SensorType.LIGHT, 1, NOW));
+        assertThat(new SensorReading(chamber, " ", SensorType.LIGHT, 1, NOW).crop()).isEqualTo(" ");
+        assertThat(new AlertEvent(chamber, "", AlertSeverity.WARNING, "Low Light", NOW).crop()).isEmpty();
     }
 
     @Test

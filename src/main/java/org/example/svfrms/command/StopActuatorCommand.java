@@ -2,7 +2,6 @@ package org.example.svfrms.command;
 
 import org.example.svfrms.domain.chamber.ChamberSnapshot;
 import org.example.svfrms.domain.chamber.ChamberStateTracker;
-import org.example.svfrms.service.resource.ResourceAccountingService;
 
 import java.util.Optional;
 
@@ -19,7 +18,7 @@ public final class StopActuatorCommand implements DeviceCommand {
     }
 
     @Override
-    public void execute(ChamberStateTracker tracker, ResourceAccountingService metrics) { }
+    public ChamberSnapshot execute(ChamberStateTracker tracker) { return tracker.snapshot(); }
 
     @Override
     public String stateDescription(ChamberSnapshot state) {

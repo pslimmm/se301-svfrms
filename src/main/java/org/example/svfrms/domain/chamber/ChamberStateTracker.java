@@ -12,11 +12,15 @@ public final class ChamberStateTracker {
         state = new AtomicReference<>(Objects.requireNonNull(initialState, "initialState"));
     }
 
+    public static ChamberStateTracker initial() {
+        return new ChamberStateTracker(new ChamberSnapshot(24, 70, 60, 600, 70));
+    }
+
     public ChamberSnapshot snapshot() {
         return state.get();
     }
 
-    /** Applies an update with a compare-and-set loop so concurrent field changes are not overwritten. */
+    /** Applies an update with a compare-and-set loop so concurrent field changes are not overwritten. The callback must be pure: it may be retried. */
     public ChamberSnapshot updateAndGet(UnaryOperator<ChamberSnapshot> update) {
         Objects.requireNonNull(update, "update");
         ChamberSnapshot previous;

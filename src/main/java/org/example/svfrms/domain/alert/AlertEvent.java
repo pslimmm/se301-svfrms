@@ -13,9 +13,6 @@ public record AlertEvent(ChamberId chamberId, String crop, AlertSeverity severit
         Objects.requireNonNull(severity, "severity");
         Objects.requireNonNull(message, "message");
         Objects.requireNonNull(timestamp, "timestamp");
-        if (crop.isBlank()) {
-            throw new IllegalArgumentException("Crop name must not be blank");
-        }
     }
 
     public AlertEvent(AlertEvent source) {

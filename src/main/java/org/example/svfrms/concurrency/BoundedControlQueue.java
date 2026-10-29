@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 /** Bounded queue with timed producer operations to keep overload from hanging callers. */
 public final class BoundedControlQueue {
-    public static final int DEFAULT_CAPACITY = 1024;
+    public static final int DEFAULT_CAPACITY = 5;
     private final ArrayBlockingQueue<ActuatorRequest> queue;
 
     public BoundedControlQueue() {

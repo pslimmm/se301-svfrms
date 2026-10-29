@@ -29,6 +29,54 @@ class TelemetryPublisherTest {
     private static final Instant NOW = Instant.parse("2026-10-29T00:00:00Z");
 
     @Test
+    @org.junit.jupiter.api.Timeout(10)
+    void fullQueueFailureReachesProducerFutureAfterAlertAndCharge() throws Exception {
+        var entered=new java.util.concurrent.CountDownLatch(1);
+        var release=new java.util.concurrent.CountDownLatch(1);
+        var chamber=new ChamberId("CH1");
+        var states=Map.of(chamber,ChamberStateTracker.initial());
+        var summaries=Map.of(chamber,new ChamberSummaryTracker());
+        var service=new ActuatorExecutionService(new BoundedControlQueue(1),states,summaries,line -> {
+            entered.countDown();
+            try { release.await(); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+        });
+        var resources=new ResourceAccountingService(); var alerts=new AlertManagementService();
+        var registry=CropRegistry.withStandardProfiles(); var clock=Clock.fixed(NOW,ZoneOffset.UTC);
+        var publisher=new TelemetryPublisher(failure -> { throw failure; });
+        publisher.subscribe(new ThresholdEvaluationObserver(registry,new DefaultCropThresholdStrategy(registry,clock),alerts,service,resources,states,summaries,Duration.ofMillis(20),s -> {}));
+        var executor=java.util.concurrent.Executors.newSingleThreadExecutor();
+        service.start();
+        var reading=new SensorReading(chamber,"Tomato",SensorType.TEMPERATURE,29,NOW);
+        try {
+            publisher.publish(reading);
+            assertThat(entered.await(1,java.util.concurrent.TimeUnit.SECONDS)).isTrue();
+            publisher.publish(reading);
+            var producer=executor.submit(() -> publisher.publish(reading));
+            org.assertj.core.api.Assertions.assertThatThrownBy(() -> producer.get(1,java.util.concurrent.TimeUnit.SECONDS))
+                    .isInstanceOf(java.util.concurrent.ExecutionException.class).hasRootCauseMessage("Actuator queue remained full until timeout");
+            assertThat(alerts.generatedAlertCount()).isEqualTo(3);
+            assertThat(resources.energyUsage()).isEqualTo(30);
+        } finally { release.countDown(); executor.shutdownNow(); service.close(Duration.ofSeconds(1)); assertThat(executor.awaitTermination(2,java.util.concurrent.TimeUnit.SECONDS)).isTrue(); }
+    }
+
+    @Test
+    void sensorLogsAreStoredUntilExplicitDisplay() throws Exception {
+        var lines = new java.util.ArrayList<String>();
+        Clock clock = Clock.fixed(NOW, ZoneOffset.UTC);
+        try (var context = new org.example.svfrms.infrastructure.context.SvfrmsApplicationContext(
+                java.nio.file.Path.of("target/task3-report.txt"), clock, lines::add, 42)) {
+            context.telemetry().publish(new SensorReading(new ChamberId("CH1"), "Unknown", SensorType.SOIL_MOISTURE, 61, NOW));
+            context.telemetry().publish(new SensorReading(new ChamberId("CH1"), "Unknown", SensorType.TEMPERATURE, 25, NOW));
+            assertThat(lines).isEmpty();
+            assertThat(context.sensorLogs()).containsExactly(new java.util.Date(clock.millis()) + " : Processing Unknown Soil = 61.0",
+                    new java.util.Date(clock.millis()) + " : Processing Unknown Temperature = 25.0");
+            context.showLogs();
+            assertThat(lines).containsExactlyElementsOf(context.sensorLogs());
+            assertThat(context.sensorLogs()).hasSize(2);
+        }
+    }
+
+    @Test
     void publishesToLoggerAndThresholdObserverWithoutCoupling() throws Exception {
         ChamberId chamber = new ChamberId("CH1");
         ChamberStateTracker state = new ChamberStateTracker(new ChamberSnapshot(24, 70, 60, 600, 70));
@@ -58,7 +106,7 @@ class TelemetryPublisherTest {
         assertThat(summary.snapshot().alerts()).isEqualTo(1);
         assertThat(summary.snapshot().mitigationActions()).isEqualTo(1);
         assertThat(state.snapshot().temperature()).isEqualTo(24);
-        assertThat(metrics.generatedAlerts()).isEqualTo(1);
+        assertThat(alerts.generatedAlertCount()).isEqualTo(1);
         assertThat(metrics.energyUsage()).isEqualTo(10);
     }
 

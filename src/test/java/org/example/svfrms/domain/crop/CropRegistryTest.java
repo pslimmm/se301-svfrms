@@ -30,7 +30,11 @@ class CropRegistryTest {
     @Test
     void standardRegistryContainsLegacyCropsAndSupportsDynamicRegistrationAndRemoval() {
         CropRegistry registry = CropRegistry.withStandardProfiles();
-        assertThat(registry.get("tomato")).isPresent();
+        assertThat(registry.get("Tomato")).isPresent();
+        assertThat(registry.get("tomato")).isEmpty();
+        assertThat(registry.get(" Tomato")).isEmpty();
+        assertThat(registry.get("Tomato ")).isEmpty();
+        assertThat(registry.get("")).isEmpty();
         assertThat(registry.get("Strawberry")).isPresent();
         assertThat(registry.get("Lettuce")).isPresent();
         assertThat(registry.get("Spinach")).isPresent();
@@ -39,10 +43,31 @@ class CropRegistryTest {
 
         CropProfile kale = profile("Kale", new ThresholdRange(16, 22));
         registry.register(kale);
-        assertThat(registry.get(" kale ")).contains(kale);
-        assertThat(registry.unregister("KALE")).isTrue();
+        assertThat(registry.get("Kale")).contains(kale);
+        assertThat(registry.get(" kale ")).isEmpty();
+        assertThat(registry.unregister("KALE")).isFalse();
+        assertThat(registry.unregister("Kale")).isTrue();
         assertThat(registry.get("Kale")).isEmpty();
         assertThat(registry.unregister("Kale")).isFalse();
+    }
+
+    @Test
+    void enabledSensorsAreDefensivelyCopiedAndBuilderDefaultsRemainCompatible() {
+        var sensors = java.util.EnumSet.of(SensorType.TEMPERATURE);
+        CropProfile source = profile("Clone", new ThresholdRange(22,28));
+        var builder = CropProfile.builder("Clone").temperature(source.temperature()).humidity(source.humidity())
+                .soilMoisture(source.soilMoisture()).light(source.light()).nutrient(source.nutrient())
+                .enabledSensors(sensors);
+        sensors.add(SensorType.HUMIDITY);
+        CropProfile built = builder.build();
+        assertThat(built.enabledSensors()).containsExactly(SensorType.TEMPERATURE);
+        org.assertj.core.api.Assertions.assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(() -> built.enabledSensors().add(SensorType.LIGHT));
+        assertThat(source.enabledSensors()).containsExactlyInAnyOrder(SensorType.values());
+        CropProfile direct = new CropProfile("Direct", source.temperature(), source.humidity(), source.soilMoisture(),
+                source.light(), source.nutrient(), source.mitigationResourceCosts(), sensors);
+        sensors.clear();
+        assertThat(direct.enabledSensors()).containsExactlyInAnyOrder(SensorType.TEMPERATURE, SensorType.HUMIDITY);
     }
 
     @Test

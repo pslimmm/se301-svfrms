@@ -62,8 +62,8 @@ public final class ThresholdEvaluationObserver implements TelemetryObserver {
         this.alerts = Objects.requireNonNull(alerts, "alerts");
         this.actuators = Objects.requireNonNull(actuators, "actuators");
         this.metrics = Objects.requireNonNull(metrics, "metrics");
-        this.chamberStates = Map.copyOf(chamberStates);
-        this.chamberSummaries = Map.copyOf(chamberSummaries);
+        this.chamberStates = Objects.requireNonNull(chamberStates, "chamberStates");
+        this.chamberSummaries = Objects.requireNonNull(chamberSummaries, "chamberSummaries");
         this.enqueueTimeout = Objects.requireNonNull(enqueueTimeout, "enqueueTimeout");
         this.alertOutput = Objects.requireNonNull(alertOutput, "alertOutput");
         if (enqueueTimeout.isNegative()) {
@@ -75,20 +75,19 @@ public final class ThresholdEvaluationObserver implements TelemetryObserver {
     public void onTelemetry(SensorReading reading) {
         Objects.requireNonNull(reading, "reading");
         ChamberStateTracker tracker = chamberStates.get(reading.chamberId());
-        if (tracker == null) {
-            throw new IllegalArgumentException("No state tracker for chamber " + reading.chamberId().value());
-        }
+        if (tracker == null) tracker = chamberStates.computeIfAbsent(reading.chamberId(), ignored -> ChamberStateTracker.initial());
         updateState(tracker, reading);
 
         Optional<CropProfile> profile = crops.get(reading.crop());
-        if (profile.isEmpty()) {
-            return;
-        }
-        EvaluationResult result = strategy.evaluate(reading, profile.get());
+        EvaluationResult result = profile.map(value -> strategy.evaluate(reading, value))
+                .orElseGet(() -> strategy.evaluateWithoutProfile(reading));
         result.alert().ifPresent(alert -> {
             alerts.publishAlert(alert);
-            metrics.recordAlert();
+            // The charge belongs to the detected condition, even if queuing fails later.
+            metrics.recordWater(result.waterUsage());
+            metrics.recordEnergy(result.energyUsage());
             ChamberSummaryTracker summary = chamberSummaries.get(reading.chamberId());
+            if (summary == null) summary = chamberSummaries.computeIfAbsent(reading.chamberId(), ignored -> new ChamberSummaryTracker());
             if (summary != null) {
                 summary.recordAlert(alert.message());
             }
@@ -97,11 +96,9 @@ public final class ThresholdEvaluationObserver implements TelemetryObserver {
 
         Optional<ActuatorType> mitigation = result.mitigation();
         if (mitigation.isEmpty()) {
-            metrics.recordWater(result.waterUsage());
-            metrics.recordEnergy(result.energyUsage());
             return;
         }
-        DeviceCommand command = commandFor(mitigation.get(), result);
+        DeviceCommand command = commandFor(mitigation.get());
         try {
             boolean accepted = actuators.submit(new ActuatorRequest(reading.chamberId(), command), enqueueTimeout);
             if (!accepted) {
@@ -123,12 +120,12 @@ public final class ThresholdEvaluationObserver implements TelemetryObserver {
         });
     }
 
-    private static DeviceCommand commandFor(ActuatorType type, EvaluationResult result) {
+    private static DeviceCommand commandFor(ActuatorType type) {
         return switch (type) {
-            case COOLING_FAN -> new CoolingFanCommand(result.energyUsage());
-            case WATER_PUMP -> new WaterPumpCommand(result.waterUsage());
+            case COOLING_FAN -> new CoolingFanCommand();
+            case WATER_PUMP -> new WaterPumpCommand();
             case NUTRIENT_INJECTOR -> new NutrientInjectorCommand();
-            case HUMIDIFIER -> new HumidifierCommand(result.waterUsage());
+            case HUMIDIFIER -> new HumidifierCommand();
             case DEHUMIDIFIER -> new DehumidifierCommand();
             case GROW_LIGHT -> new GrowLightCommand();
         };
