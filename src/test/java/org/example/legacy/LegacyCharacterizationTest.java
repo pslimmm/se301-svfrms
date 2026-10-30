@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.example.testsupport.ConsoleCapture;
 import org.example.testsupport.RunOutput;
 import org.junit.jupiter.api.Test;
 
@@ -46,6 +47,7 @@ class LegacyCharacterizationTest {
     }
 
     static String read(String file) throws IOException {
-        return Files.readString(GOLDEN_DIR.resolve(file), StandardCharsets.UTF_8);
+        // git may check the files out with CRLF on Windows
+        return ConsoleCapture.normalise(Files.readString(GOLDEN_DIR.resolve(file), StandardCharsets.UTF_8));
     }
 }
