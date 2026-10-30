@@ -146,7 +146,7 @@ class LegacyReportsTest extends LegacyTestSupport {
         // Changing user.dir does not reliably relocate java.nio paths; use a real child working directory.
         Path java = Path.of(System.getProperty("java.home"), "bin",
             System.getProperty("os.name").startsWith("Windows") ? "java.exe" : "java");
-        String classpath = Path.of(SVFRMS.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+        String classpath = Path.of(FarmApplication.class.getProtectionDomain().getCodeSource().getLocation().toURI())
             + File.pathSeparator
             + Path.of(ArchiveReportProbe.class.getProtectionDomain().getCodeSource().getLocation().toURI());
         Path stdout = temporaryDirectory.resolve("probe-output.txt");

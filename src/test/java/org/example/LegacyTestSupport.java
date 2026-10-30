@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 /** Each test owns a fresh application; output capture no longer replaces System.out. */
 abstract class LegacyTestSupport {
-    protected SVFRMS app;
+    protected FarmApplication app;
     protected PrintStream capturedOut;
     private ByteArrayOutputStream output;
 
@@ -17,7 +17,7 @@ abstract class LegacyTestSupport {
     void isolateApplication() {
         output = new ByteArrayOutputStream();
         capturedOut = new PrintStream(output, true, StandardCharsets.UTF_8);
-        app = new SVFRMS(new Random(301), capturedOut::println);
+        app = new FarmApplication(new Random(301), capturedOut::println);
     }
 
     @AfterEach

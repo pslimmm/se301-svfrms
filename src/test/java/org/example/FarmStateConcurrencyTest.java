@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class FarmStateConcurrencyTest {
     @Test
     void freshApplicationsDoNotShareDataOrQueues() {
-        SVFRMS first = quietApplication();
-        SVFRMS second = quietApplication();
+        FarmApplication first = quietApplication();
+        FarmApplication second = quietApplication();
         first.processSensor("CH1", "Tomato", "Soil", 30);
         first.activateControl("CH1", "Water Pump");
         first.archiveAlerts();
@@ -64,7 +64,7 @@ class FarmStateConcurrencyTest {
         assertEquals(18, state.snapshot().chamberStates().get("CH1").temperature());
         assertEquals(1, state.snapshot().archivedAlerts().size());
 
-        SVFRMS app = quietApplication();
+        FarmApplication app = quietApplication();
         app.addControlRequest("CH1", DeviceType.WATER_PUMP);
         assertThrows(UnsupportedOperationException.class, () -> app.pendingControls().clear());
     }
@@ -183,7 +183,7 @@ class FarmStateConcurrencyTest {
         CountDownLatch enteredOutput = new CountDownLatch(1);
         CountDownLatch releaseOutput = new CountDownLatch(1);
         AtomicBoolean block = new AtomicBoolean(false);
-        SVFRMS app = new SVFRMS(new Random(301), message -> {
+        FarmApplication app = new FarmApplication(new Random(301), message -> {
             if (block.get()) {
                 enteredOutput.countDown();
                 await(releaseOutput);
@@ -232,7 +232,7 @@ class FarmStateConcurrencyTest {
 
     @Test
     void producerWaitingForQueueCapacityDoesNotHoldTheStateLock() throws Exception {
-        SVFRMS app = quietApplication();
+        FarmApplication app = quietApplication();
         for (int i = 0; i < 5; i++) app.addControlRequest("CH1", DeviceType.WATER_PUMP);
         FutureTask<Void> send = new FutureTask<>(() -> {
             app.processSensor("CH1", "Tomato", "Soil", 30);
@@ -286,16 +286,16 @@ class FarmStateConcurrencyTest {
                 };
             }
         };
-        SVFRMS app = new SVFRMS(samples, message -> {});
+        FarmApplication app = new FarmApplication(samples, message -> {});
         Thread consumer = new Thread(app.new ControlTask());
         consumer.setDaemon(true);
         consumer.start();
         try {
             runTogether(List.of(
-                () -> app.new ChamberTask("CH1", "Tomato").run(),
-                () -> app.new ChamberTask("CH2", "Strawberry").run(),
-                () -> app.new ChamberTask("CH3", "Lettuce").run(),
-                () -> app.new ChamberTask("CH4", "Chili").run()));
+                () -> app.chamberSimulation("CH1", "Tomato").run(),
+                () -> app.chamberSimulation("CH2", "Strawberry").run(),
+                () -> app.chamberSimulation("CH3", "Lettuce").run(),
+                () -> app.chamberSimulation("CH4", "Chili").run()));
         } finally {
             app.stopControlThread();
             consumer.join(5000);
@@ -315,8 +315,8 @@ class FarmStateConcurrencyTest {
         assertEquals(20, app.snapshot().archivedAlerts().size());
     }
 
-    private static SVFRMS quietApplication() {
-        return new SVFRMS(new Random(301), message -> {});
+    private static FarmApplication quietApplication() {
+        return new FarmApplication(new Random(301), message -> {});
     }
 
     private static void assertAlertInvariants(FarmState.Snapshot snapshot) {

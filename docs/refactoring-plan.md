@@ -12,9 +12,11 @@ The original findings are based on static source inspection; no runtime stress t
 
 Stage 3 has now introduced instance-owned `FarmState`, coherent updates and snapshots, and coordinated concurrency tests. See [Stage 3 validation](stage-3-validation.md) for the current architecture, 139 passing tests, CLI smoke test, and unresolved lifecycle limitations. Source line references below refer to the original legacy version, not the extracted files.
 
-Stage 4 introduced bounded blocking coordination, supervised tasks, cancellation, and single-run admission. [Stage 4 validation](stage-4-validation.md) records its 157 passing tests and CLI validation. Stage 5 extracted immutable crop/rule/assignment data and pure evaluation; [Stage 5 validation](stage-5-validation.md) records 238 passing tests and current limitations. Earlier stage reports describe their historical state; Stage 5 is the latest implementation status.
+Stage 4 introduced bounded blocking coordination, supervised tasks, cancellation, and single-run admission. [Stage 4 validation](stage-4-validation.md) records its 157 passing tests and CLI validation. Stage 5 extracted immutable crop/rule/assignment data and pure evaluation; [Stage 5 validation](stage-5-validation.md) records 238 passing tests. Stage 6 extracted simulation, sample generation, console presentation, reporting, and file writing, injected the clock, and made `SVFRMS` a thin entry point. [Stage 6 validation](stage-6-validation.md) records 255 passing tests, the current component architecture, and remaining limitations. Earlier stage reports describe their historical state.
 
 The specification requires Java 25+, a multi-file Maven application, preservation of existing functionality, corrected concurrency, and easy crop addition/removal. Refactor incrementally rather than replace the simulation. Requirements described in section 3 but absent from the code must be recorded as gaps, not silently introduced as part of extraction.
+
+Stage 7 adds immutable catalog registration, removal, assignment, and reassignment workflows, rejects duplicate/contradictory rule boundaries, and demonstrates Kale in an optional fifth chamber through configuration only. [Stage 7 validation](stage-7-validation.md) is the latest status, with 280 passing tests. Existing catalogs remain fixed for their application's lifetime; the default six crop profiles and four assignments are unchanged.
 
 ## Behavior to preserve
 
@@ -124,6 +126,8 @@ A consumer-failure hang is a liveness defect, not evidence of circular monitor d
 
 Use plain Java, constructor wiring, and a small number of cohesive classes in separate files. No framework, database, asynchronous event bus, or class per crop is needed.
 
+Implementation refinement in Stage 6: `FarmApplication` owns composition and supervision; `SVFRMS` delegates to it. The proposed sensor/control service roles remain short application methods coordinating atomic `FarmState` operations and output/queue work. Separate forwarding service classes would add no independent policy, so they have not been introduced. `SensorReading` is typed at the simulation boundary; legacy alert strings remain the stored presentation contract. The Stage 6 report diagrams the implemented components below this original target design.
+
 ```mermaid
 flowchart TD
     Main[SVFRMS entry point / application lifecycle] --> Producers[Chamber simulation tasks]
@@ -183,16 +187,16 @@ New sensor types extend typed readings, sampling, and rule data. New devices ext
 - [x] Add deterministic characterization tests for the rule table: below, equal to, and above each boundary; unsupported crop/sensor combinations; repeated alerts; exact message shapes; asymmetric usage charges.
 - [x] Test all six device formulas, clamps, action counts, and the fact that control uses current state at execution time.
 - [x] Characterize archive move/reset behavior, empty archive handling, helpers, report sections, sorted chambers, UTF-8 output, overwrite behavior, and save failure messages using temporary directories.
-- [ ] Capture timestamps/randomness through seams; avoid asserting one cross-thread order or reproducing corrupted totals. Test all accepted report/archive orders.
+- [x] Capture timestamps/randomness through seams; avoid asserting one cross-thread order or reproducing corrupted totals. Stage 6 adds fixed-clock and scripted-source coverage; existing report/archive ordering tests remain in place.
 - [x] Record the specification gaps above and keep enhancements separate from preservation work.
 
 ### 2. Extract without changing rules
 
 - [x] Stage 2: introduce `ControlRequest` and `DeviceType`, migrate queue callers, remove delimiter parsing, and verify request routing/FIFO behavior while retaining the legacy queue synchronization.
-- [ ] Introduce typed domain values and compatibility formatting; preserve the CLI entry point.
+- [x] Introduce typed domain values and compatibility formatting; preserve the CLI entry point. Stage 6 adds `SensorReading`, `LegacyTimestamp`, and `ConsoleOutput`; alert text remains a compatibility value rather than adding an unused alert abstraction.
 - [x] Move the exact rule table and assignments into `CropCatalog`; retain global light/nutrient rules and legacy omissions.
 - [x] Stage 5: extract pure `RuleEvaluator` and immutable rule/profile values; apply evaluated effects atomically through `FarmState` and verify both the legacy table and custom catalog assignments.
-- [ ] Extract evaluator, sensor/control services, state owner, report service, and writer into separate files using constructor wiring.
+- [x] Extract evaluator, state owner, simulation, report service, and writer into separate files using constructor wiring. Stage 6 retains sensor/control coordination in `FarmApplication` and atomic transformations in `FarmState`, as justified above.
 - [x] Remove static mutable state after migrating callers; verify that two fresh application instances do not share counters, queues, or histories.
 - [ ] Run characterization tests after each extraction, keeping the application runnable throughout.
 
@@ -208,8 +212,8 @@ New sensor types extend typed readings, sampling, and rule data. New devices ext
 
 ### 4. Demonstrate extensibility
 
-- [ ] Add a documented new-crop profile via data only and show it in a chamber; test registration, duplicate rejection, invalid ranges, and removal/reassignment rules.
-- [ ] Confirm all original crops and six devices remain supported, including Spinach/Cucumber and helpers unused by default startup.
+- [x] Add a documented new-crop profile via data only and show it in a chamber; test registration, duplicate rejection, invalid ranges, and removal/reassignment rules. Stage 7 provides an opt-in Kale demo with explicit synthetic inputs and tests catalog isolation during a running simulation.
+- [x] Confirm all original crops and six devices remain supported, including Spinach/Cucumber and helpers unused by default startup. The legacy rule/control suites and exact-default catalog assertions remain passing in Stage 7.
 - [ ] Keep additional specification features in an explicit backlog with their behavior and acceptance tests defined before implementation.
 
 ### 5. Validate and package

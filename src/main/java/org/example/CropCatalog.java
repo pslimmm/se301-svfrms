@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,10 @@ public final class CropCatalog {
         }
         this.profiles = Map.copyOf(byName);
         this.globalRules = List.copyOf(globalRules);
+        ThresholdRule.validateRules(this.globalRules);
+        for (CropProfile profile : this.profiles.values()) {
+            ThresholdRule.validateRanges(profile.rules(), this.globalRules);
+        }
         this.assignments = List.copyOf(assignments);
         Set<String> chambers = new HashSet<>();
         for (ChamberAssignment assignment : this.assignments) {
@@ -57,6 +62,59 @@ public final class CropCatalog {
     public Map<String, CropProfile> profiles() { return profiles; }
     public List<ThresholdRule> globalRules() { return globalRules; }
     public List<ChamberAssignment> assignments() { return assignments; }
+
+    /** Registers a new profile in a new catalog; duplicate names never overwrite profiles. */
+    public CropCatalog withProfile(CropProfile profile) {
+        Objects.requireNonNull(profile, "profile");
+        List<CropProfile> updated = new ArrayList<>(profiles.values());
+        updated.add(profile);
+        return new CropCatalog(updated, globalRules, assignments);
+    }
+
+    /** An assigned profile must first be reassigned or have its chambers unassigned. */
+    public CropCatalog withoutProfile(String name) {
+        requireProfile(name);
+        if (assignments.stream().anyMatch(assignment -> assignment.cropName().equals(name))) {
+            throw new IllegalArgumentException("Cannot remove assigned crop: " + name);
+        }
+        return new CropCatalog(profiles.values().stream().filter(profile -> !profile.name().equals(name)).toList(),
+            globalRules, assignments);
+    }
+
+    /** Adds a chamber at the end of startup order; an existing chamber requires explicit reassignment. */
+    public CropCatalog withAssignment(String chamber, String crop) {
+        List<ChamberAssignment> updated = new ArrayList<>(assignments);
+        updated.add(new ChamberAssignment(chamber, crop));
+        return new CropCatalog(List.copyOf(profiles.values()), globalRules, updated);
+    }
+
+    /** Changes an existing chamber's crop without changing its startup position. */
+    public CropCatalog reassignChamber(String chamber, String crop) {
+        requireProfile(crop);
+        requireAssignment(chamber);
+        ChamberAssignment replacement = new ChamberAssignment(chamber, crop);
+        return new CropCatalog(List.copyOf(profiles.values()), globalRules, assignments.stream()
+            .map(assignment -> assignment.chamberId().equals(chamber) ? replacement : assignment).toList());
+    }
+
+    /** Removes a chamber from a new catalog; it does not affect any existing application. */
+    public CropCatalog withoutAssignment(String chamber) {
+        requireAssignment(chamber);
+        return new CropCatalog(List.copyOf(profiles.values()), globalRules, assignments.stream()
+            .filter(assignment -> !assignment.chamberId().equals(chamber)).toList());
+    }
+
+    private void requireProfile(String name) {
+        Objects.requireNonNull(name, "name");
+        if (!profiles.containsKey(name)) throw new IllegalArgumentException("Unknown crop: " + name);
+    }
+
+    private void requireAssignment(String chamber) {
+        Objects.requireNonNull(chamber, "chamber");
+        if (assignments.stream().noneMatch(assignment -> assignment.chamberId().equals(chamber))) {
+            throw new IllegalArgumentException("Unknown chamber: " + chamber);
+        }
+    }
 
     /** Exact legacy rule inventory, including omitted rules and asymmetric resource accounting. */
     public static CropCatalog legacyDefaults() {

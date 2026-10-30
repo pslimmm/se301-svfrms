@@ -22,9 +22,9 @@ class ApplicationLifecycleTest {
     void successfulRunDrainsReportsTerminatesAndRejectsRestartAndLateWork() throws Exception {
         ConcurrentLinkedQueue<String> output = new ConcurrentLinkedQueue<>();
         Path report = directory.resolve("archive/daily_report.txt");
-        SVFRMS app = new SVFRMS(scriptedSamples(), output::add, report);
+        FarmApplication app = new FarmApplication(scriptedSamples(), output::add, report);
         app.run();
-        assertEquals(SVFRMS.RunState.COMPLETED, app.runState());
+        assertEquals(FarmApplication.RunState.COMPLETED, app.runState());
         assertTrue(app.workersTerminated());
         assertTrue(app.pendingControls().isEmpty());
         var snapshot = app.snapshot();
@@ -48,18 +48,18 @@ class ApplicationLifecycleTest {
         CountDownLatch sampling = new CountDownLatch(1);
         CountDownLatch release = new CountDownLatch(1);
         Random random = gatedSamples(sampling, release);
-        SVFRMS app = new SVFRMS(random, message -> {}, directory.resolve("report.txt"));
+        FarmApplication app = new FarmApplication(random, message -> {}, directory.resolve("report.txt"));
         try (TestWorker<Void> runner = new TestWorker<>(() -> { app.run(); return null; })) {
             assertTrue(sampling.await(5, TimeUnit.SECONDS));
-            assertEquals(SVFRMS.RunState.RUNNING, app.runState());
+            assertEquals(FarmApplication.RunState.RUNNING, app.runState());
             assertThrows(IllegalStateException.class, app::run);
-            assertEquals(SVFRMS.RunState.RUNNING, app.runState());
+            assertEquals(FarmApplication.RunState.RUNNING, app.runState());
             release.countDown();
             runner.result();
         } finally {
             release.countDown();
         }
-        assertEquals(SVFRMS.RunState.COMPLETED, app.runState());
+        assertEquals(FarmApplication.RunState.COMPLETED, app.runState());
         assertTrue(app.workersTerminated());
     }
 
@@ -72,7 +72,7 @@ class ApplicationLifecycleTest {
         Path report = directory.resolve("report.txt");
         Files.writeString(report, "previous completed run");
         ConcurrentLinkedQueue<String> output = new ConcurrentLinkedQueue<>();
-        SVFRMS app = new SVFRMS(random, output::add, report);
+        FarmApplication app = new FarmApplication(random, output::add, report);
         IllegalStateException failure = assertThrows(IllegalStateException.class, app::run);
         assertSame(injected, failure.getCause());
         assertFailedWithoutCompletion(app, output);
@@ -88,7 +88,7 @@ class ApplicationLifecycleTest {
         CountDownLatch failControl = new CountDownLatch(1);
         IllegalStateException injected = new IllegalStateException("control output failed");
         ConcurrentLinkedQueue<String> output = new ConcurrentLinkedQueue<>();
-        SVFRMS app = new SVFRMS(scriptedSamples(), message -> {
+        FarmApplication app = new FarmApplication(scriptedSamples(), message -> {
             if (message.contains("[CONTROL]")) {
                 controlEntered.countDown();
                 await(failControl);
@@ -125,7 +125,7 @@ class ApplicationLifecycleTest {
 
     @Test
     void interruptedFullQueueSubmissionRestoresInterruptAndRetainsDetectionAccounting() throws Exception {
-        SVFRMS app = new SVFRMS(scriptedSamples(), message -> {});
+        FarmApplication app = new FarmApplication(scriptedSamples(), message -> {});
         for (int i = 0; i < 5; i++) app.addControlRequest("CH1", DeviceType.WATER_PUMP);
         try (TestWorker<Boolean> sender = new TestWorker<>(() -> {
             try {
@@ -150,7 +150,7 @@ class ApplicationLifecycleTest {
 
     @Test
     void interruptedIdleConsumerTerminatesAndClosesAdmission() throws Exception {
-        SVFRMS app = new SVFRMS(scriptedSamples(), message -> {});
+        FarmApplication app = new FarmApplication(scriptedSamples(), message -> {});
         try (TestWorker<Boolean> consumer = new TestWorker<>(() -> {
             try {
                 app.new ControlTask().run();
@@ -171,7 +171,7 @@ class ApplicationLifecycleTest {
         CountDownLatch sampling = new CountDownLatch(1);
         CountDownLatch release = new CountDownLatch(1);
         ConcurrentLinkedQueue<String> output = new ConcurrentLinkedQueue<>();
-        SVFRMS app = new SVFRMS(gatedSamples(sampling, release), output::add, directory.resolve("report.txt"));
+        FarmApplication app = new FarmApplication(gatedSamples(sampling, release), output::add, directory.resolve("report.txt"));
         try (TestWorker<Boolean> runner = new TestWorker<>(() -> {
             try {
                 app.run();
@@ -186,7 +186,7 @@ class ApplicationLifecycleTest {
         } finally {
             release.countDown();
         }
-        assertEquals(SVFRMS.RunState.CANCELLED, app.runState());
+        assertEquals(FarmApplication.RunState.CANCELLED, app.runState());
         assertTrue(app.workersTerminated());
         assertFalse(output.contains("System finished sensor processing."));
         assertFalse(Files.exists(directory.resolve("report.txt")));
@@ -194,7 +194,7 @@ class ApplicationLifecycleTest {
 
     @Test
     void preInterruptedRunDoesNotStartWorkers() throws Exception {
-        SVFRMS app = new SVFRMS(scriptedSamples(), message -> {}, directory.resolve("report.txt"));
+        FarmApplication app = new FarmApplication(scriptedSamples(), message -> {}, directory.resolve("report.txt"));
         try (TestWorker<Boolean> runner = new TestWorker<>(() -> {
             Thread.currentThread().interrupt();
             try {
@@ -206,17 +206,17 @@ class ApplicationLifecycleTest {
         })) {
             assertTrue(runner.result());
         }
-        assertEquals(SVFRMS.RunState.CANCELLED, app.runState());
+        assertEquals(FarmApplication.RunState.CANCELLED, app.runState());
         assertTrue(app.workersTerminated());
         assertTrue(app.snapshot().sensorLogs().isEmpty());
     }
 
     @Test
     void closedApplicationCannotStartWorkers() {
-        SVFRMS app = new SVFRMS(scriptedSamples(), message -> {}, directory.resolve("report.txt"));
+        FarmApplication app = new FarmApplication(scriptedSamples(), message -> {}, directory.resolve("report.txt"));
         app.stopControlThread();
         assertThrows(RejectedExecutionException.class, app::run);
-        assertEquals(SVFRMS.RunState.FAILED, app.runState());
+        assertEquals(FarmApplication.RunState.FAILED, app.runState());
         assertTrue(app.workersTerminated());
         assertTrue(app.snapshot().sensorLogs().isEmpty());
         assertFalse(Files.exists(directory.resolve("report.txt")));
@@ -234,7 +234,7 @@ class ApplicationLifecycleTest {
             }
         };
         ConcurrentLinkedQueue<String> output = new ConcurrentLinkedQueue<>();
-        SVFRMS app = new SVFRMS(random, message -> {
+        FarmApplication app = new FarmApplication(random, message -> {
             if (message.contains("[CONTROL]")) {
                 assertTrue(Thread.currentThread().isDaemon(), "abandoned callbacks must not pin the CLI JVM");
                 controlEntered.countDown();
@@ -257,7 +257,7 @@ class ApplicationLifecycleTest {
             assertSame(injected, failure.getCause());
             assertEquals(1, failure.getSuppressed().length);
             assertTrue(failure.getSuppressed()[0].getMessage().contains("did not terminate within 5 seconds"));
-            assertEquals(SVFRMS.RunState.FAILED, app.runState());
+            assertEquals(FarmApplication.RunState.FAILED, app.runState());
             assertFalse(app.workersTerminated());
             assertFalse(output.contains("System finished sensor processing."));
             assertFalse(Files.exists(directory.resolve("report.txt")));
@@ -274,7 +274,7 @@ class ApplicationLifecycleTest {
     void reportingWorkerFailurePreventsSuccessAndFinalFile(String failingPrefix) {
         IllegalStateException injected = new IllegalStateException("reporting failed");
         ConcurrentLinkedQueue<String> output = new ConcurrentLinkedQueue<>();
-        SVFRMS app = new SVFRMS(scriptedSamples(), message -> {
+        FarmApplication app = new FarmApplication(scriptedSamples(), message -> {
             if (message.startsWith(failingPrefix)) throw injected;
             output.add(message);
         }, directory.resolve("report.txt"));
@@ -284,14 +284,14 @@ class ApplicationLifecycleTest {
         assertFalse(Files.exists(directory.resolve("report.txt")));
     }
 
-    private static void assertFailedWithoutCompletion(SVFRMS app, ConcurrentLinkedQueue<String> output) {
-        assertEquals(SVFRMS.RunState.FAILED, app.runState());
+    private static void assertFailedWithoutCompletion(FarmApplication app, ConcurrentLinkedQueue<String> output) {
+        assertEquals(FarmApplication.RunState.FAILED, app.runState());
         assertTrue(app.workersTerminated());
         assertFalse(output.contains("System finished sensor processing."));
         assertTrue(output.stream().noneMatch(line -> line.startsWith("Archive report saved to:")));
     }
 
-    private static TestWorker<Boolean> submitOne(SVFRMS app) {
+    private static TestWorker<Boolean> submitOne(FarmApplication app) {
         return new TestWorker<>(() -> {
             try {
                 app.addControlRequest("external", DeviceType.GROW_LIGHT);

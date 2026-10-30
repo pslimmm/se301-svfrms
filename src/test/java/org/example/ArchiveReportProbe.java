@@ -5,7 +5,7 @@ public final class ArchiveReportProbe {
     private ArchiveReportProbe() {}
 
     public static void main(String[] args) {
-        SVFRMS app = new SVFRMS();
+        FarmApplication app = new FarmApplication();
         if (args[0].equals("populated")) {
             app.processSensor("CH2", "Tomato", "Temperature", 29);
             app.processSensor("CH10", "Strawberry", "Temperature", 17);

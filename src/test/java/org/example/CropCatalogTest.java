@@ -119,10 +119,10 @@ class CropCatalogTest {
             }
         };
         Path report = directory.resolve("report.txt");
-        SVFRMS app = new SVFRMS(catalog, samples, message -> {}, report);
+        FarmApplication app = new FarmApplication(catalog, samples, message -> {}, report);
         app.run();
         var snapshot = app.snapshot();
-        assertEquals(SVFRMS.RunState.COMPLETED, app.runState());
+        assertEquals(FarmApplication.RunState.COMPLETED, app.runState());
         assertTrue(app.workersTerminated());
         assertEquals(100 * chambers, snapshot.sensorLogs().size());
         assertEquals(20 * chambers, snapshot.totalAlertsGenerated());

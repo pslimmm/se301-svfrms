@@ -77,7 +77,7 @@ class ControlRequestTest extends LegacyTestSupport {
 
     @Test
     void fivePendingRequestsAreRetainedIncludingDuplicatesAndDrainAfterShutdown() {
-        assertEquals(5, SVFRMS.CONTROL_QUEUE_CAPACITY);
+        assertEquals(5, FarmApplication.CONTROL_QUEUE_CAPACITY);
         for (int i = 0; i < 5; i++) {
             app.addControlRequest("CH1", DeviceType.WATER_PUMP);
         }

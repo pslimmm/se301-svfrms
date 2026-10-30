@@ -9,5 +9,6 @@ public record CropProfile(String name, List<ThresholdRule> rules) {
         Objects.requireNonNull(name, "name");
         if (name.isBlank()) throw new IllegalArgumentException("Crop name must not be blank");
         rules = List.copyOf(rules);
+        ThresholdRule.validateRules(rules);
     }
 }

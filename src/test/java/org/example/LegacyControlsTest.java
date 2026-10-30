@@ -58,7 +58,7 @@ class LegacyControlsTest extends LegacyTestSupport {
         app.processSensor("CH1", "Tomato", "Temperature", 30);
         app.processSensor("CH1", "Tomato", "Temperature", 27);
         app.addControlRequest("CH1", DeviceType.WATER_PUMP);
-        assertEquals(5, SVFRMS.CONTROL_QUEUE_CAPACITY);
+        assertEquals(5, FarmApplication.CONTROL_QUEUE_CAPACITY);
         assertEquals(List.of(new ControlRequest("CH1", DeviceType.COOLING_FAN),
             new ControlRequest("CH1", DeviceType.WATER_PUMP)), app.pendingControls());
         app.stopControlThread();
@@ -116,8 +116,8 @@ class LegacyControlsTest extends LegacyTestSupport {
                 return samples[index];
             }
         };
-        app = new SVFRMS(scriptedRandom, capturedOut::println);
-        app.new ChamberTask("CH1", "Tomato").run();
+        app = new FarmApplication(scriptedRandom, capturedOut::println);
+        app.chamberSimulation("CH1", "Tomato").run();
 
         assertEquals(100, calls[0]);
         assertEquals(100, app.snapshot().sensorLogs().size());

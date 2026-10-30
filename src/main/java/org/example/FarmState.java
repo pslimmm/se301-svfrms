@@ -1,10 +1,12 @@
 package org.example;
 
 import java.util.*;
+import java.time.Clock;
 
 /** Owns farm data. Every mutation and snapshot uses the same private lock. */
 public final class FarmState {
     private final RuleEvaluator evaluator;
+    private final LegacyTimestamp timestamp;
     private final Object lock = new Object();
     private final List<String> alerts = new ArrayList<>();
     private final List<String> archivedAlerts = new ArrayList<>();
@@ -21,7 +23,12 @@ public final class FarmState {
     }
 
     public FarmState(CropCatalog catalog) {
+        this(catalog, Clock.systemDefaultZone());
+    }
+
+    public FarmState(CropCatalog catalog, Clock clock) {
         evaluator = new RuleEvaluator(catalog);
+        timestamp = new LegacyTimestamp(clock);
     }
 
     private static final class ChamberState {
@@ -130,9 +137,10 @@ public final class FarmState {
 
     /** Compatibility bookkeeping: the legacy event helpers remain independent operations. */
     public void handleEvent(String type, String chamber, String message) {
+        String loggedMessage = type.equals("LOG") ? timestamp.now() + " : " + message : null;
         synchronized (lock) {
             switch (type) {
-                case "LOG" -> sensorLogs.add(new Date() + " : " + message);
+                case "LOG" -> sensorLogs.add(loggedMessage);
                 case "CREATE_ALERT" -> createAlertLocked(message);
                 case "TRACK_ALERT" -> trackAlertLocked(chamber, message);
                 case "TRACK_ACTION" -> trackActionLocked(chamber, message);
@@ -162,8 +170,9 @@ public final class FarmState {
         // Configuration is immutable and evaluation uses only the incoming reading.
         List<RuleEvaluator.Effect> effects = evaluator.evaluate(chamber, crop, sensor, value);
         SensorType type = SensorType.fromLegacyName(sensor).orElse(null);
+        String loggedMessage = timestamp.now() + " : Processing " + crop + " " + sensor + " = " + value;
         synchronized (lock) {
-            sensorLogs.add(new Date() + " : Processing " + crop + " " + sensor + " = " + value);
+            sensorLogs.add(loggedMessage);
             ChamberState state = chamberLocked(chamber);
             switch (type) {
                 case TEMPERATURE -> state.temperature = value;
