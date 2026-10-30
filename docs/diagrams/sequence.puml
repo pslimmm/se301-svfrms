@@ -1,0 +1,39 @@
+@startuml sequence
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam sequenceMessageAlign left
+title One reading: "CH1 Tomato temperature = 31"
+
+participant "ChamberTask\n[chamber-1]" as task
+participant SensorHub as hub
+participant SensorLog as log
+participant ChamberMonitor as mon
+participant "CropThresholdRule\n(Strategy)" as rule
+participant AlertService as alerts
+participant "Listeners\n(Printer, Summary,\nResourceAccountant)" as ls
+participant DeviceResponder as resp
+participant "QueuedControlDispatcher\n(BlockingQueue)" as q
+participant "control worker\n[control-1]" as worker
+participant DeviceController as dc
+participant CoolingFan as fan
+
+task -> hub : publish(reading)
+hub -> log : onReading()
+hub -> mon : onReading()
+mon -> mon : state.set(TEMPERATURE, 31)
+mon -> rule : evaluate(reading)
+rule --> mon : Alert "CH1 Tomato High Temp"
+mon -> alerts : raise(alert)
+note right of alerts : add + count under lock,\nthen release lock
+alerts -> ls : onAlert() (print, summary, +10 kWh)
+alerts -> resp : onAlert()
+resp -> q : request("CH1", "Cooling Fan")
+q -> q : put(ActivateDeviceCommand)
+== asynchronously on the control thread ==
+worker -> q : take()
+worker -> dc : command.execute() -> activate("CH1","Cooling Fan")
+dc -> fan : activate(state)
+fan -> fan : state.adjust(t -> max(18, t-5))
+fan --> dc : "Temperature reduced to 26.0C"
+dc -> ls : onDeviceActivated() (print 2 lines, summary)
+@enduml

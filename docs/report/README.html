@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SVFRMS Refactoring Report</title>
+<style>
+  @page { size: A4; margin: 15mm 16mm 15mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; font-size: 9.6pt; line-height: 1.38; color: #1d2530; margin: 0; }
+  h1 { break-after: avoid; font-size: 15pt; color: #1f4e79; margin: 0 0 4px; border-bottom: 2px solid #1f4e79; padding-bottom: 3px; }
+  h2 { break-after: avoid; font-size: 11pt; color: #1f4e79; margin: 9px 0 3px; }
+  p { margin: 3px 0 5px; }
+  ul { margin: 2px 0 5px 0; padding-left: 18px; }
+  li { margin: 1px 0; }
+  table { break-inside: auto; border-collapse: collapse; width: 100%; margin: 4px 0 7px; font-size: 8.6pt; }
+  th, td { border: 1px solid #b9c6d4; padding: 3px 5px; vertical-align: top; text-align: left; }
+  th { background: #e6eef7; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 8.4pt; background: #f2f4f7; padding: 0 2px; }
+  pre { font-family: Consolas, "Courier New", monospace; font-size: 7.9pt; background: #f5f7fa; border: 1px solid #d6dde6;
+        border-left: 3px solid #1f4e79; padding: 4px 6px; margin: 3px 0 6px; white-space: pre-wrap; line-height: 1.3; }
+  pre.old { border-left-color: #b03a2e; }
+  .cols { display: flex; gap: 10px; }
+  .cols > div { flex: 1; min-width: 0; }
+  .label { font-size: 7.8pt; font-weight: 600; color: #555; margin-top: 2px; }
+  figure { break-inside: avoid; margin: 4px 0 6px; text-align: center; }
+  figure img { max-width: 100%; }
+  figcaption { font-size: 8pt; color: #555; margin-top: 2px; }
+  .page { page-break-before: always; }
+  .avoid { break-inside: avoid; }
+  /* cover */
+  .cover { page-break-after: always; height: 260mm; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+  .cover .course { font-size: 12pt; color: #555; letter-spacing: 1px; }
+  .cover .title { font-size: 24pt; color: #1f4e79; font-weight: 700; margin: 10px 0 4px; }
+  .cover .sub { font-size: 13pt; color: #333; margin-bottom: 40px; }
+  .cover table { width: 60%; margin: 0 auto; font-size: 11pt; }
+  .cover td { padding: 7px 10px; }
+  .cover .note { margin-top: 40px; font-size: 9pt; color: #666; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <div class="course">SE301 ADVANCED PROGRAMMING AND DESIGN · 2026-27</div>
+  <div class="title">Singapore Vertical Farming Research<br>Management System (SVFRMS)</div>
+  <div class="sub">Legacy Refactoring &amp; Modernization: Technical Report</div>
+  <table>
+    <tr><th style="width:38%">Group Number</th><td>[ Group __ ]</td></tr>
+    <tr><th>Team Member 1</th><td>[ Name ]</td></tr>
+    <tr><th>Team Member 2</th><td>[ Name ]</td></tr>
+    <tr><th>Team Member 3</th><td>[ Name ]</td></tr>
+  </table>
+  <div class="note">Submission: src/ (Maven project) · run.jar · README.pdf</div>
+</section>
+
+<section>
+<h1>1. Legacy System Analysis</h1>
+<p>SVFRMS monitors a vertical farm. Each growing chamber holds one crop. The program simulates sensor readings (temperature,
+humidity, soil moisture, light, nutrient), compares them with the crop's acceptable ranges, raises alerts, switches on devices
+(cooling fan, water pump, ...) to correct the conditions, keeps water/energy totals, and at the end archives the alerts and writes a
+daily report to <code>archive/daily_report.txt</code>.</p>
+<p>The whole system was one 393-line class, <code>SVFRMS.java</code>. Its main components were all static members of that class:</p>
+<table>
+  <tr><th>Component (legacy)</th><th>What it did</th></tr>
+  <tr><td><code>ChamberThread</code> ×4</td><td>20 cycles of random readings per chamber (CH1 Tomato, CH2 Strawberry, CH3 Lettuce, CH4 Chili)</td></tr>
+  <tr><td><code>processSensor()</code></td><td>per-crop thresholds, alerts, water/energy accounting, device requests, all in one method</td></tr>
+  <tr><td><code>controlQueue</code> + <code>ControlThread</code></td><td>hand-written bounded queue (5) of <code>"CH1|Cooling Fan"</code> strings, consumed by <code>activateControl()</code></td></tr>
+  <tr><td><code>handleEvent()</code></td><td>string switch for logging, printing, alert storage and chamber summaries</td></tr>
+  <tr><td><code>archiveAlerts()</code>, <code>generateDailyReport()</code>, <code>saveArchiveReport()</code></td><td>end-of-day archive, console report, file report</td></tr>
+</table>
+<p><b>Baseline first.</b> Before changing anything we built a characterization harness that drives the untouched legacy code with a
+fixed seed and hand-picked boundary readings. It records the console output, the sensor log and the archive file as
+<em>golden files</em> (1,423 lines). The refactored system must reproduce them byte-for-byte, which is our evidence that behaviour was preserved.</p>
+
+<h1>2. Code Analysis and Limitations</h1>
+<h2>2.1 Design problems</h2>
+<table>
+  <tr><th style="width:21%">Issue</th><th>Evidence in legacy code</th><th style="width:27%">Impact</th></tr>
+  <tr><td>God class (SRP)</td><td>15 separate responsibilities in one class: state, rules, devices, threads, formatting, file I/O, wiring</td><td>Every change risks everything</td></tr>
+  <tr><td>Crops hard-coded (OCP)</td><td><code>processSensor</code> L145-204: one copy-pasted <code>else if(crop.equals(...))</code> block per crop and sensor</td><td>Adding Kale means editing core logic</td></tr>
+  <tr><td>Stringly-typed code</td><td><code>handleEvent("CREATE_ALERT", ...)</code>, <code>"Soil"</code>, <code>chamber+"|"+control</code> parsed again with <code>split</code></td><td>Typos compile and silently do nothing</td></tr>
+  <tr><td>Inheritance misuse (LSP)</td><td><code>ControlThread extends Thread</code> but swallows <code>InterruptedException</code>, so <code>interrupt()</code> no longer works as <code>Thread</code> promises</td><td>Threads cannot be cancelled</td></tr>
+  <tr><td>No abstractions (ISP/DIP)</td><td>No interfaces at all; <code>public static</code> mutable fields; direct <code>System.out</code>, <code>new Date()</code>, static <code>Random</code></td><td>Untestable; nothing can be swapped</td></tr>
+  <tr><td>Duplication / dead code</td><td>Report header written twice (L210 and L314); <code>irrigationCycle</code>, <code>showLogs</code>, two locks never used</td><td>Formats drift; confusion</td></tr>
+</table>
+<div class="cols avoid">
+  <div><div class="label">Legacy: a crop is code (L147-149)</div>
+<pre class="old">if(crop.equals("Tomato")){
+  if(value>28){handleEvent("TRACK_ALERT", ...);
+    handleEvent("CREATE_ALERT", ...);
+    totalEnergyUsage+=10;
+    addControlRequest(chamber, "Cooling Fan");}
+  if(value<22){ ... totalEnergyUsage+=15;}
+} else if(crop.equals("Strawberry")){ ...</pre></div>
+  <div><div class="label">Legacy: check-then-act on a HashMap (L48-53)</div>
+<pre class="old">public static ChamberState getChamberState(String c){
+  if(!chamberStates.containsKey(c)){
+    chamberStates.put(c, new ChamberState());
+  }
+  return chamberStates.get(c);
+}</pre></div>
+</div>
+
+<h2>2.2 Concurrency problems</h2>
+<p>Four chamber threads and a control thread share every static field. Our first run of the legacy jar crashed CH1 with
+<code>NullPointerException: "state" is null at processSensor(SVFRMS.java:146)</code>, caused by the race in the snippet above.</p>
+<table>
+  <tr><th style="width:4%">#</th><th style="width:27%">Problem</th><th>Evidence</th></tr>
+  <tr><td>C1</td><td>Check-then-act race, unsafe <code>HashMap</code></td><td><code>getChamberState/Summary</code> L48-60: duplicate or <code>null</code> state (demo test reproduces it)</td></tr>
+  <tr><td>C2</td><td>Lost updates on totals</td><td><code>totalWaterUsage += 2</code>, <code>totalAlerts++</code> unsynchronized. Demo: 80,000,000 L expected, <b>11,368,500 L</b> counted</td></tr>
+  <tr><td>C3-C5</td><td>Unsafe collections, racing read-modify-write</td><td><code>ArrayList</code> alerts/logs; summary counters and chamber fields updated by two threads (L79-124)</td></tr>
+  <tr><td>C6</td><td>False synchronization</td><td>Report reads under <code>alertLock/reportLock</code>, but no writer ever takes them</td></tr>
+  <tr><td>C7</td><td>Latent lock-ordering deadlock</td><td>Nested <code>alertLock → reportLock</code> in two methods (L208, L223); any reversed path deadlocks</td></tr>
+  <tr><td>C8</td><td>Swallowed interrupts → hang</td><td><code>catch(Exception e){}</code> around <code>wait()</code> (L134, L258). If the control thread dies (it can hit C1), producers block forever on the full queue and <code>main</code> blocks forever on <code>join()</code>: a circular wait</td></tr>
+  <tr><td>C9-C10</td><td>Racing end-of-day threads; raw thread management</td><td>"Active Alerts" changes between runs; no executor, no timeout, no shutdown path</td></tr>
+</table>
+</section>
+
+<section>
+<h1>3. Proposed Design</h1>
+<p>Our goal was to keep every feature and output format exactly as it was while fixing the structure. The key decisions:</p>
+<ul>
+  <li><b>Split by responsibility</b> into 14 packages and about 65 small classes. The largest is the composition root, and everything else is under 100 lines.
+    No class mixes domain logic, I/O, threading and formatting. For example, <code>ChamberMonitor</code> (the new
+    <code>processSensor</code>) only records the reading and runs the alert rules.</li>
+  <li><b>Crops are data, not code.</b> A <code>CropProfile</code> record (ranges plus the water/energy cost of each breach) is loaded from
+    <code>crops.properties</code> into a <code>CropRegistry</code>. One generic <code>CropThresholdRule</code> replaces all the per-crop blocks.
+    Legacy quirks are kept as data. For example, only Tomato has a soil rule, so only Tomato has a <code>soil.min</code> line.</li>
+  <li><b>Events instead of a string switch.</b> <code>AlertService</code> notifies listeners: a console printer, a summary
+    tracker, a resource accountant, and a device responder. Each listener has one job.</li>
+  <li><b>Typed commands instead of <code>"CH1|Cooling Fan"</code>.</b> Device requests are <code>ActivateDeviceCommand</code> objects behind a
+    <code>ControlDispatcher</code> interface, with a threaded queue for production and an immediate version for deterministic runs.</li>
+  <li><b>Dependency injection.</b> Every class gets its collaborators through its constructor. <code>FacilityAssembler</code> is
+    the single place where concrete classes are created and wired.</li>
+</ul>
+<div class="cols avoid">
+  <div><div class="label">New: a crop is data (crops.properties)</div>
+<pre>kale.name=Kale
+kale.temperature.min=15
+kale.temperature.max=24
+kale.humidity.min=60
+kale.humidity.max=80
+kale.soil.min=50
+kale.soil.low.water=40</pre></div>
+  <div><div class="label">New: one rule for every crop (CropThresholdRule)</div>
+<pre>return crops.find(reading.crop())
+    .flatMap(p -> p.threshold(reading.type()))
+    .flatMap(t -> check(reading, t));
+// check(): isAbove(max) -> HIGH, isBelow(min) -> LOW
+// message: "CH1 Tomato High Temp" (legacy text)</pre></div>
+</div>
+
+<h2>3.1 SOLID, principle by principle</h2>
+<table>
+  <tr><th style="width:11%">Principle</th><th>What we changed</th></tr>
+  <tr><td>SRP</td><td>Printing (<code>ConsoleEventPrinter</code>), file writing (<code>FileReportWriter</code>), report content (<code>TemplateReport</code>s), threading (<code>FacilitySimulation</code>) and rules are all separate classes</td></tr>
+  <tr><td>OCP</td><td>New crop: data only. New alert type, device or report: a new class plus one line in the composition root. No existing class is edited</td></tr>
+  <tr><td>LSP</td><td>Removed <code>extends Thread</code>. <code>ChamberTask</code> is a plain <code>Runnable</code> run by an executor and it respects interruption. Every <code>Device</code>, <code>AlertRule</code> and <code>ReportGenerator</code> can be swapped for another without surprises</td></tr>
+  <tr><td>ISP</td><td>Small role interfaces: <code>AlertRule</code>, <code>Device</code>, <code>AlertListener</code>, <code>DeviceListener</code>, <code>ReadingListener</code>, <code>ReportGenerator</code>, <code>ReportWriter</code>, <code>SensorSource</code>. One class can implement two (e.g. the printer)</td></tr>
+  <tr><td>DIP</td><td>High-level code depends on interfaces (<code>CropRegistry</code>, <code>ControlDispatcher</code>, <code>SensorSource</code>). <code>Clock</code>, <code>Random</code> and <code>PrintStream</code> are injected</td></tr>
+</table>
+
+<h2>3.2 Concurrency fixes</h2>
+<table>
+  <tr><th style="width:9%">Issue</th><th>Fix</th><th style="width:30%">Proof (JUnit)</th></tr>
+  <tr><td>C1</td><td><code>ConcurrentHashMap.computeIfAbsent</code> (atomic check-and-insert)</td><td>16 threads × 200 rounds: always one state</td></tr>
+  <tr><td>C2</td><td><code>AtomicLong</code> totals; alert counter guarded by the <code>AlertService</code> lock</td><td>16 × 5,000 updates, exact totals</td></tr>
+  <tr><td>C3-C5</td><td>Lock-guarded lists, <code>ConcurrentLinkedQueue</code>, synchronized <code>ChamberSummary</code>, atomic <code>ChamberState.adjust()</code>; immutable records cross threads</td><td>exact counts under contention</td></tr>
+  <tr><td>C6-C7</td><td>One consistent snapshot for reports. <b>No method ever holds two locks</b>, and listeners run outside locks. Documented order if that ever changes: ChamberState → ChamberSummary → AlertService → ReportLog</td><td>archive ∥ raise ∥ report with 16 threads under <code>assertTimeoutPreemptively</code></td></tr>
+  <tr><td>C8</td><td><code>ArrayBlockingQueue(5)</code>; restore the interrupt flag; a failing command is logged and the worker continues; poison-pill drain</td><td>blocked producer stops on interrupt; legacy one does not</td></tr>
+  <tr><td>C9-C10</td><td>Executors with named threads, <code>Future.get</code> timeouts, <code>shutdownNow</code> in <code>finally</code>; archive → report in a fixed order</td><td>full 8-chamber run ×5: all totals add up</td></tr>
+</table>
+<div class="avoid"><div class="label">New: never notify while holding a lock (AlertService.raise)</div>
+<pre>synchronized (lock) { active.add(alert); totalGenerated++; }
+for (AlertListener listener : listeners) { listener.onAlert(alert); }   // outside the lock, so no lock nesting</pre></div>
+<p><b>Verification.</b> 49 JUnit tests: golden regression (byte-for-byte equal to legacy output), rules, devices, reports, crop
+add/remove, CLI, concurrency stress and three tests that reproduce the original legacy bugs. <code>mvn clean package</code> runs them all
+and produces <code>run.jar</code>.</p>
+</section>
+
+<section>
+<h1>4. Final Architecture</h1>
+<p>The diagram shows the packages and how they talk. <code>app</code> wires everything. Chamber tasks publish readings, the monitor
+evaluates rules, and alerts fan out to listeners. Device requests go through the control queue, and reports are built from one immutable snapshot.</p>
+<figure><img src="../diagrams/component.png" style="width:74%"><figcaption>Figure 1: component diagram</figcaption></figure>
+<figure><img src="../diagrams/sequence.png" style="width:100%"><figcaption>Figure 2: sequence of one out-of-range reading. The device runs later on the control thread.</figcaption></figure>
+</section>
+
+<section>
+<figure><img src="../diagrams/class.png" style="width:76%"><figcaption>Figure 3: key abstractions and where each pattern sits</figcaption></figure>
+
+<h1>5. Extensibility and Maintainability</h1>
+<table>
+  <tr><th style="width:27%">Change</th><th>What you touch</th></tr>
+  <tr><td>Add a crop (Kale, Bell Pepper, Bok Choy, Eggplant)</td><td>Add a block to <code>crops.properties</code>, or pass <code>--crops file</code> at runtime. <b>0 Java files.</b> All four were added this way</td></tr>
+  <tr><td>Remove a crop</td><td>Delete its block (or <code>CropRegistry.remove</code>). Chambers still get facility-wide checks</td></tr>
+  <tr><td>Grow a crop in a new chamber</td><td>Add <code>CH5=Kale</code> to a chambers file (<code>--chambers</code>)</td></tr>
+  <tr><td>Wire a device to an alert</td><td>One line in <code>facility.properties</code>, e.g. <code>response.temperature.low=Heating Unit</code></td></tr>
+  <tr><td>New device / alert type / report</td><td>One new class implementing <code>Device</code> / <code>AlertRule</code> / <code>TemplateReport</code> + one line in <code>FacilityAssembler</code></td></tr>
+  <tr><td>New output (dashboard, SMS)</td><td>Implement <code>AlertListener</code> or <code>DeviceListener</code> and register it</td></tr>
+  <tr><td>Real sensors instead of simulation</td><td>Implement <code>SensorSource</code>. Nothing else changes</td></tr>
+</table>
+<p>Maintainability comes from three things. Small classes have one reason to change. The golden tests fail on any accidental
+output change. The deterministic <code>--seed N --sequential</code> mode makes bugs reproducible. Brief features missing from the legacy code
+(Sensor Failure alert, alert severity, Heating/Ventilation/Shade devices, Weekly Crop, Water, Energy and Nutrient reports) are
+included, but they are opt-in or only triggered by new conditions, so the default output is still identical to the legacy output.</p>
+
+<h1>6. Design Patterns</h1>
+<table>
+  <tr><th style="width:15%">Pattern</th><th style="width:27%">Where</th><th>Problem it solves</th></tr>
+  <tr><td>Strategy</td><td><code>AlertRule</code>: crop, facility, sensor-failure rules</td><td>The 65-line if/else in <code>processSensor</code>. Each check is now a swappable, testable class</td></tr>
+  <tr><td>Observer</td><td><code>SensorHub</code>, <code>AlertService</code>, <code>DeviceController</code> and their listeners</td><td>The <code>handleEvent</code> string switch that coupled printing, counting and tracking. Reactions are now independent</td></tr>
+  <tr><td>Command</td><td><code>ControlCommand</code> / <code>ActivateDeviceCommand</code> in a <code>BlockingQueue</code></td><td><code>"CH1|Cooling Fan"</code> strings crossing threads. Requests are typed and can be queued, and "when" is separate from "what"</td></tr>
+  <tr><td>Template Method</td><td><code>TemplateReport</code> and 6 reports</td><td>The report header and totals written twice. The skeleton is fixed once</td></tr>
+  <tr><td>Registry (+ data-driven config)</td><td><code>CropRegistry</code>, <code>DeviceRegistry</code>, <code>ResponsePlan</code></td><td>Crops and device choices hard-coded. They now change without recompiling (OCP)</td></tr>
+  <tr><td>DI + Composition Root</td><td><code>FacilityAssembler</code></td><td>Global statics. Wiring lives in one place, so tests can build the system with a fixed seed</td></tr>
+  <tr><td>Producer-Consumer</td><td><code>QueuedControlDispatcher</code></td><td>Hand-written <code>wait/notify</code> that swallowed interrupts</td></tr>
+</table>
+<p><b>Not used, on purpose:</b> Singleton (the global statics were the original problem), Builder (records with 4-6 fields are already
+clear), Abstract Factory (there is no family of products, and the registry is simpler).</p>
+</section>
+
+</body>
+</html>

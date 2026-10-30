@@ -1,0 +1,82 @@
+@startuml class
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide empty members
+title Key abstractions (simplified)
+
+interface AlertRule <<Strategy>> {
+  +evaluate(SensorReading): Optional<Alert>
+}
+class CropThresholdRule
+class FacilityThresholdRule
+class SensorFailureRule
+AlertRule <|.. CropThresholdRule
+AlertRule <|.. FacilityThresholdRule
+AlertRule <|.. SensorFailureRule
+
+interface CropRegistry <<Registry>> {
+  +register(CropProfile)
+  +remove(name)
+  +find(name)
+}
+class InMemoryCropRegistry
+class "CropProfile <<record>>" as CropProfile
+CropRegistry <|.. InMemoryCropRegistry
+CropRegistry o-- CropProfile
+CropThresholdRule --> CropRegistry
+
+class AlertService <<Subject>> {
+  +raise(Alert)
+  +archiveActive(): int
+  +snapshot(): AlertSnapshot
+}
+interface AlertListener <<Observer>> {
+  +onAlert(Alert)
+}
+AlertService o-- AlertListener
+class DeviceResponder
+class ResourceAccountant
+class ChamberSummaryTracker
+class ConsoleEventPrinter
+AlertListener <|.. DeviceResponder
+AlertListener <|.. ResourceAccountant
+AlertListener <|.. ChamberSummaryTracker
+AlertListener <|.. ConsoleEventPrinter
+
+interface ControlDispatcher {
+  +request(chamber, device)
+}
+class QueuedControlDispatcher
+class ImmediateControlDispatcher
+ControlDispatcher <|.. QueuedControlDispatcher
+ControlDispatcher <|.. ImmediateControlDispatcher
+DeviceResponder --> ControlDispatcher
+
+interface ControlCommand <<Command>> {
+  +execute()
+}
+class "ActivateDeviceCommand <<record>>" as ActivateDeviceCommand
+ControlCommand <|.. ActivateDeviceCommand
+QueuedControlDispatcher ..> ActivateDeviceCommand : queues
+ActivateDeviceCommand --> DeviceController
+
+interface Device {
+  +name()
+  +activate(ChamberState): String
+}
+DeviceController --> Device
+Device <|.. CoolingFan
+Device <|.. WaterPump
+Device <|.. "...7 more"
+
+abstract class TemplateReport <<Template Method>> {
+  +generate(FacilitySnapshot) {final}
+  #title()
+  #addBody(...)
+}
+TemplateReport <|-- DailyReport
+TemplateReport <|-- ArchiveReport
+TemplateReport <|-- "4 optional reports"
+@enduml

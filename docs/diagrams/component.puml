@@ -1,0 +1,41 @@
+@startuml component
+!pragma layout smetana
+skinparam componentStyle rectangle
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam component {
+  BackgroundColor #F5F8FC
+  BorderColor #2F5D8A
+}
+title SVFRMS - high-level components
+
+component "app\n(Main, FacilityAssembler)\ncomposition root" as app #E3ECF7
+component "service\n(FacilitySimulation, ChamberTask,\nChamberMonitor, EndOfDayService)" as service
+component "sensor\n(SensorHub, SensorLog,\nRandomSensorSimulator)" as sensor
+component "alert\n(AlertRule strategies,\nAlertService, AlertArchiver)" as alert
+component "crop\n(CropProfile, CropRegistry,\nCropProfileLoader)" as crop
+component "device\n(Device x9, DeviceController,\nResponsePlan, DeviceResponder)" as device
+component "control\n(ControlCommand,\nQueued/Immediate dispatcher)" as control
+component "chamber\n(ChamberState, ChamberSummary\nand their stores)" as chamber
+component "report\n(TemplateReport x6,\nReportService, writers)" as report
+component "metrics\n(ResourceUsageTracker,\nResourceAccountant)" as metrics
+component "console\n(ConsoleEventPrinter,\nConsoleViews)" as console
+database "crops.properties\nfacility.properties\nchambers.properties" as cfg
+file "archive/daily_report.txt" as archive
+
+app --> service : runs
+app ..> cfg : loads
+service --> sensor : publishes readings
+sensor --> service : ChamberMonitor listens
+service --> alert : evaluates rules
+alert --> crop : thresholds
+alert --> console : notifies
+alert --> metrics : notifies
+alert --> device : notifies (DeviceResponder)
+device --> control : request(chamber, device)
+control --> device : command executes
+device --> chamber : adjusts state
+device --> console : notifies
+service --> report : end of day
+report --> archive : writes
+@enduml
