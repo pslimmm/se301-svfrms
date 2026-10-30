@@ -1,0 +1,36 @@
+===== DAILY REPORT =====
+Timestamp: <masked>
+Generated Alerts: 17
+Active Alerts: 0
+Water Usage: 195 L
+Energy Usage: 45 kWh
+Archived alerts: 17
+---
+Archived 17 alerts
+Daily Report
+--- chamber wise summary ---
+CH1 -> Alerts=7, Actions=6, Last Action=Nutrient Injector Activated, Last Alert=CH1 Low Nutrient Level
+CH2 -> Alerts=2, Actions=2, Last Action=Humidifier Activated, Last Alert=CH2 Strawberry Low Humidity
+CH3 -> Alerts=1, Actions=0, Last Action=No action, Last Alert=CH3 Lettuce Low Temp
+CH4 -> Alerts=2, Actions=1, Last Action=Cooling Fan Activated, Last Alert=CH4 Chili Low Temp
+CH5 -> Alerts=2, Actions=1, Last Action=Cooling Fan Activated, Last Alert=CH5 Spinach High Temp
+CH6 -> Alerts=2, Actions=1, Last Action=Cooling Fan Activated, Last Alert=CH6 Cucumber High Temp
+CH7 -> Alerts=1, Actions=1, Last Action=Grow Light Activated, Last Alert=CH7 Low Light Level
+--- archived alerts ---
+CH1 Tomato High Temp
+CH1 Tomato Low Temp
+CH1 Tomato High Humidity
+CH1 Tomato Low Humidity
+CH1 Tomato Low Soil Moisture
+CH1 Low Light Level
+CH1 Low Nutrient Level
+CH2 Strawberry High Humidity
+CH2 Strawberry Low Humidity
+CH3 Lettuce Low Temp
+CH5 Spinach Low Temp
+CH5 Spinach High Temp
+CH6 Cucumber Low Temp
+CH6 Cucumber High Temp
+CH4 Chili High Temp
+CH4 Chili Low Temp
+CH7 Low Light Level

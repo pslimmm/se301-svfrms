@@ -1,0 +1,66 @@
+[CH1][Tomato][ALERT] CH1 Tomato High Temp
+	[32m[CH1][CONTROL] Cooling Fan Activated[0m
+	[32m[CH1][CONTROL] Temperature reduced to 23.5C[0m
+[CH1][Tomato][ALERT] CH1 Tomato Low Temp
+[CH1][Tomato][ALERT] CH1 Tomato High Humidity
+	[32m[CH1][CONTROL] Dehumidifier Activated[0m
+	[32m[CH1][CONTROL] Humidity reduced to 71.0%[0m
+[CH1][Tomato][ALERT] CH1 Tomato Low Humidity
+	[32m[CH1][CONTROL] Humidifier Activated[0m
+	[32m[CH1][CONTROL] Humidity increased to 69.0%[0m
+[CH1][Tomato][ALERT] CH1 Tomato Low Soil Moisture
+	[32m[CH1][CONTROL] Water Pump Activated[0m
+	[32m[CH1][CONTROL] Soil moisture increased to 64.0%[0m
+[CH1][Tomato][ALERT] CH1 Low Light Level
+	[32m[CH1][CONTROL] Grow Light Activated[0m
+	[32m[CH1][CONTROL] Light level increased to 649.0 lux[0m
+[CH1][Tomato][ALERT] CH1 Low Nutrient Level
+	[32m[CH1][CONTROL] Nutrient Injector Activated[0m
+	[32m[CH1][CONTROL] Nutrient level increased to 54.0%[0m
+[CH2][Strawberry][ALERT] CH2 Strawberry High Humidity
+	[32m[CH2][CONTROL] Dehumidifier Activated[0m
+	[32m[CH2][CONTROL] Humidity reduced to 76.0%[0m
+[CH2][Strawberry][ALERT] CH2 Strawberry Low Humidity
+	[32m[CH2][CONTROL] Humidifier Activated[0m
+	[32m[CH2][CONTROL] Humidity increased to 79.0%[0m
+[CH3][Lettuce][ALERT] CH3 Lettuce Low Temp
+[CH5][Spinach][ALERT] CH5 Spinach Low Temp
+[CH5][Spinach][ALERT] CH5 Spinach High Temp
+	[32m[CH5][CONTROL] Cooling Fan Activated[0m
+	[32m[CH5][CONTROL] Temperature reduced to 18.0C[0m
+[CH6][Cucumber][ALERT] CH6 Cucumber Low Temp
+[CH6][Cucumber][ALERT] CH6 Cucumber High Temp
+	[32m[CH6][CONTROL] Cooling Fan Activated[0m
+	[32m[CH6][CONTROL] Temperature reduced to 23.0C[0m
+[CH4][Chili][ALERT] CH4 Chili High Temp
+	[32m[CH4][CONTROL] Cooling Fan Activated[0m
+	[32m[CH4][CONTROL] Temperature reduced to 28.0C[0m
+[CH4][Chili][ALERT] CH4 Chili Low Temp
+[CH7][Unknown Crop][ALERT] CH7 Low Light Level
+	[32m[CH7][CONTROL] Grow Light Activated[0m
+	[32m[CH7][CONTROL] Light level increased to 250.0 lux[0m
+CH1 Tomato High Temp
+CH1 Tomato Low Temp
+CH1 Tomato High Humidity
+CH1 Tomato Low Humidity
+CH1 Tomato Low Soil Moisture
+CH1 Low Light Level
+CH1 Low Nutrient Level
+CH2 Strawberry High Humidity
+CH2 Strawberry Low Humidity
+CH3 Lettuce Low Temp
+CH5 Spinach Low Temp
+CH5 Spinach High Temp
+CH6 Cucumber Low Temp
+CH6 Cucumber High Temp
+CH4 Chili High Temp
+CH4 Chili Low Temp
+CH7 Low Light Level
+Archiving alerts... 17 moved to archive.
+===== DAILY REPORT =====
+Generated Alerts: 17
+Active Alerts: 0
+Water Usage: 195 L
+Energy Usage: 45 kWh
+System finished sensor processing.
+Archive report saved to: <path>
