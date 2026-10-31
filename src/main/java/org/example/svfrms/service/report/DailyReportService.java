@@ -45,7 +45,7 @@ public final class DailyReportService extends AbstractReportGenerator {
         operations.lock();
         try {
             reportEntries.add(Objects.requireNonNull(entry, "entry"));
-        
+
         } finally { operations.unlock(); }
     }
 
@@ -59,7 +59,7 @@ public final class DailyReportService extends AbstractReportGenerator {
             output.accept("Active Alerts: " + alertSnapshot.activeAlerts().size());
             output.accept("Water Usage: " + resources.waterUsage() + " L");
             output.accept("Energy Usage: " + resources.energyUsage() + " kWh");
-        
+
         } finally { operations.unlock(); }
     }
 
@@ -75,7 +75,7 @@ public final class DailyReportService extends AbstractReportGenerator {
                 output.accept("Archiving alerts... " + archived.size() + " moved to archive.");
             }
             return archived;
-        
+
         } finally { operations.unlock(); }
     }
 
@@ -99,7 +99,7 @@ public final class DailyReportService extends AbstractReportGenerator {
             return new DailyReportSnapshot(clock.instant(), alertSnapshot.generatedAlertCount(),
                     alertSnapshot.activeAlerts().size(), resources.waterUsage(), resources.energyUsage(),
                     reportEntries, summarySnapshots, alertSnapshot.archivedAlerts());
-        
+
         } finally { operations.unlock(); }
     }
 }

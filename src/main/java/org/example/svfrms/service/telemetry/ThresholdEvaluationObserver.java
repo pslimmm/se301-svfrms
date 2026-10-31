@@ -1,12 +1,7 @@
 package org.example.svfrms.service.telemetry;
 
-import org.example.svfrms.command.CoolingFanCommand;
-import org.example.svfrms.command.DehumidifierCommand;
 import org.example.svfrms.command.DeviceCommand;
-import org.example.svfrms.command.GrowLightCommand;
-import org.example.svfrms.command.HumidifierCommand;
-import org.example.svfrms.command.NutrientInjectorCommand;
-import org.example.svfrms.command.WaterPumpCommand;
+import org.example.svfrms.command.DeviceCommandFactory;
 import org.example.svfrms.concurrency.ActuatorRequest;
 import org.example.svfrms.domain.actuator.ActuatorType;
 import org.example.svfrms.domain.chamber.ChamberId;
@@ -98,7 +93,7 @@ public final class ThresholdEvaluationObserver implements TelemetryObserver {
         if (mitigation.isEmpty()) {
             return;
         }
-        DeviceCommand command = commandFor(mitigation.get());
+        DeviceCommand command = DeviceCommandFactory.create(mitigation.get());
         try {
             boolean accepted = actuators.submit(new ActuatorRequest(reading.chamberId(), command), enqueueTimeout);
             if (!accepted) {
@@ -120,14 +115,4 @@ public final class ThresholdEvaluationObserver implements TelemetryObserver {
         });
     }
 
-    private static DeviceCommand commandFor(ActuatorType type) {
-        return switch (type) {
-            case COOLING_FAN -> new CoolingFanCommand();
-            case WATER_PUMP -> new WaterPumpCommand();
-            case NUTRIENT_INJECTOR -> new NutrientInjectorCommand();
-            case HUMIDIFIER -> new HumidifierCommand();
-            case DEHUMIDIFIER -> new DehumidifierCommand();
-            case GROW_LIGHT -> new GrowLightCommand();
-        };
-    }
 }

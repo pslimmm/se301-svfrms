@@ -41,7 +41,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.CopyOnWriteArrayList;
+import org.example.svfrms.service.telemetry.SensorLog;
+import org.example.svfrms.domain.actuator.ActuatorType;
 import java.util.function.Consumer;
 import java.util.random.RandomGenerator;
 import java.util.SplittableRandom;
@@ -64,7 +65,7 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
     private final AlertManagementService alerts;
     private final Map<ChamberId, ChamberStateTracker> chamberStates;
     private final Map<ChamberId, ChamberSummaryTracker> chamberSummaries;
-    private final CopyOnWriteArrayList<String> sensorLogs = new CopyOnWriteArrayList<>();
+    private final SensorLog sensorLogs = new SensorLog();
     private final TelemetryPublisher telemetry;
     private final ActuatorExecutionService actuatorService;
     private final DailyReportService reports;
@@ -104,7 +105,7 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
         BoundedControlQueue controlQueue = new BoundedControlQueue();
         actuatorService = new ActuatorExecutionService(controlQueue, chamberStates, chamberSummaries, output);
         telemetry = new TelemetryPublisher(failure -> { throw failure; });
-        telemetry.subscribe(new ConsoleLoggingObserver(sensorLogs::add, clock));
+        telemetry.subscribe(new ConsoleLoggingObserver(sensorLogs::append, clock));
         telemetry.subscribe(new ThresholdEvaluationObserver(cropRegistry,
                 new DefaultCropThresholdStrategy(cropRegistry, clock), alerts, actuatorService, resources,
                 chamberStates, chamberSummaries, Duration.ofSeconds(1), output));
@@ -175,7 +176,7 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
     public Map<ChamberId, ChamberSummarySnapshot> chamberSummaries() {
         return chamberSummaries.entrySet().stream().collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> e.getValue().snapshot()));
     }
-    public List<String> sensorLogs() { return List.copyOf(sensorLogs); }
+    public List<String> sensorLogs() { return sensorLogs.snapshot(); }
     public ActuatorExecutionService actuatorService() { return actuatorService; }
     /** Physical termination is separate from whether cleanup completed successfully. */
     public boolean isTerminated() {
@@ -241,19 +242,19 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
 
     private static DeviceCommand commandFor(String control) {
         return switch (control) {
-            case "Cooling Fan" -> new CoolingFanCommand();
-            case "Water Pump" -> new WaterPumpCommand();
-            case "Nutrient Injector" -> new NutrientInjectorCommand();
-            case "Humidifier" -> new HumidifierCommand();
-            case "Dehumidifier" -> new DehumidifierCommand();
-            case "Grow Light" -> new GrowLightCommand();
+            case "Cooling Fan" -> DeviceCommandFactory.create(ActuatorType.COOLING_FAN);
+            case "Water Pump" -> DeviceCommandFactory.create(ActuatorType.WATER_PUMP);
+            case "Nutrient Injector" -> DeviceCommandFactory.create(ActuatorType.NUTRIENT_INJECTOR);
+            case "Humidifier" -> DeviceCommandFactory.create(ActuatorType.HUMIDIFIER);
+            case "Dehumidifier" -> DeviceCommandFactory.create(ActuatorType.DEHUMIDIFIER);
+            case "Grow Light" -> DeviceCommandFactory.create(ActuatorType.GROW_LIGHT);
             default -> null;
         };
     }
 
     public void handleEvent(String type, String chamber, String crop, String message) {
         switch (type) {
-            case "LOG" -> sensorLogs.add(new java.util.Date(clock.millis()) + " : " + message);
+            case "LOG" -> sensorLogs.append(new java.util.Date(clock.millis()) + " : " + message);
             case "ALERT_LOG" -> output.accept("[" + chamber + "][" + crop + "][ALERT] " + message);
             case "CONTROL_LOG" -> output.accept("\t\u001B[32m[" + chamber + "][CONTROL] " + message + "\u001B[0m");
             case "CREATE_ALERT" -> {
