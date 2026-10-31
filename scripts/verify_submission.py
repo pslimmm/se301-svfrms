@@ -1,5 +1,6 @@
 """Verify the exact bundled bytes, execute its JAR and rebuild its extracted Maven source."""
 import argparse
+from datetime import datetime, timezone
 import hashlib
 import io
 import json
@@ -122,6 +123,9 @@ def main():
         suite=ET.parse(path).getroot()
         for key in totals:totals[key]+=int(suite.attrib.get(key,0))
     result=dict(technical_verification_passed=True,full_specification_compliance=False,
+                verified_at_utc=datetime.now(timezone.utc).isoformat(),
+                source_snapshot_commit=json.loads((source/'DELIVERY_STATUS.json').read_text())['source_snapshot_commit'],
+                jar_sha256=hashlib.sha256(jar_bytes).hexdigest(),docx_sha256=hashlib.sha256(report).hexdigest(),
                 zip_sha256=hashlib.sha256(args.zip.read_bytes()).hexdigest(),entries=len(names),runtime_classes=len(classes),
                 classfile_major=69,modules='java.base',tests=totals,default_report_alerts=generated,
                 crop_demo_alerts=3,handled_filesystem_error_preserved=True,report_body_pages=document_qa['body_pages'],

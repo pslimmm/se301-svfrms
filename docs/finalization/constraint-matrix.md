@@ -8,28 +8,28 @@ Status vocabulary: `PLANNED` = implementation/evidence needed; `PASS` = checked 
 
 | ID | Requirement / constraint | Source | Owning task(s) | Required evidence | Initial status |
 | --- | --- | --- | --- | --- | --- |
-| C01 | Enhance existing application; preserve behavior; no removed features or wholesale replacement | PDF pp. 6,8, §§4/Restrictions; AGENTS §1 | 1-9 | GPT ancestry; change/adoption ledger; independent original oracle unchanged; complete workflow tests | PLANNED |
-| C02 | Multiple logical source files and component packages, focused responsibilities | PDF p.6 §4.1; AGENTS §2 | 1,5,8,9 | Package/source inventory; SRP review with concrete before/after examples | PLANNED |
-| C03 | All five SOLID review points, with meaningful dependency/interface/substitution reasoning | PDF p.6 §4.2(i-v) | 2,5,6,8,9 | Report five-point mapping; focused interfaces; no fabricated inheritance violation | PLANNED |
-| C04 | Patterns justified by concrete problems; no unnecessary pattern scaffolding | PDF pp.6-7 §§4.3/5; AGENTS §5 | 5,8,9 | Actual Observer/Strategy/Command/Registry rationale; simple alternatives; code matches diagrams | PLANNED |
-| C05 | Identify and rectify races, synchronization and deadlock/liveness hazards | PDF p.6 §4.4; AGENTS §3 | 2-7,9 | Exact-count/state tests; deterministic queue/cancel/failure schedules; no unsupported AB-BA claim | PLANNED |
-| C06 | Guard mutable state, use standard concurrency primitives; no unsafe state exposed | AGENTS §3 | 2-7,9 | Ownership inventory; concurrent data/atomic transactions; copies; callbacks/I/O outside state locks | PLANNED |
-| C07 | Real graceful JVM shutdown hook stops producers and drains/stops workers | AGENTS §3 | 2,7,9 | Child JVM invokes production hook; admitted backlog positive; bounded close/termination evidence | PLANNED |
-| C08 | Add/remove crops with zero monitoring-engine/evaluation-loop changes | PDF p.6 §4.5; AGENTS §4 | 2,6,9 | Kale live demo; four extension-name tests; replacement/removal during evaluation; unchanged engine source | PLANNED |
-| C09 | Java 25 or later, Maven structure; no unauthorized application framework | PDF p.8 Development Environment; AGENTS §6 | 1,7,9 | JDK/Maven versions, release25 bytecode, pom/dependency inventory; no runtime test agent/framework | PLANNED |
-| C10 | Self-contained target/run.jar executable without IDE/classpath setup | PDF p.7 §5; AGENTS §6 | 1,9 | Literal required smoke; manifest; jdeps; extracted ZIP java -jar run.jar | PLANNED |
-| C11 | One ZIP with complete src/, Maven build inputs and run.jar | PDF p.7 §5 | 9 | Allowlisted ZIP inventory; checksums; clean extracted-source build; exact binary/source match | PLANNED |
+| C01 | Enhance existing application; preserve behavior; no removed features or wholesale replacement | PDF pp. 6,8, §§4/Restrictions; AGENTS §1 | 1-9 | GPT ancestry; change/adoption ledger; independent original oracle unchanged; complete workflow tests | PASS |
+| C02 | Multiple logical source files and component packages, focused responsibilities | PDF p.6 §4.1; AGENTS §2 | 1,5,8,9 | Package/source inventory; SRP review with concrete before/after examples | PASS |
+| C03 | All five SOLID review points, with meaningful dependency/interface/substitution reasoning | PDF p.6 §4.2(i-v) | 2,5,6,8,9 | Report five-point mapping; focused interfaces; no fabricated inheritance violation | PASS |
+| C04 | Patterns justified by concrete problems; no unnecessary pattern scaffolding | PDF pp.6-7 §§4.3/5; AGENTS §5 | 5,8,9 | Actual Observer/Strategy/Command/Registry rationale; simple alternatives; code matches diagrams | PASS |
+| C05 | Identify and rectify races, synchronization and deadlock/liveness hazards | PDF p.6 §4.4; AGENTS §3 | 2-7,9 | Exact-count/state tests; deterministic queue/cancel/failure schedules; no unsupported AB-BA claim | PASS |
+| C06 | Guard mutable state, use standard concurrency primitives; no unsafe state exposed | AGENTS §3 | 2-7,9 | Ownership inventory; concurrent data/atomic transactions; copies; callbacks/I/O outside state locks | PASS |
+| C07 | Real graceful JVM shutdown hook stops producers and drains/stops workers | AGENTS §3 | 2,7,9 | Child JVM invokes production hook; admitted backlog positive; bounded close/termination evidence | PASS |
+| C08 | Add/remove crops with zero monitoring-engine/evaluation-loop changes | PDF p.6 §4.5; AGENTS §4 | 2,6,9 | Kale live demo; four extension-name tests; replacement/removal during evaluation; unchanged engine source | PASS |
+| C09 | Java 25 or later, Maven structure; no unauthorized application framework | PDF p.8 Development Environment; AGENTS §6 | 1,7,9 | JDK/Maven versions, release25 bytecode, pom/dependency inventory; no runtime test agent/framework | PASS |
+| C10 | Self-contained target/run.jar executable without IDE/classpath setup | PDF p.7 §5; AGENTS §6 | 1,9 | Literal required smoke; manifest; jdeps; extracted ZIP java -jar run.jar | PASS |
+| C11 | One ZIP with complete src/, Maven build inputs and run.jar | PDF p.7 §5 | 9 | Allowlisted ZIP inventory; checksums; clean extracted-source build; exact binary/source match | PASS |
 | C12 | Specification names README.pdf with3-6 body pages excluding cover; user requests DOCX | PDF p.7 §5; later user format instruction | 8,9 | Deliver README.docx, check3-6 rendered body pages plus cover, disclose PDF-format deviation | USER-DIRECTED-FORMAT-DEVIATION |
 | C13 | Cover includes actual group number and all member names; no placeholders | PDF p.7 §5 | 8,9 | Group3 confirmed; member names deferred by user; editable DOCX fields may stay blank, final cover remains pending | HUMAN-PENDING |
-| C14 | Report explains legacy purpose, flaws with examples, proposed design, final architecture diagram, extension and pattern justification | PDF p.7 §5 | 8,9 | Section checklist plus legible component diagram; source links and correct lock analysis | PLANNED |
+| C14 | Report explains legacy purpose, flaws with examples, proposed design, final architecture diagram, extension and pattern justification | PDF p.7 §5 | 8,9 | Section checklist plus legible component diagram; source links and correct lock analysis | PASS |
 | C15 | Specification names report.pdf/README.pdf; user requests DOCX instead | PDF p.8 §6, p.7 §5; later user format instruction | 8,9 | Deliver identical report.docx/README.docx at root and in ZIP; no PDF deliverables | USER-DIRECTED-FORMAT-DEVIATION |
 | C16 | Five-minute presentation + two-minute demo; five specified topics | PDF pp.7-8 §5; AGENTS §7 | 6,8,9 | Rendered deck; timed script; executable crop and concurrency demo; human rehearsal record | HUMAN-PENDING |
 | C17 | Team maximum3, actual eLearn/group registration, one group submission before deadline | PDF pp.8-9 §§6/8 | 8,9 | Team confirmation; assignment deadline 1 Nov 2026 23:59 Asia/Singapore; actual upload is human action | HUMAN-PENDING |
 | C18 | Team understands/defends code and AI-assisted work; honor code | PDF p.9 §§9-10 | 8,9 | Class notes/Q&A; actual team review; no fabricated authorship/rehearsal/submission claims | HUMAN-PENDING |
-| C19 | Run mvn clean test, mvn package, java -jar target/run.jar | AGENTS Verification Workflow | Every code task,9 | Fresh exit codes/logs after last source change; smoke has bounded owned subprocess | PLANNED |
-| C20 | Exact new branch refactor/svfrms-modernization-FINALIZED | User request | 1,9 | git branch --show-current exact match; ancestry from reviewed GPT base; no overwrite of existing branch | PLANNED |
-| C21 | All four donor versions considered/tested | User request | 1,2,7,9 | Pinned four-branch baseline logs and finding-by-finding adopt/adapt/reject rationale | PLANNED |
-| C22 | Meaningful code branch coverage plus concurrency schedules | User request; engineering gate | 2-7,9 | JaCoCo HTML/XML/check; 90% line/85% branch total; 100% new/modified branch decisions; failure schedules | PLANNED |
+| C19 | Run mvn clean test, mvn package, java -jar target/run.jar | AGENTS Verification Workflow | Every code task,9 | Fresh exit codes/logs after last source change; smoke has bounded owned subprocess | PASS |
+| C20 | Exact new branch refactor/svfrms-modernization-FINALIZED | User request | 1,9 | git branch --show-current exact match; ancestry from reviewed GPT base; no overwrite of existing branch | PASS |
+| C21 | All four donor versions considered/tested | User request | 1,2,7,9 | Pinned four-branch baseline logs and finding-by-finding adopt/adapt/reject rationale | PASS |
+| C22 | Meaningful code branch coverage plus concurrency schedules | User request; engineering gate | 2-7,9 | JaCoCo HTML/XML/check; 90% line/85% branch total; 100% new/modified branch decisions; failure schedules | PASS |
 
 ## Section 3 discrepancies under the confirmed scope
 
@@ -37,13 +37,13 @@ Section 3 uses mandatory language but describes functionality missing from the s
 
 | ID | PDF requirement | Actual legacy/GPT state | Required disposition | Status |
 | --- | --- | --- | --- | --- |
-| S31 | p.3 §3.1 crop name and all stated range metadata; example crop ranges | Profiles store ranges; actual enabled legacy checks are asymmetric, unlike examples | Preserve enabled rules/costs; document metadata vs enforcement; verify every profile field | PLANNED |
-| S32 | p.4 §3.2 temperature/humidity/soil/light/nutrient sensing | All five present | Full oracle + five-sensor workflow tests | PLANNED |
-| S33a | p.4 §3.3 pump/fan/grow light/nutrient injector | Present, plus legacy humidity devices | Preserve all six actual controls and formulas | PLANNED |
+| S31 | p.3 §3.1 crop name and all stated range metadata; example crop ranges | Profiles store ranges; actual enabled legacy checks are asymmetric, unlike examples | Preserve enabled rules/costs; document metadata vs enforcement; verify every profile field | PASS |
+| S32 | p.4 §3.2 temperature/humidity/soil/light/nutrient sensing | All five present | Full oracle + five-sensor workflow tests | PASS |
+| S33a | p.4 §3.3 pump/fan/grow light/nutrient injector | Present, plus legacy humidity devices | Preserve all six actual controls and formulas | PASS |
 | S33b | p.4 §3.3 Heating Unit/Ventilation System/Shade Controller | Absent in original/GPT | Disclose missing devices under the user-confirmed preservation scope; no invented default controls | DOCUMENTED-GAP |
-| S34a | p.5 §3.4 temperature/humidity/low-soil/nutrient alerts | Present for original applicable crops | Preserve strict boundaries and intentionally absent rules | PLANNED |
+| S34a | p.5 §3.4 temperature/humidity/low-soil/nutrient alerts | Present for original applicable crops | Preserve strict boundaries and intentionally absent rules | PASS |
 | S34b | p.5 §3.4 sensor failure + INFO/WARNING/CRITICAL semantics | Severity data exists, full described policy absent; NaN/infinities have legacy semantics | Disclose missing policy; preserve raw-value semantics as the user requested | DOCUMENTED-GAP |
-| S35a | p.5 §3.5 daily environmental report | Present | Exact text/order/UTF-8/timestamp normalization/error oracle | PLANNED |
+| S35a | p.5 §3.5 daily environmental report | Present | Exact text/order/UTF-8/timestamp normalization/error oracle | PASS |
 | S35b | p.5 §3.5 weekly crop/water/energy/nutrient reports | Separate report types absent; resource totals available | Disclose missing report types; do not mislabel current-run counts or nutrient quantities | DOCUMENTED-GAP |
 
 ## Release evidence rules

@@ -52,7 +52,7 @@ The capacity-five control queue has explicit admission, completion and closing s
 
 ### Two reproduced defects repaired
 
-**Whole report publication:** formerly, two saves could truncate and stream into the same file, producing a hybrid. Each save now writes and closes a unique sibling temporary file before replacing the target. Atomic replacement is preferred; unsupported atomic move uses a documented provider-dependent replacement fallback. Preparation failure preserves the previous report; cleanup failure does not hide the primary error. This is not a promise of crash durability or arbitrary filesystem behavior.
+**Whole report publication:** formerly, two saves could truncate and stream into the same file, producing a hybrid. Each save now writes and closes a unique sibling temporary file before replacing the target. Atomic replacement is preferred. Without atomic move support, publication creates only a new destination; an existing report is preserved with a visible save error. Non-atomic overwrite can delete the old file before a later failure, so it is refused. Cleanup failure does not hide the primary error. Crash durability is not promised.
 
 **Report operation grouping:** formerly, archive text could split a daily report block. A dedicated reentrant report-operation lock now groups report output/history and snapshot extraction. Alert/state locks are released before output callbacks. Disk I/O occurs after extraction and outside this presentation lock. Tests gate callbacks and storage to prove state progress, getter reentrancy and independent file-save progress.
 

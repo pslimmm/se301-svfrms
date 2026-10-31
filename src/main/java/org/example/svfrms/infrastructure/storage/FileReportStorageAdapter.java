@@ -40,8 +40,8 @@ public final class FileReportStorageAdapter implements ReportStoragePort {
             try {
                 files.replace(temporary, target, true);
             } catch (AtomicMoveNotSupportedException unsupported) {
-                // Same-directory replacement still publishes a closed file. Crash-atomicity is
-                // provider-dependent when atomic moves are unavailable; no durability is claimed.
+                // Never request non-atomic replacement: providers may delete the old target
+                // before a later move failure. Create only; an existing target fails visibly.
                 files.replace(temporary, target, false);
             }
         } catch (IOException | RuntimeException | Error failure) {
@@ -77,7 +77,7 @@ public final class FileReportStorageAdapter implements ReportStoragePort {
         }
         public void replace(Path temporary, Path target, boolean atomic) throws IOException {
             if (atomic) Files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
-            else Files.move(temporary, target, StandardCopyOption.REPLACE_EXISTING);
+            else Files.move(temporary, target);
         }
         public void deleteIfExists(Path file) throws IOException { Files.deleteIfExists(file); }
     }

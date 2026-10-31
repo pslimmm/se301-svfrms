@@ -1,0 +1,16 @@
+{
+  "clean-test": 0,
+  "package": 0,
+  "smoke": 0,
+  "suite": {
+    "tests": 280,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "java": "25.0.4",
+  "maven": "3.9.11",
+  "branch": "refactor/svfrms-modernization-FINALIZED",
+  "packaging_tool_tests": 5,
+  "review_regression": "Unsupported atomic overwrite assertion observed RED, then GREEN"
+}

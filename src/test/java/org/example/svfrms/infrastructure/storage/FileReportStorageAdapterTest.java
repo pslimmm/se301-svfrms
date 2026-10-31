@@ -75,10 +75,12 @@ class FileReportStorageAdapterTest {
     }
 
     @Test
-    void unsupportedAtomicMoveUsesReplacementFallback() throws Exception {
+    void unsupportedAtomicMoveCreatesNewReportButPreservesExistingReport() throws Exception {
         Path target = directory.resolve("fallback.txt");
-        Files.write(target, List.of("old"));
         new FileReportStorageAdapter(target, operations(true, null, null)).writeLines(List.of("new complete"));
+        assertThat(Files.readAllLines(target)).containsExactly("new complete");
+        assertThatThrownBy(() -> new FileReportStorageAdapter(target, operations(true, null, null))
+                .writeLines(List.of("replacement"))).isInstanceOf(java.nio.file.FileAlreadyExistsException.class);
         assertThat(Files.readAllLines(target)).containsExactly("new complete");
         try (var files = Files.list(directory)) { assertThat(files.count()).isEqualTo(1); }
     }

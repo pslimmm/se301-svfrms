@@ -1,6 +1,6 @@
 # SVFRMS FINALIZED consolidation design
 
-Status: approved for execution; implementation is in progress. Requested output branch: **`refactor/svfrms-modernization-FINALIZED`**, with that exact spelling and capitalization. Planning date: 31 October 2026, Asia/Singapore.
+Status: implemented and technically verified; disclosed human/format/scope obligations remain. Requested output branch: **`refactor/svfrms-modernization-FINALIZED`**, with that exact spelling and capitalization. Planning date: 31 October 2026, Asia/Singapore.
 
 ## Intent and acceptance boundary
 
@@ -32,7 +32,7 @@ Retain `org.example.SVFRMS` as the small facade and keep the existing `org.examp
 
 Three narrowly scoped improvements:
 
-- **Complete-file persistence:** `FileReportStorageAdapter.writeLines(List<String>)` writes UTF-8 into a unique sibling temporary file, closes it, and replaces the target. Prefer atomic replacement; only an unsupported-atomic-move result uses the documented replacement fallback. Propagate real write/move failures; clean temporary files; retain the previous report when preparation fails. Public storage/facade contracts remain unchanged. A package-private file-operation seam supports deterministic failure tests without a framework.
+- **Complete-file persistence:** `FileReportStorageAdapter.writeLines(List<String>)` writes UTF-8 into a unique sibling temporary file, closes it, and replaces the target. Prefer atomic replacement; only an unsupported-atomic-move result uses a create-only fallback without replacement; an existing target is preserved and the error remains visible. Propagate real write/move failures; clean temporary files; retain the previous report when preparation fails. Public storage/facade contracts remain unchanged. A package-private file-operation seam supports deterministic failure tests without a framework.
 - **Report operation grouping:** a dedicated reentrant report-operation lock coordinates daily output, archive notification/history and report-metadata extraction. It is separate from farm/alert/actuator locks. Snapshot state briefly, release state locks before callbacks, and never hold the report lock during worker joins or disk I/O. Concurrent calls cannot split the daily block with archive text; callbacks performing state inspection remain safe. Arbitrary callbacks that wait for another report operation are not supported and must be documented.
 - **Small maintainability improvements:** share the duplicated six-device construction mapping via `DeviceCommandFactory.create(ActuatorType)` and replace the write-heavy sensor-log CopyOnWriteArrayList with an owned append/snapshot component. Do not simultaneously redesign lifecycle or introduce a whole-farm lock.
 
