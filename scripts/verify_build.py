@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import subprocess
 import xml.etree.ElementTree as ET
+from process_tools import run, maven
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -17,11 +18,10 @@ def main():
     logs = ROOT / '.superpowers/sdd/2026-10-31-svfrms-finalized' / args.label
     logs.mkdir(parents=True, exist_ok=True)
     outcomes = {}
-    for name, command in [('clean-test', ['cmd.exe', '/d', '/c', 'mvn', 'clean', 'test']),
-                          ('package', ['cmd.exe', '/d', '/c', 'mvn', 'package']),
+    for name, command in [('clean-test', maven('clean', 'test')),
+                          ('package', maven('package')),
                           ('smoke', ['java', '-jar', 'target/run.jar'])]:
-        result = subprocess.run(command, cwd=ROOT, capture_output=True, timeout=180 if name != 'smoke' else 30)
-        (logs / (name + '.log')).write_bytes(result.stdout + b'\nSTDERR:\n' + result.stderr)
+        result = run(command, ROOT, logs / (name + '.log'), 180 if name != 'smoke' else 30)
         outcomes[name] = result.returncode
         if result.returncode:
             print(result.stdout.decode('utf-8', errors='replace')[-3500:])

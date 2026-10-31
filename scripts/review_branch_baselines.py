@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 from zipfile import ZipFile
+from process_tools import run, maven
 
 ROOT = Path(__file__).resolve().parents[1]
 PINS = {
@@ -18,11 +19,9 @@ PINS = {
 
 def command(args, cwd, log, timeout=180):
     try:
-        result = subprocess.run(args, cwd=cwd, capture_output=True, timeout=timeout)
-        log.write_bytes(result.stdout + b'\nSTDERR:\n' + result.stderr)
+        result = run(args, cwd, log, timeout)
         return result.returncode
-    except subprocess.TimeoutExpired as failure:
-        log.write_bytes((failure.stdout or b'') + (failure.stderr or b'') + b'\nTIMED OUT\n')
+    except RuntimeError:
         return 124
 
 
@@ -37,7 +36,7 @@ def review(item, destination):
         bundle.extractall(source)
     results = {'name': name, 'commit': sha}
     for label, args in [('clean_test', ['clean', 'test']), ('package', ['package'])]:
-        results[label] = command(['cmd.exe', '/d', '/c', 'mvn', *args], source, directory / (label + '.log'))
+        results[label] = command(maven(*args), source, directory / (label + '.log'))
     results['required_smoke'] = command(['java', '-jar', 'target/run.jar'], source, directory / 'smoke.log', 30)
     if not (source / 'target/run.jar').exists() and (source / 'target/svfrms-1.0.0.jar').exists():
         results['alternate_smoke'] = command(['java', '-jar', 'target/svfrms-1.0.0.jar'], source, directory / 'alternate-smoke.log', 30)
