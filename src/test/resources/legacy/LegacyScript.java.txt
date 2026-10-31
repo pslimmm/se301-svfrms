@@ -1,0 +1,82 @@
+package org.example;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.TreeSet;
+
+/** Test driver only: calls the unmodified original in one deterministic thread. */
+public final class LegacyScript {
+    public static void main(String[] args) throws Exception {
+        Files.writeString(Path.of("origin.txt"),
+                SVFRMS.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm());
+        ArrayList<String> observations = new ArrayList<>();
+        int index = 0;
+        for (String line : Files.readAllLines(Path.of("script.tsv"), StandardCharsets.UTF_8)) {
+            if (line.isBlank() || line.startsWith("#")) continue;
+            String[] fields = line.split("\t", -1);
+            switch (fields[0]) {
+                case "INIT" -> {
+                    SVFRMS.getChamberState(fields[1]);
+                    SVFRMS.getChamberSummary(fields[1]);
+                }
+                case "READ" -> {
+                    SVFRMS.processSensor(fields[1], fields[2], fields[3], Double.parseDouble(fields[4]));
+                    // Exactly the legacy worker's dequeue/activate behavior, with explicit ordering.
+                    while (!SVFRMS.controlQueue.isEmpty()) {
+                        String[] command = SVFRMS.controlQueue.remove(0).split("\\|", -1);
+                        SVFRMS.activateControl(command[0], command[1]);
+                    }
+                }
+                case "CONTROL" -> SVFRMS.activateControl(fields[1], fields[3]);
+                case "IRRIGATE" -> SVFRMS.irrigationCycle();
+                case "FEED" -> SVFRMS.feedingCycle();
+                case "SIMULATE" -> {
+                    int[] readings = java.util.Arrays.stream(fields[4].split(",")).mapToInt(Integer::parseInt).toArray();
+                    int[] offsets = {10, 40, 20, 300, 20};
+                    SVFRMS.random = new java.util.Random(0) {
+                        int next;
+                        @Override public int nextInt(int bound) {
+                            int sensor = next++ % 5;
+                            int value = readings[sensor] - offsets[sensor];
+                            if (value < 0 || value >= bound) throw new AssertionError("Invalid deterministic reading");
+                            return value;
+                        }
+                    };
+                    // Exercise all twenty actual legacy iterations. Values are in-range for this crop,
+                    // so no controls are queued and no scheduling policy is needed inside the run.
+                    new SVFRMS.ChamberThread(fields[1], fields[2]).run();
+                    if (!SVFRMS.controlQueue.isEmpty()) throw new AssertionError("Simulation fixture queued control");
+                }
+                case "REPORT" -> SVFRMS.generateDailyReport();
+                case "ARCHIVE" -> SVFRMS.archiveAlerts();
+                case "SHOW_ALERTS" -> SVFRMS.showAlerts();
+                case "SHOW_LOGS" -> SVFRMS.showLogs();
+                case "SAVE" -> SVFRMS.saveArchiveReport();
+                default -> throw new IllegalArgumentException("Unknown script operation: " + fields[0]);
+            }
+            String prefix = String.format(java.util.Locale.ROOT, "%03d", index++) + "\t";
+            observations.add(prefix + "STEP\t" + line);
+            observations.add(prefix + "COUNTERS\t" + SVFRMS.totalWaterUsage + "\t" + SVFRMS.totalEnergyUsage
+                    + "\t" + SVFRMS.totalAlerts + "\t" + SVFRMS.totalAlertsGenerated
+                    + "\t" + SVFRMS.archivedAlerts.size() + "\t" + SVFRMS.sensorLogs.size()
+                    + "\t" + SVFRMS.controlQueue.size());
+            for (String chamber : new TreeSet<>(SVFRMS.chamberStates.keySet())) {
+                SVFRMS.ChamberState state = SVFRMS.chamberStates.get(chamber);
+                observations.add(prefix + "STATE\t" + chamber + "\t" + state.temperature + "\t" + state.humidity
+                        + "\t" + state.soilMoisture + "\t" + state.lightLevel + "\t" + state.nutrientLevel);
+            }
+            for (String chamber : new TreeSet<>(SVFRMS.chamberSummaries.keySet())) {
+                SVFRMS.ChamberSummary summary = SVFRMS.chamberSummaries.get(chamber);
+                observations.add(prefix + "SUMMARY\t" + chamber + "\t" + summary.alerts + "\t"
+                        + summary.mitigationActions + "\t" + summary.lastAction + "\t" + summary.lastAlert);
+            }
+            for (String alert : SVFRMS.alerts) observations.add(prefix + "ACTIVE\t" + alert);
+            for (String alert : SVFRMS.archivedAlerts) observations.add(prefix + "ARCHIVED\t" + alert);
+            for (String report : SVFRMS.reports) observations.add(prefix + "REPORT_ENTRY\t" + report);
+        }
+        Files.write(Path.of("observations.tsv"), observations, StandardCharsets.UTF_8);
+        Files.write(Path.of("sensor-logs.txt"), SVFRMS.sensorLogs, StandardCharsets.UTF_8);
+    }
+}

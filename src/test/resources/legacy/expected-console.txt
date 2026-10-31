@@ -1,0 +1,874 @@
+Archiving alerts... no active alerts to archive.
+[Tomato][Tomato][ALERT] Tomato Tomato Low Temp
+[Tomato][Tomato][ALERT] Tomato Tomato High Temp
+	[32m[Tomato][CONTROL] Cooling Fan Activated[0m
+	[32m[Tomato][CONTROL] Temperature reduced to 24.0C[0m
+[Tomato][Tomato][ALERT] Tomato Tomato Low Humidity
+	[32m[Tomato][CONTROL] Humidifier Activated[0m
+	[32m[Tomato][CONTROL] Humidity increased to 69.0%[0m
+[Tomato][Tomato][ALERT] Tomato Tomato High Humidity
+	[32m[Tomato][CONTROL] Dehumidifier Activated[0m
+	[32m[Tomato][CONTROL] Humidity reduced to 71.0%[0m
+[Tomato][Tomato][ALERT] Tomato Tomato Low Soil Moisture
+	[32m[Tomato][CONTROL] Water Pump Activated[0m
+	[32m[Tomato][CONTROL] Soil moisture increased to 64.0%[0m
+[Tomato][Tomato][ALERT] Tomato Low Light Level
+	[32m[Tomato][CONTROL] Grow Light Activated[0m
+	[32m[Tomato][CONTROL] Light level increased to 649.0 lux[0m
+[Tomato][Tomato][ALERT] Tomato Low Nutrient Level
+	[32m[Tomato][CONTROL] Nutrient Injector Activated[0m
+	[32m[Tomato][CONTROL] Nutrient level increased to 54.0%[0m
+[Strawberry][Strawberry][ALERT] Strawberry Strawberry Low Temp
+[Strawberry][Strawberry][ALERT] Strawberry Strawberry High Temp
+	[32m[Strawberry][CONTROL] Cooling Fan Activated[0m
+	[32m[Strawberry][CONTROL] Temperature reduced to 20.0C[0m
+[Strawberry][Strawberry][ALERT] Strawberry Strawberry Low Humidity
+	[32m[Strawberry][CONTROL] Humidifier Activated[0m
+	[32m[Strawberry][CONTROL] Humidity increased to 79.0%[0m
+[Strawberry][Strawberry][ALERT] Strawberry Strawberry High Humidity
+	[32m[Strawberry][CONTROL] Dehumidifier Activated[0m
+	[32m[Strawberry][CONTROL] Humidity reduced to 76.0%[0m
+[Strawberry][Strawberry][ALERT] Strawberry Low Light Level
+	[32m[Strawberry][CONTROL] Grow Light Activated[0m
+	[32m[Strawberry][CONTROL] Light level increased to 649.0 lux[0m
+[Strawberry][Strawberry][ALERT] Strawberry Low Nutrient Level
+	[32m[Strawberry][CONTROL] Nutrient Injector Activated[0m
+	[32m[Strawberry][CONTROL] Nutrient level increased to 54.0%[0m
+[Lettuce][Lettuce][ALERT] Lettuce Lettuce Low Temp
+[Lettuce][Lettuce][ALERT] Lettuce Lettuce High Temp
+	[32m[Lettuce][CONTROL] Cooling Fan Activated[0m
+	[32m[Lettuce][CONTROL] Temperature reduced to 18.0C[0m
+[Lettuce][Lettuce][ALERT] Lettuce Low Light Level
+	[32m[Lettuce][CONTROL] Grow Light Activated[0m
+	[32m[Lettuce][CONTROL] Light level increased to 649.0 lux[0m
+[Lettuce][Lettuce][ALERT] Lettuce Low Nutrient Level
+	[32m[Lettuce][CONTROL] Nutrient Injector Activated[0m
+	[32m[Lettuce][CONTROL] Nutrient level increased to 54.0%[0m
+[Spinach][Spinach][ALERT] Spinach Spinach Low Temp
+[Spinach][Spinach][ALERT] Spinach Spinach High Temp
+	[32m[Spinach][CONTROL] Cooling Fan Activated[0m
+	[32m[Spinach][CONTROL] Temperature reduced to 18.0C[0m
+[Spinach][Spinach][ALERT] Spinach Low Light Level
+	[32m[Spinach][CONTROL] Grow Light Activated[0m
+	[32m[Spinach][CONTROL] Light level increased to 649.0 lux[0m
+[Spinach][Spinach][ALERT] Spinach Low Nutrient Level
+	[32m[Spinach][CONTROL] Nutrient Injector Activated[0m
+	[32m[Spinach][CONTROL] Nutrient level increased to 54.0%[0m
+[Chili][Chili][ALERT] Chili Chili Low Temp
+[Chili][Chili][ALERT] Chili Chili High Temp
+	[32m[Chili][CONTROL] Cooling Fan Activated[0m
+	[32m[Chili][CONTROL] Temperature reduced to 28.0C[0m
+[Chili][Chili][ALERT] Chili Low Light Level
+	[32m[Chili][CONTROL] Grow Light Activated[0m
+	[32m[Chili][CONTROL] Light level increased to 649.0 lux[0m
+[Chili][Chili][ALERT] Chili Low Nutrient Level
+	[32m[Chili][CONTROL] Nutrient Injector Activated[0m
+	[32m[Chili][CONTROL] Nutrient level increased to 54.0%[0m
+[Cucumber][Cucumber][ALERT] Cucumber Cucumber Low Temp
+[Cucumber][Cucumber][ALERT] Cucumber Cucumber High Temp
+	[32m[Cucumber][CONTROL] Cooling Fan Activated[0m
+	[32m[Cucumber][CONTROL] Temperature reduced to 23.0C[0m
+[Cucumber][Cucumber][ALERT] Cucumber Low Light Level
+	[32m[Cucumber][CONTROL] Grow Light Activated[0m
+	[32m[Cucumber][CONTROL] Light level increased to 649.0 lux[0m
+[Cucumber][Cucumber][ALERT] Cucumber Low Nutrient Level
+	[32m[Cucumber][CONTROL] Nutrient Injector Activated[0m
+	[32m[Cucumber][CONTROL] Nutrient level increased to 54.0%[0m
+[Unknown][Unknown][ALERT] Unknown Low Light Level
+	[32m[Unknown][CONTROL] Grow Light Activated[0m
+	[32m[Unknown][CONTROL] Light level increased to 149.0 lux[0m
+[Unknown][Unknown][ALERT] Unknown Low Nutrient Level
+	[32m[Unknown][CONTROL] Nutrient Injector Activated[0m
+	[32m[Unknown][CONTROL] Nutrient level increased to 14.0%[0m
+[tomato][tomato][ALERT] tomato Low Light Level
+	[32m[tomato][CONTROL] Grow Light Activated[0m
+	[32m[tomato][CONTROL] Light level increased to 149.0 lux[0m
+[tomato][tomato][ALERT] tomato Low Nutrient Level
+	[32m[tomato][CONTROL] Nutrient Injector Activated[0m
+	[32m[tomato][CONTROL] Nutrient level increased to 14.0%[0m
+[Removed][Removed][ALERT] Removed Low Light Level
+	[32m[Removed][CONTROL] Grow Light Activated[0m
+	[32m[Removed][CONTROL] Light level increased to 149.0 lux[0m
+[Removed][Removed][ALERT] Removed Low Nutrient Level
+	[32m[Removed][CONTROL] Nutrient Injector Activated[0m
+	[32m[Removed][CONTROL] Nutrient level increased to 14.0%[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato Low Temp
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato High Temp
+	[32m[NUMERIC][CONTROL] Cooling Fan Activated[0m
+	[32m[NUMERIC][CONTROL] Temperature reduced to InfinityC[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato Low Temp
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato Low Temp
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato Low Humidity
+	[32m[NUMERIC][CONTROL] Humidifier Activated[0m
+	[32m[NUMERIC][CONTROL] Humidity increased to 9.0%[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato High Humidity
+	[32m[NUMERIC][CONTROL] Dehumidifier Activated[0m
+	[32m[NUMERIC][CONTROL] Humidity reduced to Infinity%[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato Low Humidity
+	[32m[NUMERIC][CONTROL] Humidifier Activated[0m
+	[32m[NUMERIC][CONTROL] Humidity increased to -Infinity%[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato Low Humidity
+	[32m[NUMERIC][CONTROL] Humidifier Activated[0m
+	[32m[NUMERIC][CONTROL] Humidity increased to 10.0%[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato Low Soil Moisture
+	[32m[NUMERIC][CONTROL] Water Pump Activated[0m
+	[32m[NUMERIC][CONTROL] Soil moisture increased to 19.0%[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato Low Soil Moisture
+	[32m[NUMERIC][CONTROL] Water Pump Activated[0m
+	[32m[NUMERIC][CONTROL] Soil moisture increased to -Infinity%[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Tomato Low Soil Moisture
+	[32m[NUMERIC][CONTROL] Water Pump Activated[0m
+	[32m[NUMERIC][CONTROL] Soil moisture increased to 20.0%[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Low Light Level
+	[32m[NUMERIC][CONTROL] Grow Light Activated[0m
+	[32m[NUMERIC][CONTROL] Light level increased to 149.0 lux[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Low Light Level
+	[32m[NUMERIC][CONTROL] Grow Light Activated[0m
+	[32m[NUMERIC][CONTROL] Light level increased to -Infinity lux[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Low Light Level
+	[32m[NUMERIC][CONTROL] Grow Light Activated[0m
+	[32m[NUMERIC][CONTROL] Light level increased to 150.0 lux[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Low Nutrient Level
+	[32m[NUMERIC][CONTROL] Nutrient Injector Activated[0m
+	[32m[NUMERIC][CONTROL] Nutrient level increased to 14.0%[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Low Nutrient Level
+	[32m[NUMERIC][CONTROL] Nutrient Injector Activated[0m
+	[32m[NUMERIC][CONTROL] Nutrient level increased to -Infinity%[0m
+[NUMERIC][Tomato][ALERT] NUMERIC Low Nutrient Level
+	[32m[NUMERIC][CONTROL] Nutrient Injector Activated[0m
+	[32m[NUMERIC][CONTROL] Nutrient level increased to 15.0%[0m
+	[32m[DIRECT][CONTROL] Cooling Fan Activated[0m
+	[32m[DIRECT][CONTROL] Temperature reduced to 19.0C[0m
+	[32m[DIRECT][CONTROL] Cooling Fan Activated[0m
+	[32m[DIRECT][CONTROL] Temperature reduced to 18.0C[0m
+	[32m[DIRECT][CONTROL] Cooling Fan Activated[0m
+	[32m[DIRECT][CONTROL] Temperature reduced to 18.0C[0m
+	[32m[DIRECT][CONTROL] Cooling Fan Activated[0m
+	[32m[DIRECT][CONTROL] Temperature reduced to 18.0C[0m
+	[32m[DIRECT][CONTROL] Cooling Fan Activated[0m
+	[32m[DIRECT][CONTROL] Temperature reduced to 18.0C[0m
+	[32m[DIRECT][CONTROL] Cooling Fan Activated[0m
+	[32m[DIRECT][CONTROL] Temperature reduced to 18.0C[0m
+	[32m[DIRECT][CONTROL] Cooling Fan Activated[0m
+	[32m[DIRECT][CONTROL] Temperature reduced to 18.0C[0m
+	[32m[DIRECT][CONTROL] Cooling Fan Activated[0m
+	[32m[DIRECT][CONTROL] Temperature reduced to 18.0C[0m
+	[32m[DIRECT][CONTROL] Cooling Fan Activated[0m
+	[32m[DIRECT][CONTROL] Temperature reduced to 18.0C[0m
+	[32m[DIRECT][CONTROL] Cooling Fan Activated[0m
+	[32m[DIRECT][CONTROL] Temperature reduced to 18.0C[0m
+	[32m[DIRECT][CONTROL] Water Pump Activated[0m
+	[32m[DIRECT][CONTROL] Soil moisture increased to 80.0%[0m
+	[32m[DIRECT][CONTROL] Water Pump Activated[0m
+	[32m[DIRECT][CONTROL] Soil moisture increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Water Pump Activated[0m
+	[32m[DIRECT][CONTROL] Soil moisture increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Water Pump Activated[0m
+	[32m[DIRECT][CONTROL] Soil moisture increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Water Pump Activated[0m
+	[32m[DIRECT][CONTROL] Soil moisture increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Water Pump Activated[0m
+	[32m[DIRECT][CONTROL] Soil moisture increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Water Pump Activated[0m
+	[32m[DIRECT][CONTROL] Soil moisture increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Water Pump Activated[0m
+	[32m[DIRECT][CONTROL] Soil moisture increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Water Pump Activated[0m
+	[32m[DIRECT][CONTROL] Soil moisture increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Water Pump Activated[0m
+	[32m[DIRECT][CONTROL] Soil moisture increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Nutrient Injector Activated[0m
+	[32m[DIRECT][CONTROL] Nutrient level increased to 85.0%[0m
+	[32m[DIRECT][CONTROL] Nutrient Injector Activated[0m
+	[32m[DIRECT][CONTROL] Nutrient level increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Nutrient Injector Activated[0m
+	[32m[DIRECT][CONTROL] Nutrient level increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Nutrient Injector Activated[0m
+	[32m[DIRECT][CONTROL] Nutrient level increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Nutrient Injector Activated[0m
+	[32m[DIRECT][CONTROL] Nutrient level increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Nutrient Injector Activated[0m
+	[32m[DIRECT][CONTROL] Nutrient level increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Nutrient Injector Activated[0m
+	[32m[DIRECT][CONTROL] Nutrient level increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Nutrient Injector Activated[0m
+	[32m[DIRECT][CONTROL] Nutrient level increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Nutrient Injector Activated[0m
+	[32m[DIRECT][CONTROL] Nutrient level increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Nutrient Injector Activated[0m
+	[32m[DIRECT][CONTROL] Nutrient level increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Humidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity increased to 80.0%[0m
+	[32m[DIRECT][CONTROL] Humidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity increased to 90.0%[0m
+	[32m[DIRECT][CONTROL] Humidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Humidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Humidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Humidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Humidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Humidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Humidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Humidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity increased to 100.0%[0m
+	[32m[DIRECT][CONTROL] Dehumidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity reduced to 90.0%[0m
+	[32m[DIRECT][CONTROL] Dehumidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity reduced to 80.0%[0m
+	[32m[DIRECT][CONTROL] Dehumidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity reduced to 70.0%[0m
+	[32m[DIRECT][CONTROL] Dehumidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity reduced to 60.0%[0m
+	[32m[DIRECT][CONTROL] Dehumidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity reduced to 50.0%[0m
+	[32m[DIRECT][CONTROL] Dehumidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity reduced to 40.0%[0m
+	[32m[DIRECT][CONTROL] Dehumidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity reduced to 30.0%[0m
+	[32m[DIRECT][CONTROL] Dehumidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity reduced to 30.0%[0m
+	[32m[DIRECT][CONTROL] Dehumidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity reduced to 30.0%[0m
+	[32m[DIRECT][CONTROL] Dehumidifier Activated[0m
+	[32m[DIRECT][CONTROL] Humidity reduced to 30.0%[0m
+	[32m[DIRECT][CONTROL] Grow Light Activated[0m
+	[32m[DIRECT][CONTROL] Light level increased to 750.0 lux[0m
+	[32m[DIRECT][CONTROL] Grow Light Activated[0m
+	[32m[DIRECT][CONTROL] Light level increased to 900.0 lux[0m
+	[32m[DIRECT][CONTROL] Grow Light Activated[0m
+	[32m[DIRECT][CONTROL] Light level increased to 1000.0 lux[0m
+	[32m[DIRECT][CONTROL] Grow Light Activated[0m
+	[32m[DIRECT][CONTROL] Light level increased to 1000.0 lux[0m
+	[32m[DIRECT][CONTROL] Grow Light Activated[0m
+	[32m[DIRECT][CONTROL] Light level increased to 1000.0 lux[0m
+	[32m[DIRECT][CONTROL] Grow Light Activated[0m
+	[32m[DIRECT][CONTROL] Light level increased to 1000.0 lux[0m
+	[32m[DIRECT][CONTROL] Grow Light Activated[0m
+	[32m[DIRECT][CONTROL] Light level increased to 1000.0 lux[0m
+	[32m[DIRECT][CONTROL] Grow Light Activated[0m
+	[32m[DIRECT][CONTROL] Light level increased to 1000.0 lux[0m
+	[32m[DIRECT][CONTROL] Grow Light Activated[0m
+	[32m[DIRECT][CONTROL] Light level increased to 1000.0 lux[0m
+	[32m[DIRECT][CONTROL] Grow Light Activated[0m
+	[32m[DIRECT][CONTROL] Light level increased to 1000.0 lux[0m
+Tomato Tomato Low Temp
+Tomato Tomato High Temp
+Tomato Tomato Low Humidity
+Tomato Tomato High Humidity
+Tomato Tomato Low Soil Moisture
+Tomato Low Light Level
+Tomato Low Nutrient Level
+Strawberry Strawberry Low Temp
+Strawberry Strawberry High Temp
+Strawberry Strawberry Low Humidity
+Strawberry Strawberry High Humidity
+Strawberry Low Light Level
+Strawberry Low Nutrient Level
+Lettuce Lettuce Low Temp
+Lettuce Lettuce High Temp
+Lettuce Low Light Level
+Lettuce Low Nutrient Level
+Spinach Spinach Low Temp
+Spinach Spinach High Temp
+Spinach Low Light Level
+Spinach Low Nutrient Level
+Chili Chili Low Temp
+Chili Chili High Temp
+Chili Low Light Level
+Chili Low Nutrient Level
+Cucumber Cucumber Low Temp
+Cucumber Cucumber High Temp
+Cucumber Low Light Level
+Cucumber Low Nutrient Level
+Unknown Low Light Level
+Unknown Low Nutrient Level
+tomato Low Light Level
+tomato Low Nutrient Level
+Removed Low Light Level
+Removed Low Nutrient Level
+NUMERIC Tomato Low Temp
+NUMERIC Tomato High Temp
+NUMERIC Tomato Low Temp
+NUMERIC Tomato Low Temp
+NUMERIC Tomato Low Humidity
+NUMERIC Tomato High Humidity
+NUMERIC Tomato Low Humidity
+NUMERIC Tomato Low Humidity
+NUMERIC Tomato Low Soil Moisture
+NUMERIC Tomato Low Soil Moisture
+NUMERIC Tomato Low Soil Moisture
+NUMERIC Low Light Level
+NUMERIC Low Light Level
+NUMERIC Low Light Level
+NUMERIC Low Nutrient Level
+NUMERIC Low Nutrient Level
+NUMERIC Low Nutrient Level
+<TIMESTAMP> : Processing Tomato Temperature = 21.0
+<TIMESTAMP> : Processing Tomato Temperature = 22.0
+<TIMESTAMP> : Processing Tomato Temperature = 28.0
+<TIMESTAMP> : Processing Tomato Temperature = 29.0
+<TIMESTAMP> : Processing Tomato Humidity = 59.0
+<TIMESTAMP> : Processing Tomato Humidity = 60.0
+<TIMESTAMP> : Processing Tomato Humidity = 80.0
+<TIMESTAMP> : Processing Tomato Humidity = 81.0
+<TIMESTAMP> : Processing Tomato Soil = 44.0
+<TIMESTAMP> : Processing Tomato Soil = 45.0
+<TIMESTAMP> : Processing Tomato Soil = 100.0
+<TIMESTAMP> : Processing Tomato Soil = 101.0
+<TIMESTAMP> : Processing Tomato Light = 499.0
+<TIMESTAMP> : Processing Tomato Light = 500.0
+<TIMESTAMP> : Processing Tomato Light = 1001.0
+<TIMESTAMP> : Processing Tomato Nutrient = 39.0
+<TIMESTAMP> : Processing Tomato Nutrient = 40.0
+<TIMESTAMP> : Processing Tomato Nutrient = 101.0
+<TIMESTAMP> : Processing Strawberry Temperature = 17.0
+<TIMESTAMP> : Processing Strawberry Temperature = 18.0
+<TIMESTAMP> : Processing Strawberry Temperature = 24.0
+<TIMESTAMP> : Processing Strawberry Temperature = 25.0
+<TIMESTAMP> : Processing Strawberry Humidity = 69.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Humidity = 85.0
+<TIMESTAMP> : Processing Strawberry Humidity = 86.0
+<TIMESTAMP> : Processing Strawberry Soil = -1.0
+<TIMESTAMP> : Processing Strawberry Soil = 101.0
+<TIMESTAMP> : Processing Strawberry Light = 499.0
+<TIMESTAMP> : Processing Strawberry Light = 500.0
+<TIMESTAMP> : Processing Strawberry Light = 1001.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 39.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 40.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 101.0
+<TIMESTAMP> : Processing Lettuce Temperature = 14.0
+<TIMESTAMP> : Processing Lettuce Temperature = 15.0
+<TIMESTAMP> : Processing Lettuce Temperature = 21.0
+<TIMESTAMP> : Processing Lettuce Temperature = 22.0
+<TIMESTAMP> : Processing Lettuce Humidity = -1.0
+<TIMESTAMP> : Processing Lettuce Humidity = 101.0
+<TIMESTAMP> : Processing Lettuce Soil = -1.0
+<TIMESTAMP> : Processing Lettuce Soil = 101.0
+<TIMESTAMP> : Processing Lettuce Light = 499.0
+<TIMESTAMP> : Processing Lettuce Light = 500.0
+<TIMESTAMP> : Processing Lettuce Light = 1001.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 39.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 40.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 101.0
+<TIMESTAMP> : Processing Spinach Temperature = 9.0
+<TIMESTAMP> : Processing Spinach Temperature = 10.0
+<TIMESTAMP> : Processing Spinach Temperature = 20.0
+<TIMESTAMP> : Processing Spinach Temperature = 21.0
+<TIMESTAMP> : Processing Spinach Humidity = -1.0
+<TIMESTAMP> : Processing Spinach Humidity = 101.0
+<TIMESTAMP> : Processing Spinach Soil = -1.0
+<TIMESTAMP> : Processing Spinach Soil = 101.0
+<TIMESTAMP> : Processing Spinach Light = 499.0
+<TIMESTAMP> : Processing Spinach Light = 500.0
+<TIMESTAMP> : Processing Spinach Light = 1001.0
+<TIMESTAMP> : Processing Spinach Nutrient = 39.0
+<TIMESTAMP> : Processing Spinach Nutrient = 40.0
+<TIMESTAMP> : Processing Spinach Nutrient = 101.0
+<TIMESTAMP> : Processing Chili Temperature = 23.0
+<TIMESTAMP> : Processing Chili Temperature = 24.0
+<TIMESTAMP> : Processing Chili Temperature = 32.0
+<TIMESTAMP> : Processing Chili Temperature = 33.0
+<TIMESTAMP> : Processing Chili Humidity = -1.0
+<TIMESTAMP> : Processing Chili Humidity = 101.0
+<TIMESTAMP> : Processing Chili Soil = -1.0
+<TIMESTAMP> : Processing Chili Soil = 101.0
+<TIMESTAMP> : Processing Chili Light = 499.0
+<TIMESTAMP> : Processing Chili Light = 500.0
+<TIMESTAMP> : Processing Chili Light = 1001.0
+<TIMESTAMP> : Processing Chili Nutrient = 39.0
+<TIMESTAMP> : Processing Chili Nutrient = 40.0
+<TIMESTAMP> : Processing Chili Nutrient = 101.0
+<TIMESTAMP> : Processing Cucumber Temperature = 17.0
+<TIMESTAMP> : Processing Cucumber Temperature = 18.0
+<TIMESTAMP> : Processing Cucumber Temperature = 27.0
+<TIMESTAMP> : Processing Cucumber Temperature = 28.0
+<TIMESTAMP> : Processing Cucumber Humidity = -1.0
+<TIMESTAMP> : Processing Cucumber Humidity = 101.0
+<TIMESTAMP> : Processing Cucumber Soil = -1.0
+<TIMESTAMP> : Processing Cucumber Soil = 101.0
+<TIMESTAMP> : Processing Cucumber Light = 499.0
+<TIMESTAMP> : Processing Cucumber Light = 500.0
+<TIMESTAMP> : Processing Cucumber Light = 1001.0
+<TIMESTAMP> : Processing Cucumber Nutrient = 39.0
+<TIMESTAMP> : Processing Cucumber Nutrient = 40.0
+<TIMESTAMP> : Processing Cucumber Nutrient = 101.0
+<TIMESTAMP> : Processing Unknown Temperature = -1.0
+<TIMESTAMP> : Processing Unknown Temperature = 1001.0
+<TIMESTAMP> : Processing Unknown Humidity = -1.0
+<TIMESTAMP> : Processing Unknown Humidity = 1001.0
+<TIMESTAMP> : Processing Unknown Soil = -1.0
+<TIMESTAMP> : Processing Unknown Soil = 1001.0
+<TIMESTAMP> : Processing Unknown Light = -1.0
+<TIMESTAMP> : Processing Unknown Light = 1001.0
+<TIMESTAMP> : Processing Unknown Nutrient = -1.0
+<TIMESTAMP> : Processing Unknown Nutrient = 1001.0
+<TIMESTAMP> : Processing tomato Temperature = -1.0
+<TIMESTAMP> : Processing tomato Temperature = 1001.0
+<TIMESTAMP> : Processing tomato Humidity = -1.0
+<TIMESTAMP> : Processing tomato Humidity = 1001.0
+<TIMESTAMP> : Processing tomato Soil = -1.0
+<TIMESTAMP> : Processing tomato Soil = 1001.0
+<TIMESTAMP> : Processing tomato Light = -1.0
+<TIMESTAMP> : Processing tomato Light = 1001.0
+<TIMESTAMP> : Processing tomato Nutrient = -1.0
+<TIMESTAMP> : Processing tomato Nutrient = 1001.0
+<TIMESTAMP> : Processing Removed Temperature = -1.0
+<TIMESTAMP> : Processing Removed Temperature = 1001.0
+<TIMESTAMP> : Processing Removed Humidity = -1.0
+<TIMESTAMP> : Processing Removed Humidity = 1001.0
+<TIMESTAMP> : Processing Removed Soil = -1.0
+<TIMESTAMP> : Processing Removed Soil = 1001.0
+<TIMESTAMP> : Processing Removed Light = -1.0
+<TIMESTAMP> : Processing Removed Light = 1001.0
+<TIMESTAMP> : Processing Removed Nutrient = -1.0
+<TIMESTAMP> : Processing Removed Nutrient = 1001.0
+<TIMESTAMP> : Processing Tomato temperature = -1.0
+<TIMESTAMP> : Processing Tomato temperature = NaN
+<TIMESTAMP> : Processing Tomato temperature = Infinity
+<TIMESTAMP> : Processing Tomato temperature = -Infinity
+<TIMESTAMP> : Processing Tomato temperature = -0.0
+<TIMESTAMP> : Processing Tomato Mystery = -1.0
+<TIMESTAMP> : Processing Tomato Mystery = NaN
+<TIMESTAMP> : Processing Tomato Mystery = Infinity
+<TIMESTAMP> : Processing Tomato Mystery = -Infinity
+<TIMESTAMP> : Processing Tomato Mystery = -0.0
+<TIMESTAMP> : Processing Tomato Temperature = -1.0
+<TIMESTAMP> : Processing Tomato Temperature = NaN
+<TIMESTAMP> : Processing Tomato Temperature = Infinity
+<TIMESTAMP> : Processing Tomato Temperature = -Infinity
+<TIMESTAMP> : Processing Tomato Temperature = -0.0
+<TIMESTAMP> : Processing Tomato Humidity = -1.0
+<TIMESTAMP> : Processing Tomato Humidity = NaN
+<TIMESTAMP> : Processing Tomato Humidity = Infinity
+<TIMESTAMP> : Processing Tomato Humidity = -Infinity
+<TIMESTAMP> : Processing Tomato Humidity = -0.0
+<TIMESTAMP> : Processing Tomato Soil = -1.0
+<TIMESTAMP> : Processing Tomato Soil = NaN
+<TIMESTAMP> : Processing Tomato Soil = Infinity
+<TIMESTAMP> : Processing Tomato Soil = -Infinity
+<TIMESTAMP> : Processing Tomato Soil = -0.0
+<TIMESTAMP> : Processing Tomato Light = -1.0
+<TIMESTAMP> : Processing Tomato Light = NaN
+<TIMESTAMP> : Processing Tomato Light = Infinity
+<TIMESTAMP> : Processing Tomato Light = -Infinity
+<TIMESTAMP> : Processing Tomato Light = -0.0
+<TIMESTAMP> : Processing Tomato Nutrient = -1.0
+<TIMESTAMP> : Processing Tomato Nutrient = NaN
+<TIMESTAMP> : Processing Tomato Nutrient = Infinity
+<TIMESTAMP> : Processing Tomato Nutrient = -Infinity
+<TIMESTAMP> : Processing Tomato Nutrient = -0.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Tomato Temperature = 24.0
+<TIMESTAMP> : Processing Tomato Humidity = 70.0
+<TIMESTAMP> : Processing Tomato Soil = 60.0
+<TIMESTAMP> : Processing Tomato Light = 600.0
+<TIMESTAMP> : Processing Tomato Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Strawberry Temperature = 21.0
+<TIMESTAMP> : Processing Strawberry Humidity = 70.0
+<TIMESTAMP> : Processing Strawberry Soil = 60.0
+<TIMESTAMP> : Processing Strawberry Light = 600.0
+<TIMESTAMP> : Processing Strawberry Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Lettuce Temperature = 18.0
+<TIMESTAMP> : Processing Lettuce Humidity = 70.0
+<TIMESTAMP> : Processing Lettuce Soil = 60.0
+<TIMESTAMP> : Processing Lettuce Light = 600.0
+<TIMESTAMP> : Processing Lettuce Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+<TIMESTAMP> : Processing Chili Temperature = 28.0
+<TIMESTAMP> : Processing Chili Humidity = 70.0
+<TIMESTAMP> : Processing Chili Soil = 60.0
+<TIMESTAMP> : Processing Chili Light = 600.0
+<TIMESTAMP> : Processing Chili Nutrient = 70.0
+===== DAILY REPORT =====
+Generated Alerts: 52
+Active Alerts: 52
+Water Usage: 565 L
+Energy Usage: 205 kWh
+Archiving alerts... 52 moved to archive.
+Archiving alerts... no active alerts to archive.
+Archive report saved to: <REPORT_PATH>
