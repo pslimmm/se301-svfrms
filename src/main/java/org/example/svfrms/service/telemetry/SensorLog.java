@@ -1,8 +1,6 @@
 package org.example.svfrms.service.telemetry;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /** Owns append-heavy retained log entries and returns immutable ordered inspection copies. */
 public final class SensorLog {

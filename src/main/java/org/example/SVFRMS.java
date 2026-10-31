@@ -1,8 +1,7 @@
 package org.example;
 
 import org.example.svfrms.infrastructure.context.SvfrmsApplicationContext;
-import org.example.svfrms.domain.chamber.ChamberSnapshot;
-import org.example.svfrms.domain.chamber.ChamberSummarySnapshot;
+import org.example.svfrms.domain.chamber.*;
 import java.time.Duration;
 
 /** Legacy operation names retained; state accessors now return immutable inspection snapshots. */

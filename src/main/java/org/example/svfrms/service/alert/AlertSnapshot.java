@@ -2,8 +2,7 @@ package org.example.svfrms.service.alert;
 
 import org.example.svfrms.domain.alert.AlertEvent;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /** Consistent point-in-time view of alert totals, active alerts, and archived alerts. */
 public record AlertSnapshot(long generatedAlertCount, List<AlertEvent> activeAlerts,

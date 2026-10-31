@@ -2,8 +2,7 @@ package org.example.svfrms.command;
 
 import org.example.svfrms.domain.actuator.ActuatorType;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class AbstractDeviceCommand implements DeviceCommand {
     private final ActuatorType type;

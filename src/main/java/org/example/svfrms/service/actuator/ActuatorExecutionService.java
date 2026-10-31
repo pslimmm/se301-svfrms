@@ -1,15 +1,11 @@
 package org.example.svfrms.service.actuator;
 
 import org.example.svfrms.command.DeviceCommand;
-import org.example.svfrms.concurrency.ActuatorRequest;
-import org.example.svfrms.concurrency.BoundedControlQueue;
+import org.example.svfrms.concurrency.*;
 import org.example.svfrms.domain.chamber.*;
-import org.example.svfrms.service.resource.ResourceAccountingService;
 
 import java.time.Duration;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -31,14 +27,6 @@ public final class ActuatorExecutionService implements AutoCloseable {
     private long admitted;
     private long completed;
     private enum Lifecycle { NEW, RUNNING, CLOSING, CLOSED }
-
-    public ActuatorExecutionService(BoundedControlQueue queue,
-                                    Map<ChamberId, ChamberStateTracker> chamberStates,
-                                    Map<ChamberId, ChamberSummaryTracker> chamberSummaries,
-                                    ResourceAccountingService metrics, Consumer<String> output) {
-        this(queue, chamberStates, chamberSummaries, output);
-        Objects.requireNonNull(metrics, "metrics");
-    }
 
     public ActuatorExecutionService(BoundedControlQueue queue,
                                     Map<ChamberId, ChamberStateTracker> chamberStates,

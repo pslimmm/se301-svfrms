@@ -2,10 +2,7 @@ package org.example.svfrms.service.report;
 
 import org.example.svfrms.domain.chamber.ChamberId;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Comparator;
+import java.util.*;
 
 /** Plain-text formatter preserving the legacy daily report labels and section order. */
 public final class PlainTextReportFormatter implements ReportFormatterStrategy {

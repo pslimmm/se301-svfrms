@@ -1,33 +1,14 @@
 package org.example.svfrms.service.crop;
 
 import org.example.svfrms.domain.actuator.ActuatorType;
-import org.example.svfrms.domain.alert.AlertEvent;
-import org.example.svfrms.domain.alert.AlertSeverity;
-import org.example.svfrms.domain.crop.CropProfile;
-import org.example.svfrms.domain.crop.CropRegistry;
-import org.example.svfrms.domain.crop.ThresholdRange;
-import org.example.svfrms.domain.sensor.SensorReading;
-import org.example.svfrms.domain.sensor.SensorType;
+import org.example.svfrms.domain.alert.*;
+import org.example.svfrms.domain.crop.*;
+import org.example.svfrms.domain.sensor.*;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /** Evaluates crop ranges while keeping mitigation rules out of the registry. */
 public final class DefaultCropThresholdStrategy implements CropThresholdStrategy {
-    private final CropRegistry registry;
-    private final Clock clock;
-
-    public DefaultCropThresholdStrategy(CropRegistry registry) {
-        this(registry, Clock.systemUTC());
-    }
-
-    public DefaultCropThresholdStrategy(CropRegistry registry, Clock clock) {
-        this.registry = Objects.requireNonNull(registry, "registry");
-        this.clock = Objects.requireNonNull(clock, "clock");
-    }
-
     @Override
     public EvaluationResult evaluate(SensorReading reading, CropProfile profile) {
         Objects.requireNonNull(reading, "reading");
@@ -82,13 +63,8 @@ public final class DefaultCropThresholdStrategy implements CropThresholdStrategy
             actuator = ActuatorType.NUTRIENT_INJECTOR;
         }
 
-        Instant timestamp = reading.timestamp() == null ? clock.instant() : reading.timestamp();
-        AlertEvent alert = new AlertEvent(reading.chamberId(), profile.name(), AlertSeverity.WARNING, message, timestamp);
+        AlertEvent alert = new AlertEvent(reading.chamberId(), profile.name(), AlertSeverity.WARNING, message, reading.timestamp());
         return new EvaluationResult(Optional.of(alert), Optional.ofNullable(actuator), water, energy);
-    }
-
-    public Optional<CropProfile> profileFor(String cropName) {
-        return registry.get(cropName);
     }
 
     @Override

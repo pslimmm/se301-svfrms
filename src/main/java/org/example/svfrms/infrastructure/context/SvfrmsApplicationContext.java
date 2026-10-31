@@ -1,52 +1,29 @@
 package org.example.svfrms.infrastructure.context;
 
-import org.example.svfrms.concurrency.BoundedControlQueue;
-import org.example.svfrms.concurrency.ChamberSimulationTask;
-import org.example.svfrms.domain.chamber.ChamberId;
-import org.example.svfrms.domain.chamber.ChamberSnapshot;
-import org.example.svfrms.domain.chamber.ChamberStateTracker;
-import org.example.svfrms.domain.chamber.ChamberSummaryTracker;
-import org.example.svfrms.domain.chamber.ChamberSummarySnapshot;
-import org.example.svfrms.domain.sensor.SensorType;
+import org.example.svfrms.concurrency.*;
+import org.example.svfrms.domain.chamber.*;
+import org.example.svfrms.domain.sensor.*;
 import org.example.svfrms.command.*;
-import org.example.svfrms.concurrency.ActuatorRequest;
-import org.example.svfrms.domain.alert.AlertEvent;
-import org.example.svfrms.domain.alert.AlertSeverity;
+import org.example.svfrms.domain.alert.*;
 import org.example.svfrms.domain.crop.CropRegistry;
 import org.example.svfrms.service.actuator.ActuatorExecutionService;
 import org.example.svfrms.service.alert.AlertManagementService;
 import org.example.svfrms.service.crop.DefaultCropThresholdStrategy;
-import org.example.svfrms.service.report.DailyReportService;
-import org.example.svfrms.service.report.PlainTextReportFormatter;
+import org.example.svfrms.service.report.*;
 import org.example.svfrms.service.resource.ResourceAccountingService;
-import org.example.svfrms.service.telemetry.ConsoleLoggingObserver;
-import org.example.svfrms.service.telemetry.TelemetryPublisher;
-import org.example.svfrms.service.telemetry.ThresholdEvaluationObserver;
-import org.example.svfrms.domain.sensor.SensorReading;
+import org.example.svfrms.service.telemetry.*;
 
 import org.example.svfrms.infrastructure.storage.FileReportStorageAdapter;
 
 import java.nio.file.Path;
 import java.io.IOException;
-import java.time.Clock;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.time.*;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.example.svfrms.service.telemetry.SensorLog;
 import org.example.svfrms.domain.actuator.ActuatorType;
 import java.util.function.Consumer;
 import java.util.random.RandomGenerator;
-import java.util.SplittableRandom;
-import java.util.concurrent.ConcurrentHashMap;
 
 /** Pure constructor-injected composition root for the complete simulation. */
 public final class SvfrmsApplicationContext implements AutoCloseable {
@@ -59,7 +36,7 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
     private final Path reportPath;
     private final Clock clock;
     private final Consumer<String> output;
-    private final long randomSeed;
+    private final Long randomSeed;
     private final CropRegistry cropRegistry;
     private final ResourceAccountingService resources;
     private final AlertManagementService alerts;
@@ -80,7 +57,11 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
     private volatile ExecutorService simulationExecutor;
 
     public SvfrmsApplicationContext() {
-        this(Path.of("archive", "daily_report.txt"), Clock.systemDefaultZone(), System.out::println, 42L);
+        this(Path.of("archive", "daily_report.txt"), Clock.systemDefaultZone(), System.out::println);
+    }
+
+    public SvfrmsApplicationContext(Path reportPath, Clock clock, Consumer<String> output) {
+        this(reportPath, clock, output, null, Duration.ofSeconds(10));
     }
 
     public SvfrmsApplicationContext(Path reportPath, Clock clock, Consumer<String> output, long randomSeed) {
@@ -89,6 +70,11 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
 
     public SvfrmsApplicationContext(Path reportPath, Clock clock, Consumer<String> output, long randomSeed,
                                     Duration shutdownBudget) {
+        this(reportPath, clock, output, Long.valueOf(randomSeed), shutdownBudget);
+    }
+
+    private SvfrmsApplicationContext(Path reportPath, Clock clock, Consumer<String> output, Long randomSeed,
+                                     Duration shutdownBudget) {
         this.reportPath = Objects.requireNonNull(reportPath, "reportPath");
         this.clock = Objects.requireNonNull(clock, "clock");
         this.output = Objects.requireNonNull(output, "output");
@@ -107,7 +93,7 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
         telemetry = new TelemetryPublisher(failure -> { throw failure; });
         telemetry.subscribe(new ConsoleLoggingObserver(sensorLogs::append, clock));
         telemetry.subscribe(new ThresholdEvaluationObserver(cropRegistry,
-                new DefaultCropThresholdStrategy(cropRegistry, clock), alerts, actuatorService, resources,
+                new DefaultCropThresholdStrategy(), alerts, actuatorService, resources,
                 chamberStates, chamberSummaries, Duration.ofSeconds(1), output));
         reports = new DailyReportService(resources, alerts, chamberSummaries,
                 new PlainTextReportFormatter(), new FileReportStorageAdapter(reportPath), clock, output);
@@ -132,8 +118,9 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
             var completions = new ExecutorCompletionService<Void>(executor);
             for (int index = 0; index < STANDARD_CHAMBERS.size(); index++) {
                 ChamberSetup setup = STANDARD_CHAMBERS.get(index);
-                long seed = randomSeed + 0x9E3779B97F4A7C15L * index;
-                RandomGenerator random = new SplittableRandom(seed);
+                RandomGenerator random = randomSeed == null
+                        ? new java.util.Random()
+                        : new SplittableRandom(randomSeed + 0x9E3779B97F4A7C15L * index);
                 tasks.add(completions.submit(new ChamberSimulationTask(new ChamberId(setup.id()), setup.crop(),
                         iterationsPerChamber, telemetry, resources, random, clock), null));
             }

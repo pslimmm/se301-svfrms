@@ -3,8 +3,7 @@ package org.example.svfrms.service.crop;
 import org.example.svfrms.domain.actuator.ActuatorType;
 import org.example.svfrms.domain.alert.AlertEvent;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /** Result of evaluating a reading, including the legacy resource deltas. */
 public record EvaluationResult(Optional<AlertEvent> alert, Optional<ActuatorType> mitigation,

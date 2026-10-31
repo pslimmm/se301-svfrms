@@ -1,13 +1,10 @@
 package org.example.svfrms.service.report;
 
 import org.example.svfrms.domain.alert.AlertEvent;
-import org.example.svfrms.domain.chamber.ChamberId;
-import org.example.svfrms.domain.chamber.ChamberSummarySnapshot;
+import org.example.svfrms.domain.chamber.*;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /** Immutable input to operational report formatters. */
 public record DailyReportSnapshot(Instant generatedAt, long generatedAlerts, int activeAlerts,

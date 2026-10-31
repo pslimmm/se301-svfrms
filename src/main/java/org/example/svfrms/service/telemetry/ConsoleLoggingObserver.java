@@ -1,11 +1,9 @@
 package org.example.svfrms.service.telemetry;
 
-import org.example.svfrms.domain.sensor.SensorReading;
-import org.example.svfrms.domain.sensor.SensorType;
+import org.example.svfrms.domain.sensor.*;
 
 import java.time.Clock;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
 /** Formats sensor log entries using the legacy timestamp and message layout. */

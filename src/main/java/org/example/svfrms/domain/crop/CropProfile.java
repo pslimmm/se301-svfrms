@@ -1,7 +1,6 @@
 package org.example.svfrms.domain.crop;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import org.example.svfrms.domain.sensor.SensorType;
 
 /** Immutable growing conditions for a crop. */
