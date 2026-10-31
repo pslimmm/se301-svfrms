@@ -1,0 +1,309 @@
+{
+  "group": "3",
+  "members": [],
+  "scope": "Preserve existing scope; document Section3 mismatch",
+  "document_format": "docx",
+  "branch": "refactor/svfrms-modernization-FINALIZED",
+  "requirements": [
+    {
+      "id": "C01",
+      "requirement": "Enhance existing application; preserve behavior; no removed features or wholesale replacement",
+      "source": "PDF pp. 6,8, \u00a7\u00a74/Restrictions; AGENTS \u00a71",
+      "ownerTask": "1-9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "GPT ancestry; change/adoption ledger; independent original oracle unchanged; complete workflow tests",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C02",
+      "requirement": "Multiple logical source files and component packages, focused responsibilities",
+      "source": "PDF p.6 \u00a74.1; AGENTS \u00a72",
+      "ownerTask": "1,5,8,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Package/source inventory; SRP review with concrete before/after examples",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C03",
+      "requirement": "All five SOLID review points, with meaningful dependency/interface/substitution reasoning",
+      "source": "PDF p.6 \u00a74.2(i-v)",
+      "ownerTask": "2,5,6,8,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Report five-point mapping; focused interfaces; no fabricated inheritance violation",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C04",
+      "requirement": "Patterns justified by concrete problems; no unnecessary pattern scaffolding",
+      "source": "PDF pp.6-7 \u00a7\u00a74.3/5; AGENTS \u00a75",
+      "ownerTask": "5,8,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Actual Observer/Strategy/Command/Registry rationale; simple alternatives; code matches diagrams",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C05",
+      "requirement": "Identify and rectify races, synchronization and deadlock/liveness hazards",
+      "source": "PDF p.6 \u00a74.4; AGENTS \u00a73",
+      "ownerTask": "2-7,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Exact-count/state tests; deterministic queue/cancel/failure schedules; no unsupported AB-BA claim",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C06",
+      "requirement": "Guard mutable state, use standard concurrency primitives; no unsafe state exposed",
+      "source": "AGENTS \u00a73",
+      "ownerTask": "2-7,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Ownership inventory; concurrent data/atomic transactions; copies; callbacks/I/O outside state locks",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C07",
+      "requirement": "Real graceful JVM shutdown hook stops producers and drains/stops workers",
+      "source": "AGENTS \u00a73",
+      "ownerTask": "2,7,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Child JVM invokes production hook; admitted backlog positive; bounded close/termination evidence",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C08",
+      "requirement": "Add/remove crops with zero monitoring-engine/evaluation-loop changes",
+      "source": "PDF p.6 \u00a74.5; AGENTS \u00a74",
+      "ownerTask": "2,6,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Kale live demo; four extension-name tests; replacement/removal during evaluation; unchanged engine source",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C09",
+      "requirement": "Java 25 or later, Maven structure; no unauthorized application framework",
+      "source": "PDF p.8 Development Environment; AGENTS \u00a76",
+      "ownerTask": "1,7,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "JDK/Maven versions, release25 bytecode, pom/dependency inventory; no runtime test agent/framework",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C10",
+      "requirement": "Self-contained target/run.jar executable without IDE/classpath setup",
+      "source": "PDF p.7 \u00a75; AGENTS \u00a76",
+      "ownerTask": "1,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Literal required smoke; manifest; jdeps; extracted ZIP java -jar run.jar",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C11",
+      "requirement": "One ZIP with complete src/, Maven build inputs and run.jar",
+      "source": "PDF p.7 \u00a75",
+      "ownerTask": "9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Allowlisted ZIP inventory; checksums; clean extracted-source build; exact binary/source match",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C12",
+      "requirement": "Specification names README.pdf with3-6 body pages excluding cover; user requests DOCX",
+      "source": "PDF p.7 \u00a75; later user format instruction",
+      "ownerTask": "8,9",
+      "status": "USER-DIRECTED-FORMAT-DEVIATION",
+      "evidence": [],
+      "applicabilityRationale": "Deliver README.docx, check3-6 rendered body pages plus cover, disclose PDF-format deviation",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C13",
+      "requirement": "Cover includes actual group number and all member names; no placeholders",
+      "source": "PDF p.7 \u00a75",
+      "ownerTask": "8,9",
+      "status": "HUMAN-PENDING",
+      "evidence": [],
+      "applicabilityRationale": "Group3 confirmed; member names deferred by user; editable DOCX fields may stay blank, final cover remains pending",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C14",
+      "requirement": "Report explains legacy purpose, flaws with examples, proposed design, final architecture diagram, extension and pattern justification",
+      "source": "PDF p.7 \u00a75",
+      "ownerTask": "8,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Section checklist plus legible component diagram; source links and correct lock analysis",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C15",
+      "requirement": "Specification names report.pdf/README.pdf; user requests DOCX instead",
+      "source": "PDF p.8 \u00a76, p.7 \u00a75; later user format instruction",
+      "ownerTask": "8,9",
+      "status": "USER-DIRECTED-FORMAT-DEVIATION",
+      "evidence": [],
+      "applicabilityRationale": "Deliver identical report.docx/README.docx at root and in ZIP; no PDF deliverables",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C16",
+      "requirement": "Five-minute presentation + two-minute demo; five specified topics",
+      "source": "PDF pp.7-8 \u00a75; AGENTS \u00a77",
+      "ownerTask": "6,8,9",
+      "status": "HUMAN-PENDING",
+      "evidence": [],
+      "applicabilityRationale": "Rendered deck; timed script; executable crop and concurrency demo; human rehearsal record",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C17",
+      "requirement": "Team maximum3, actual eLearn/group registration, one group submission before deadline",
+      "source": "PDF pp.8-9 \u00a7\u00a76/8",
+      "ownerTask": "8,9",
+      "status": "HUMAN-PENDING",
+      "evidence": [],
+      "applicabilityRationale": "Team confirmation; assignment deadline 1 Nov 2026 23:59 Asia/Singapore; actual upload is human action",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C18",
+      "requirement": "Team understands/defends code and AI-assisted work; honor code",
+      "source": "PDF p.9 \u00a7\u00a79-10",
+      "ownerTask": "8,9",
+      "status": "HUMAN-PENDING",
+      "evidence": [],
+      "applicabilityRationale": "Class notes/Q&A; actual team review; no fabricated authorship/rehearsal/submission claims",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C19",
+      "requirement": "Run mvn clean test, mvn package, java -jar target/run.jar",
+      "source": "AGENTS Verification Workflow",
+      "ownerTask": "Every code task,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Fresh exit codes/logs after last source change; smoke has bounded owned subprocess",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C20",
+      "requirement": "Exact new branch refactor/svfrms-modernization-FINALIZED",
+      "source": "User request",
+      "ownerTask": "1,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "git branch --show-current exact match; ancestry from reviewed GPT base; no overwrite of existing branch",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C21",
+      "requirement": "All four donor versions considered/tested",
+      "source": "User request",
+      "ownerTask": "1,2,7,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Pinned four-branch baseline logs and finding-by-finding adopt/adapt/reject rationale",
+      "humanConfirmed": false
+    },
+    {
+      "id": "C22",
+      "requirement": "Meaningful code branch coverage plus concurrency schedules",
+      "source": "User request; engineering gate",
+      "ownerTask": "2-7,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "JaCoCo HTML/XML/check; 90% line/85% branch total; 100% branch new/modified classes; failure schedules",
+      "humanConfirmed": false
+    },
+    {
+      "id": "S31",
+      "requirement": "p.3 \u00a73.1 crop name and all stated range metadata; example crop ranges",
+      "source": "Specification Section3",
+      "ownerTask": "2,6,8,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Profiles store ranges; actual enabled legacy checks are asymmetric, unlike examples; Preserve enabled rules/costs; document metadata vs enforcement; verify every profile field",
+      "humanConfirmed": false
+    },
+    {
+      "id": "S32",
+      "requirement": "p.4 \u00a73.2 temperature/humidity/soil/light/nutrient sensing",
+      "source": "Specification Section3",
+      "ownerTask": "2,6,8,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "All five present; Full oracle + five-sensor workflow tests",
+      "humanConfirmed": false
+    },
+    {
+      "id": "S33a",
+      "requirement": "p.4 \u00a73.3 pump/fan/grow light/nutrient injector",
+      "source": "Specification Section3",
+      "ownerTask": "2,6,8,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Present, plus legacy humidity devices; Preserve all six actual controls and formulas",
+      "humanConfirmed": false
+    },
+    {
+      "id": "S33b",
+      "requirement": "p.4 \u00a73.3 Heating Unit/Ventilation System/Shade Controller",
+      "source": "Specification Section3",
+      "ownerTask": "2,6,8,9",
+      "status": "DOCUMENTED-GAP",
+      "evidence": [],
+      "applicabilityRationale": "Absent in original/GPT; Disclose missing devices under the user-confirmed preservation scope; no invented default controls",
+      "humanConfirmed": true
+    },
+    {
+      "id": "S34a",
+      "requirement": "p.5 \u00a73.4 temperature/humidity/low-soil/nutrient alerts",
+      "source": "Specification Section3",
+      "ownerTask": "2,6,8,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Present for original applicable crops; Preserve strict boundaries and intentionally absent rules",
+      "humanConfirmed": false
+    },
+    {
+      "id": "S34b",
+      "requirement": "p.5 \u00a73.4 sensor failure + INFO/WARNING/CRITICAL semantics",
+      "source": "Specification Section3",
+      "ownerTask": "2,6,8,9",
+      "status": "DOCUMENTED-GAP",
+      "evidence": [],
+      "applicabilityRationale": "Severity data exists, full described policy absent; NaN/infinities have legacy semantics; Disclose missing policy; preserve raw-value semantics as the user requested",
+      "humanConfirmed": true
+    },
+    {
+      "id": "S35a",
+      "requirement": "p.5 \u00a73.5 daily environmental report",
+      "source": "Specification Section3",
+      "ownerTask": "2,6,8,9",
+      "status": "PLANNED",
+      "evidence": [],
+      "applicabilityRationale": "Present; Exact text/order/UTF-8/timestamp normalization/error oracle",
+      "humanConfirmed": false
+    },
+    {
+      "id": "S35b",
+      "requirement": "p.5 \u00a73.5 weekly crop/water/energy/nutrient reports",
+      "source": "Specification Section3",
+      "ownerTask": "2,6,8,9",
+      "status": "DOCUMENTED-GAP",
+      "evidence": [],
+      "applicabilityRationale": "Separate report types absent; resource totals available; Disclose missing report types; do not mislabel current-run counts or nutrient quantities",
+      "humanConfirmed": true
+    }
+  ]
+}

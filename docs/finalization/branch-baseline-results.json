@@ -1,0 +1,59 @@
+[
+  {
+    "name": "modernization",
+    "commit": "3fe2d121ed95cfa1f5d5507fc1590f0617c39b90",
+    "clean_test": 0,
+    "package": 0,
+    "required_smoke": 0,
+    "tests": {
+      "tests": 49,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "expected_known_gap": null
+  },
+  {
+    "name": "gemini",
+    "commit": "81cc18ea152244bb40297b183e5f0ca728673b03",
+    "clean_test": 0,
+    "package": 0,
+    "required_smoke": 0,
+    "tests": {
+      "tests": 29,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "expected_known_gap": null
+  },
+  {
+    "name": "gpt",
+    "commit": "fe7b6d27cc9f674bfec352cae55afea58a440a05",
+    "clean_test": 0,
+    "package": 0,
+    "required_smoke": 0,
+    "tests": {
+      "tests": 185,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "expected_known_gap": null
+  },
+  {
+    "name": "astra",
+    "commit": "9f23b6cf8e8030681c2a119f0233cb18bd35d643",
+    "clean_test": 0,
+    "package": 0,
+    "required_smoke": 1,
+    "alternate_smoke": 0,
+    "tests": {
+      "tests": 300,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "expected_known_gap": "Maven does not name target/run.jar"
+  }
+]

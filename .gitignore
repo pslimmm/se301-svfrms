@@ -28,3 +28,27 @@ archive/
 docs/*
 !docs/SE301-Project-Specification.pdf
 !docs/se301_project_specification.md
+
+# Local review and execution scratch
+.review/
+.superpowers/
+output/
+# Curated reproducible handoff documentation
+!docs/superpowers/
+!docs/superpowers/plans/
+!docs/superpowers/plans/2026-10-31-svfrms-finalized.md
+!docs/superpowers/specs/
+!docs/superpowers/specs/2026-10-31-svfrms-finalized-design.md
+!docs/finalization/
+!docs/finalization/**
+!docs/reviews/
+!docs/reviews/2026-10-31-refactor-branch-comparison.md
+!docs/technical-report.md
+!docs/technical-report.docx
+!docs/report-metadata.json
+!docs/submission-checklist.md
+!docs/demo-script.md
+!docs/diagrams/
+!docs/diagrams/**
+!docs/presentation/
+!docs/presentation/**
