@@ -1,0 +1,32 @@
+{
+  "technical_verification_passed": true,
+  "full_specification_compliance": false,
+  "verified_at_utc": "2026-10-31T11:49:56.742298+00:00",
+  "source_snapshot_commit": "9597004dcebde2ba253a2fa7e00b9af206303902",
+  "jar_sha256": "a472bc2a12e10b4b2af44d869ac581abc25988e45aec8e19e178e6660903099a",
+  "docx_sha256": "e0e09d8e8324b0c3455511a01bc405863b7908eebad16e22860a9864e6e8d194",
+  "zip_sha256": "edec12b7005b2078630407820e79c930d91a4fe6fb9d7045b5b86c2ad54e2a8e",
+  "entries": 133,
+  "runtime_classes": 60,
+  "classfile_major": 69,
+  "modules": "java.base",
+  "tests": {
+    "tests": 280,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "default_report_alerts": 136,
+  "crop_demo_alerts": 3,
+  "handled_filesystem_error_preserved": true,
+  "report_body_pages": 5,
+  "pending": [
+    "Team-member names deferred",
+    "Human rehearsal, registration and submission not performed"
+  ],
+  "disclosed_deviations": [
+    "DOCX instead of PDF report filenames",
+    "Preservation-only scope with Section3 mismatches"
+  ],
+  "evidence_directory": "target\\final-package-4osdi7sq"
+}
