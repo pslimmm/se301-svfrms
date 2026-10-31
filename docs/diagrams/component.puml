@@ -1,0 +1,14 @@
+@startuml
+left to right direction
+[SVFRMS facade / context] --> [Chamber tasks]
+[Chamber tasks] --> [Telemetry]
+[Telemetry] --> [SensorLog]
+[Telemetry] --> [Threshold evaluation]
+[CropRegistry] --> [Threshold evaluation]
+[Threshold evaluation] --> [Alerts / resources]
+[Threshold evaluation] --> [Queue / actuator]
+[Queue / actuator] --> [Chamber state / summary]
+[Report service] --> [Alerts / resources]
+[Report service] --> [Chamber state / summary]
+[Report service] --> [File storage]
+@enduml

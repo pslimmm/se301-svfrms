@@ -1,0 +1,13 @@
+@startuml
+participant Producer
+participant Evaluation
+participant Control
+participant Coordinator
+Producer -> Evaluation: publish immutable reading
+Evaluation -> Evaluation: capture profile; alert / cost
+Evaluation -> Control: submit typed request
+Control -> Control: CAS state; summary; output
+Coordinator -> Producer: await completion / handle failure
+Coordinator -> Control: close admission; drain; join
+Coordinator -> Coordinator: report; archive; publish file
+@enduml

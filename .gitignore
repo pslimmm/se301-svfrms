@@ -33,6 +33,7 @@ docs/*
 .review/
 .superpowers/
 output/
+__pycache__/
 # Curated reproducible handoff documentation
 !docs/superpowers/
 !docs/superpowers/plans/
@@ -52,3 +53,4 @@ output/
 !docs/diagrams/**
 !docs/presentation/
 !docs/presentation/**
+docs/superpowers/plans/2026-10-29-*.md

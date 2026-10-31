@@ -1,6 +1,6 @@
 # SVFRMS FINALIZED consolidation design
 
-Status: reviewable proposal; implementation has not started. Requested output branch: **`refactor/svfrms-modernization-FINALIZED`**, with that exact spelling and capitalization. Planning date: 31 October 2026, Asia/Singapore.
+Status: approved for execution; implementation is in progress. Requested output branch: **`refactor/svfrms-modernization-FINALIZED`**, with that exact spelling and capitalization. Planning date: 31 October 2026, Asia/Singapore.
 
 ## Intent and acceptance boundary
 
@@ -59,7 +59,7 @@ Adapt Astra's packaging/checksum verification approach without its hardcoded gro
 
 - Section 3 scope is confirmed: preservation only, with the mismatch documented; no new Section-3-only behavior.
 - Group number is confirmed as 3. Team-member names are deferred at the user's request; leave editable fields blank and keep the final-cover completion status pending.
-- Design approval and an execution method are pending. Recommended execution is native, sequential implementation with a final independent review because the changes share report/context interfaces.
+- Execution is approved; native sequential implementation and a final independent review are being used.
 
 ## Sources
 
