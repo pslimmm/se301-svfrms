@@ -5,32 +5,80 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.util.List;
 import java.util.Objects;
 
-/** NIO adapter that stores UTF-8 report lines at a configured path. */
+/** Publishes a complete UTF-8 report without streaming concurrent writes into its destination. */
 public final class FileReportStorageAdapter implements ReportStoragePort {
     private final Path reportFile;
+    private final FileOperations files;
 
     public FileReportStorageAdapter() {
         this(Path.of("archive", "daily_report.txt"));
     }
 
     public FileReportStorageAdapter(Path reportFile) {
+        this(reportFile, new NioFileOperations());
+    }
+
+    FileReportStorageAdapter(Path reportFile, FileOperations files) {
         this.reportFile = Objects.requireNonNull(reportFile, "reportFile");
+        this.files = Objects.requireNonNull(files, "files");
     }
 
     @Override
     public void writeLines(List<String> lines) throws IOException {
-        Path parent = reportFile.toAbsolutePath().getParent();
-        if (parent != null) {
-            Files.createDirectories(parent);
+        Path target = reportFile.toAbsolutePath();
+        Path parent = target.getParent();
+        Files.createDirectories(parent);
+        Path temporary = files.createTemp(parent);
+        Throwable primary = null;
+        try {
+            files.writeUtf8(temporary, lines);
+            try {
+                files.replace(temporary, target, true);
+            } catch (AtomicMoveNotSupportedException unsupported) {
+                // Same-directory replacement still publishes a closed file. Crash-atomicity is
+                // provider-dependent when atomic moves are unavailable; no durability is claimed.
+                files.replace(temporary, target, false);
+            }
+        } catch (IOException | RuntimeException | Error failure) {
+            primary = failure;
+            throw failure;
+        } finally {
+            try { files.deleteIfExists(temporary); }
+            catch (IOException cleanup) {
+                if (primary == null) throw cleanup;
+                primary.addSuppressed(cleanup);
+            }
         }
-        Files.write(reportFile, lines, StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
     }
 
     public Path reportFile() {
         return reportFile;
+    }
+
+    /** Filesystem boundary for deterministic unsupported-move and disk-failure verification. */
+    interface FileOperations {
+        Path createTemp(Path directory) throws IOException;
+        void writeUtf8(Path file, List<String> lines) throws IOException;
+        void replace(Path temporary, Path target, boolean atomic) throws IOException;
+        void deleteIfExists(Path file) throws IOException;
+    }
+
+    static final class NioFileOperations implements FileOperations {
+        public Path createTemp(Path directory) throws IOException {
+            return Files.createTempFile(directory, ".svfrms-report-", ".tmp");
+        }
+        public void writeUtf8(Path file, List<String> lines) throws IOException {
+            Files.write(file, lines, StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        }
+        public void replace(Path temporary, Path target, boolean atomic) throws IOException {
+            if (atomic) Files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            else Files.move(temporary, target, StandardCopyOption.REPLACE_EXISTING);
+        }
+        public void deleteIfExists(Path file) throws IOException { Files.deleteIfExists(file); }
     }
 }
