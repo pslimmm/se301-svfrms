@@ -28,6 +28,10 @@ import java.util.stream.Collectors;
 
 /** Pure constructor-injected composition root for the complete simulation. */
 public final class SvfrmsApplicationContext implements AutoCloseable {
+    private static final Duration DEFAULT_SHUTDOWN_BUDGET = Duration.ofSeconds(10);
+    private static final Duration TELEMETRY_ENQUEUE_TIMEOUT = Duration.ofSeconds(1);
+    private static final Duration CONTROL_REQUEST_ENQUEUE_TIMEOUT = Duration.ofSeconds(5);
+
     private static final List<ChamberSetup> STANDARD_CHAMBERS = List.of(
             new ChamberSetup("CH1", "Tomato"),
             new ChamberSetup("CH2", "Strawberry"),
@@ -37,7 +41,6 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
     private final Path reportPath;
     private final Clock clock;
     private final Consumer<String> output;
-    private final Long randomSeed;
     private final CropRegistry cropRegistry;
     private final ResourceAccountingService resources;
     private final AlertManagementService alerts;
@@ -62,24 +65,14 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
     }
 
     public SvfrmsApplicationContext(Path reportPath, Clock clock, Consumer<String> output) {
-        this(reportPath, clock, output, null, Duration.ofSeconds(10));
+        this(reportPath, clock, output, DEFAULT_SHUTDOWN_BUDGET);
     }
 
-    public SvfrmsApplicationContext(Path reportPath, Clock clock, Consumer<String> output, long randomSeed) {
-        this(reportPath, clock, output, randomSeed, Duration.ofSeconds(10));
-    }
-
-    public SvfrmsApplicationContext(Path reportPath, Clock clock, Consumer<String> output, long randomSeed,
+    public SvfrmsApplicationContext(Path reportPath, Clock clock, Consumer<String> output,
                                     Duration shutdownBudget) {
-        this(reportPath, clock, output, Long.valueOf(randomSeed), shutdownBudget);
-    }
-
-    private SvfrmsApplicationContext(Path reportPath, Clock clock, Consumer<String> output, Long randomSeed,
-                                     Duration shutdownBudget) {
         this.reportPath = Objects.requireNonNull(reportPath, "reportPath");
         this.clock = Objects.requireNonNull(clock, "clock");
         this.output = Objects.requireNonNull(output, "output");
-        this.randomSeed = randomSeed;
         this.shutdownBudget = Objects.requireNonNull(shutdownBudget, "shutdownBudget");
         if (shutdownBudget.isNegative() || shutdownBudget.isZero()) throw new IllegalArgumentException("shutdownBudget must be positive");
         cropRegistry = CropRegistry.withStandardProfiles();
@@ -93,9 +86,12 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
         actuatorService = new ActuatorExecutionService(controlQueue, chamberStates, chamberSummaries, output);
         telemetry = new TelemetryPublisher(failure -> { throw failure; });
         telemetry.subscribe(new ConsoleLoggingObserver(sensorLogs::append, clock));
-        telemetry.subscribe(new ThresholdEvaluationObserver(cropRegistry,
-                new DefaultCropThresholdStrategy(), alerts, actuatorService, resources,
-                chamberStates, chamberSummaries, Duration.ofSeconds(1), output));
+        TelemetryProcessingService processing = new TelemetryProcessingService(
+                new ChamberStateUpdater(chamberStates),
+                new ThresholdEvaluator(cropRegistry, new DefaultCropThresholdStrategy()),
+                new ThresholdAlertRecorder(alerts, resources, chamberSummaries, output),
+                new MitigationDispatcher(actuatorService, TELEMETRY_ENQUEUE_TIMEOUT));
+        telemetry.subscribe(new ThresholdEvaluationObserver(processing));
         reports = new DailyReportService(resources, alerts, chamberSummaries,
                 new PlainTextReportFormatter(), new FileReportStorageAdapter(reportPath), clock, output);
     }
@@ -119,9 +115,7 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
             var completions = new ExecutorCompletionService<Void>(executor);
             for (int index = 0; index < STANDARD_CHAMBERS.size(); index++) {
                 ChamberSetup setup = STANDARD_CHAMBERS.get(index);
-                RandomGenerator random = randomSeed == null
-                        ? new Random()
-                        : new SplittableRandom(randomSeed + 0x9E3779B97F4A7C15L * index);
+                RandomGenerator random = new Random();
                 tasks.add(completions.submit(new ChamberSimulationTask(new ChamberId(setup.id()), setup.crop(),
                         iterationsPerChamber, telemetry, resources, random, clock), null));
             }
@@ -173,7 +167,7 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
                     && actuatorService.isTerminated();
         }
     }
-    public TelemetryPublisher telemetry() { if (!closing) startActuators(); return telemetry; }
+    public TelemetryPublisher telemetry() { return telemetry; }
     public List<String> reportEntries() { return reports.reportEntries(); }
 
     private void startActuators() {
@@ -203,9 +197,10 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
             default -> null;
         };
         if (type == null) {
-            handleEvent("LOG", chamber, crop, "Processing " + crop + " " + sensor + " = " + value);
+            logSensorMessage("Processing " + crop + " " + sensor + " = " + value);
         } else {
-            telemetry().publish(new SensorReading(new ChamberId(chamber), crop, type, value, clock.instant()));
+            if (!closing) startActuators();
+            telemetry.publish(new SensorReading(new ChamberId(chamber), crop, type, value, clock.instant()));
         }
     }
 
@@ -220,7 +215,7 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
         if (command == null) { getChamberState(chamber); return; }
         startActuators();
         try {
-            if (!actuatorService.submit(new ActuatorRequest(new ChamberId(chamber), command), Duration.ofSeconds(5)))
+            if (!actuatorService.submit(new ActuatorRequest(new ChamberId(chamber), command), CONTROL_REQUEST_ENQUEUE_TIMEOUT))
                 throw new IllegalStateException("Actuator queue remained full until timeout");
         } catch (InterruptedException interrupted) {
             Thread.currentThread().interrupt();
@@ -240,19 +235,42 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
         };
     }
 
+    /** Compatibility wrapper for the original string-based event API. */
     public void handleEvent(String type, String chamber, String crop, String message) {
         switch (type) {
-            case "LOG" -> sensorLogs.append(new Date(clock.millis()) + " : " + message);
-            case "ALERT_LOG" -> output.accept("[" + chamber + "][" + crop + "][ALERT] " + message);
-            case "CONTROL_LOG" -> output.accept("\t\u001B[32m[" + chamber + "][CONTROL] " + message + "\u001B[0m");
-            case "CREATE_ALERT" -> {
-                alerts.publishAlert(new AlertEvent(new ChamberId(chamber), crop, AlertSeverity.WARNING, message, clock.instant()));
-                handleEvent("ALERT_LOG", chamber, crop, message);
-            }
-            case "TRACK_ALERT" -> chamberSummaries.computeIfAbsent(new ChamberId(chamber), ignored -> new ChamberSummaryTracker()).recordAlert(message);
-            case "TRACK_ACTION" -> chamberSummaries.computeIfAbsent(new ChamberId(chamber), ignored -> new ChamberSummaryTracker()).recordMitigationAction(message);
+            case "LOG" -> logSensorMessage(message);
+            case "ALERT_LOG" -> logAlert(chamber, crop, message);
+            case "CONTROL_LOG" -> logControl(chamber, message);
+            case "CREATE_ALERT" -> createAlert(chamber, crop, message);
+            case "TRACK_ALERT" -> trackAlert(chamber, message);
+            case "TRACK_ACTION" -> trackAction(chamber, message);
             default -> { }
         }
+    }
+
+    private void logSensorMessage(String message) {
+        sensorLogs.append(new Date(clock.millis()) + " : " + message);
+    }
+
+    private void logAlert(String chamber, String crop, String message) {
+        output.accept("[" + chamber + "][" + crop + "][ALERT] " + message);
+    }
+
+    private void logControl(String chamber, String message) {
+        output.accept("\t\u001B[32m[" + chamber + "][CONTROL] " + message + "\u001B[0m");
+    }
+
+    private void createAlert(String chamber, String crop, String message) {
+        alerts.publishAlert(new AlertEvent(new ChamberId(chamber), crop, message, clock.instant()));
+        logAlert(chamber, crop, message);
+    }
+
+    private void trackAlert(String chamber, String message) {
+        chamberSummaries.computeIfAbsent(new ChamberId(chamber), ignored -> new ChamberSummaryTracker()).recordAlert(message);
+    }
+
+    private void trackAction(String chamber, String message) {
+        chamberSummaries.computeIfAbsent(new ChamberId(chamber), ignored -> new ChamberSummaryTracker()).recordMitigationAction(message);
     }
 
     public void awaitControls(Duration timeout) throws InterruptedException { actuatorService.awaitIdle(timeout); }

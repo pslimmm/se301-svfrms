@@ -6,6 +6,12 @@ import java.util.function.UnaryOperator;
 
 /** Atomic owner of a chamber's immutable state snapshot. */
 public final class ChamberStateTracker {
+    private static final double INITIAL_TEMPERATURE_CELSIUS = 24;
+    private static final double INITIAL_HUMIDITY_PERCENT = 70;
+    private static final double INITIAL_SOIL_MOISTURE_PERCENT = 60;
+    private static final double INITIAL_LIGHT_LUX = 600;
+    private static final double INITIAL_NUTRIENT_LEVEL_PERCENT = 70;
+
     private final AtomicReference<ChamberSnapshot> state;
 
     public ChamberStateTracker(ChamberSnapshot initialState) {
@@ -13,7 +19,8 @@ public final class ChamberStateTracker {
     }
 
     public static ChamberStateTracker initial() {
-        return new ChamberStateTracker(new ChamberSnapshot(24, 70, 60, 600, 70));
+        return new ChamberStateTracker(new ChamberSnapshot(INITIAL_TEMPERATURE_CELSIUS, INITIAL_HUMIDITY_PERCENT,
+                INITIAL_SOIL_MOISTURE_PERCENT, INITIAL_LIGHT_LUX, INITIAL_NUTRIENT_LEVEL_PERCENT));
     }
 
     public ChamberSnapshot snapshot() {

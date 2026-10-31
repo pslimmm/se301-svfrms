@@ -63,7 +63,7 @@ public final class DefaultCropThresholdStrategy implements CropThresholdStrategy
             actuator = ActuatorType.NUTRIENT_INJECTOR;
         }
 
-        AlertEvent alert = new AlertEvent(reading.chamberId(), profile.name(), AlertSeverity.WARNING, message, reading.timestamp());
+        AlertEvent alert = new AlertEvent(reading.chamberId(), profile.name(), message, reading.timestamp());
         return new EvaluationResult(Optional.of(alert), Optional.ofNullable(actuator), water, energy);
     }
 
@@ -72,17 +72,17 @@ public final class DefaultCropThresholdStrategy implements CropThresholdStrategy
         Objects.requireNonNull(reading, "reading");
         String message;
         ActuatorType actuator;
-        if (reading.sensorType() == SensorType.LIGHT && reading.value() < 500) {
+        if (reading.sensorType() == SensorType.LIGHT && reading.value() < CropProfile.DEFAULT_MIN_LIGHT_LUX) {
             message = reading.chamberId().value() + " Low Light Level";
             actuator = ActuatorType.GROW_LIGHT;
-        } else if (reading.sensorType() == SensorType.NUTRIENT && reading.value() < 40) {
+        } else if (reading.sensorType() == SensorType.NUTRIENT && reading.value() < CropProfile.DEFAULT_MIN_NUTRIENT_LEVEL_PERCENT) {
             message = reading.chamberId().value() + " Low Nutrient Level";
             actuator = ActuatorType.NUTRIENT_INJECTOR;
         } else {
             return EvaluationResult.none();
         }
         return new EvaluationResult(Optional.of(new AlertEvent(reading.chamberId(), reading.crop(),
-                AlertSeverity.WARNING, message, reading.timestamp())), Optional.of(actuator), 0, 0);
+                message, reading.timestamp())), Optional.of(actuator), 0, 0);
     }
 
     private static ThresholdRange rangeFor(CropProfile profile, SensorType type) {

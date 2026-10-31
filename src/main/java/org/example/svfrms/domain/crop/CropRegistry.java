@@ -6,6 +6,24 @@ import java.util.concurrent.*;
 
 /** Thread-safe catalog that permits crop profiles to be added and removed at runtime. */
 public final class CropRegistry {
+    // Standard simulation thresholds; temperature is Celsius and humidity/soil moisture are percentages.
+    private static final ThresholdRange TOMATO_TEMPERATURE_RANGE = new ThresholdRange(22, 28);
+    private static final ThresholdRange TOMATO_HUMIDITY_RANGE = new ThresholdRange(60, 80);
+    private static final ThresholdRange TOMATO_SOIL_MOISTURE_RANGE = new ThresholdRange(45, 60);
+    private static final ThresholdRange STRAWBERRY_TEMPERATURE_RANGE = new ThresholdRange(18, 24);
+    private static final ThresholdRange STRAWBERRY_HUMIDITY_RANGE = new ThresholdRange(70, 85);
+    private static final ThresholdRange LETTUCE_TEMPERATURE_RANGE = new ThresholdRange(15, 21);
+    private static final ThresholdRange SPINACH_TEMPERATURE_RANGE = new ThresholdRange(10, 20);
+    private static final ThresholdRange CHILI_TEMPERATURE_RANGE = new ThresholdRange(24, 32);
+    private static final ThresholdRange CUCUMBER_TEMPERATURE_RANGE = new ThresholdRange(18, 27);
+    private static final long TOMATO_HIGH_TEMPERATURE_ENERGY_KWH = 10;
+    private static final long TOMATO_LOW_TEMPERATURE_ENERGY_KWH = 15;
+    private static final long TOMATO_LOW_HUMIDITY_WATER_LITRES = 20;
+    private static final long TOMATO_LOW_SOIL_MOISTURE_WATER_LITRES = 50;
+    private static final long STRAWBERRY_HIGH_TEMPERATURE_ENERGY_KWH = 10;
+    private static final long STRAWBERRY_LOW_TEMPERATURE_ENERGY_KWH = 15;
+    private static final long STRAWBERRY_LOW_HUMIDITY_WATER_LITRES = 25;
+
     private static final double OPEN_MAX = Double.MAX_VALUE;
     private final ConcurrentMap<String, CropProfile> profiles = new ConcurrentHashMap<>();
 
@@ -28,17 +46,19 @@ public final class CropRegistry {
     public static CropRegistry withStandardProfiles() {
         CropRegistry registry = new CropRegistry();
         ThresholdRange open = new ThresholdRange(0, OPEN_MAX);
-        ThresholdRange lowLight = new ThresholdRange(500, OPEN_MAX);
-        ThresholdRange lowNutrient = new ThresholdRange(40, OPEN_MAX);
-        registry.register(profile("Tomato", new ThresholdRange(22, 28), new ThresholdRange(60, 80), new ThresholdRange(45, 60), lowLight, lowNutrient,
-                new MitigationResourceCosts(10, 15, 20, 50), Set.of(SensorType.values())));
-        registry.register(profile("Strawberry", new ThresholdRange(18, 24), new ThresholdRange(70, 85), open, lowLight, lowNutrient,
-                new MitigationResourceCosts(10, 15, 25, 0),
+        ThresholdRange lowLight = new ThresholdRange(CropProfile.DEFAULT_MIN_LIGHT_LUX, OPEN_MAX);
+        ThresholdRange lowNutrient = new ThresholdRange(CropProfile.DEFAULT_MIN_NUTRIENT_LEVEL_PERCENT, OPEN_MAX);
+        registry.register(profile("Tomato", TOMATO_TEMPERATURE_RANGE, TOMATO_HUMIDITY_RANGE, TOMATO_SOIL_MOISTURE_RANGE, lowLight, lowNutrient,
+                new MitigationResourceCosts(TOMATO_HIGH_TEMPERATURE_ENERGY_KWH, TOMATO_LOW_TEMPERATURE_ENERGY_KWH,
+                        TOMATO_LOW_HUMIDITY_WATER_LITRES, TOMATO_LOW_SOIL_MOISTURE_WATER_LITRES), Set.of(SensorType.values())));
+        registry.register(profile("Strawberry", STRAWBERRY_TEMPERATURE_RANGE, STRAWBERRY_HUMIDITY_RANGE, open, lowLight, lowNutrient,
+                new MitigationResourceCosts(STRAWBERRY_HIGH_TEMPERATURE_ENERGY_KWH, STRAWBERRY_LOW_TEMPERATURE_ENERGY_KWH,
+                        STRAWBERRY_LOW_HUMIDITY_WATER_LITRES, 0),
                 Set.of(SensorType.TEMPERATURE, SensorType.HUMIDITY, SensorType.LIGHT, SensorType.NUTRIENT)));
-        registry.register(profile("Lettuce", new ThresholdRange(15, 21), open, open, lowLight, lowNutrient));
-        registry.register(profile("Spinach", new ThresholdRange(10, 20), open, open, lowLight, lowNutrient));
-        registry.register(profile("Chili", new ThresholdRange(24, 32), open, open, lowLight, lowNutrient));
-        registry.register(profile("Cucumber", new ThresholdRange(18, 27), open, open, lowLight, lowNutrient));
+        registry.register(profile("Lettuce", LETTUCE_TEMPERATURE_RANGE, open, open, lowLight, lowNutrient));
+        registry.register(profile("Spinach", SPINACH_TEMPERATURE_RANGE, open, open, lowLight, lowNutrient));
+        registry.register(profile("Chili", CHILI_TEMPERATURE_RANGE, open, open, lowLight, lowNutrient));
+        registry.register(profile("Cucumber", CUCUMBER_TEMPERATURE_RANGE, open, open, lowLight, lowNutrient));
         return registry;
     }
 

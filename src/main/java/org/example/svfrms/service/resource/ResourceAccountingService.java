@@ -4,6 +4,9 @@ import java.util.concurrent.atomic.LongAdder;
 
 /** Loss-resistant resource accounting; AlertManagementService owns alert counts. */
 public final class ResourceAccountingService {
+    private static final long WATER_PER_IRRIGATION_CYCLE_LITRES = 100;
+    private static final long ENERGY_PER_FEEDING_CYCLE_KWH = 20;
+
     private final LongAdder waterUsage = new LongAdder();
     private final LongAdder energyUsage = new LongAdder();
 
@@ -19,12 +22,12 @@ public final class ResourceAccountingService {
 
     /** Preserves the legacy manual irrigation cycle's 100 L resource charge. */
     public void irrigationCycle() {
-        recordWater(100);
+        recordWater(WATER_PER_IRRIGATION_CYCLE_LITRES);
     }
 
     /** Preserves the legacy feeding cycle's 20 kWh resource charge. */
     public void feedingCycle() {
-        recordEnergy(20);
+        recordEnergy(ENERGY_PER_FEEDING_CYCLE_KWH);
     }
 
     public long waterUsage() {

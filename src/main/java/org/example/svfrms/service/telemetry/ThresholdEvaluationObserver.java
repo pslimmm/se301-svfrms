@@ -1,8 +1,5 @@
 package org.example.svfrms.service.telemetry;
 
-import org.example.svfrms.command.*;
-import org.example.svfrms.concurrency.ActuatorRequest;
-import org.example.svfrms.domain.actuator.ActuatorType;
 import org.example.svfrms.domain.chamber.*;
 import org.example.svfrms.domain.crop.*;
 import org.example.svfrms.domain.sensor.*;
@@ -15,18 +12,15 @@ import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
 
-/** Evaluates each reading, records alerts and resource usage, and queues mitigations. */
+/** Adapts telemetry notifications to the processing workflow. */
 public final class ThresholdEvaluationObserver implements TelemetryObserver {
-    private final CropRegistry crops;
-    private final CropThresholdStrategy strategy;
-    private final AlertManagementService alerts;
-    private final ActuatorExecutionService actuators;
-    private final ResourceAccountingService metrics;
-    private final Map<ChamberId, ChamberStateTracker> chamberStates;
-    private final Map<ChamberId, ChamberSummaryTracker> chamberSummaries;
-    private final Duration enqueueTimeout;
-    private final Consumer<String> alertOutput;
+    private final TelemetryProcessingService processing;
 
+    public ThresholdEvaluationObserver(TelemetryProcessingService processing) {
+        this.processing = Objects.requireNonNull(processing, "processing");
+    }
+
+    /** Compatibility constructor; new wiring should supply the processing service directly. */
     public ThresholdEvaluationObserver(CropRegistry crops, CropThresholdStrategy strategy,
                                        AlertManagementService alerts, ActuatorExecutionService actuators,
                                        ResourceAccountingService metrics,
@@ -37,73 +31,22 @@ public final class ThresholdEvaluationObserver implements TelemetryObserver {
                 enqueueTimeout, System.out::println);
     }
 
+    /** Compatibility constructor; new wiring should supply the processing service directly. */
     public ThresholdEvaluationObserver(CropRegistry crops, CropThresholdStrategy strategy,
                                        AlertManagementService alerts, ActuatorExecutionService actuators,
                                        ResourceAccountingService metrics,
                                        Map<ChamberId, ChamberStateTracker> chamberStates,
                                        Map<ChamberId, ChamberSummaryTracker> chamberSummaries,
                                        Duration enqueueTimeout, Consumer<String> alertOutput) {
-        this.crops = Objects.requireNonNull(crops, "crops");
-        this.strategy = Objects.requireNonNull(strategy, "strategy");
-        this.alerts = Objects.requireNonNull(alerts, "alerts");
-        this.actuators = Objects.requireNonNull(actuators, "actuators");
-        this.metrics = Objects.requireNonNull(metrics, "metrics");
-        this.chamberStates = Objects.requireNonNull(chamberStates, "chamberStates");
-        this.chamberSummaries = Objects.requireNonNull(chamberSummaries, "chamberSummaries");
-        this.enqueueTimeout = Objects.requireNonNull(enqueueTimeout, "enqueueTimeout");
-        this.alertOutput = Objects.requireNonNull(alertOutput, "alertOutput");
-        if (enqueueTimeout.isNegative()) {
-            throw new IllegalArgumentException("enqueueTimeout must not be negative");
-        }
+        this(new TelemetryProcessingService(
+                new ChamberStateUpdater(chamberStates),
+                new ThresholdEvaluator(crops, strategy),
+                new ThresholdAlertRecorder(alerts, metrics, chamberSummaries, alertOutput),
+                new MitigationDispatcher(actuators, enqueueTimeout)));
     }
 
     @Override
     public void onTelemetry(SensorReading reading) {
-        Objects.requireNonNull(reading, "reading");
-        ChamberStateTracker tracker = chamberStates.get(reading.chamberId());
-        if (tracker == null) tracker = chamberStates.computeIfAbsent(reading.chamberId(), ignored -> ChamberStateTracker.initial());
-        updateState(tracker, reading);
-
-        Optional<CropProfile> profile = crops.get(reading.crop());
-        EvaluationResult result = profile.map(value -> strategy.evaluate(reading, value))
-                .orElseGet(() -> strategy.evaluateWithoutProfile(reading));
-        result.alert().ifPresent(alert -> {
-            alerts.publishAlert(alert);
-            // The charge belongs to the detected condition, even if queuing fails later.
-            metrics.recordWater(result.waterUsage());
-            metrics.recordEnergy(result.energyUsage());
-            ChamberSummaryTracker summary = chamberSummaries.get(reading.chamberId());
-            if (summary == null) summary = chamberSummaries.computeIfAbsent(reading.chamberId(), ignored -> new ChamberSummaryTracker());
-            if (summary != null) {
-                summary.recordAlert(alert.message());
-            }
-            alertOutput.accept("[" + alert.chamberId().value() + "][" + alert.crop() + "][ALERT] " + alert.message());
-        });
-
-        Optional<ActuatorType> mitigation = result.mitigation();
-        if (mitigation.isEmpty()) {
-            return;
-        }
-        DeviceCommand command = DeviceCommandFactory.create(mitigation.get());
-        try {
-            boolean accepted = actuators.submit(new ActuatorRequest(reading.chamberId(), command), enqueueTimeout);
-            if (!accepted) {
-                throw new IllegalStateException("Actuator queue remained full until timeout");
-            }
-        } catch (InterruptedException interrupted) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException("Interrupted while queuing actuator work", interrupted);
-        }
+        processing.process(reading);
     }
-
-    private static void updateState(ChamberStateTracker tracker, SensorReading reading) {
-        tracker.updateAndGet(state -> switch (reading.sensorType()) {
-            case TEMPERATURE -> new ChamberSnapshot(reading.value(), state.humidity(), state.soilMoisture(), state.lightLevel(), state.nutrientLevel());
-            case HUMIDITY -> new ChamberSnapshot(state.temperature(), reading.value(), state.soilMoisture(), state.lightLevel(), state.nutrientLevel());
-            case SOIL_MOISTURE -> new ChamberSnapshot(state.temperature(), state.humidity(), reading.value(), state.lightLevel(), state.nutrientLevel());
-            case LIGHT -> new ChamberSnapshot(state.temperature(), state.humidity(), state.soilMoisture(), reading.value(), state.nutrientLevel());
-            case NUTRIENT -> new ChamberSnapshot(state.temperature(), state.humidity(), state.soilMoisture(), state.lightLevel(), reading.value());
-        });
-    }
-
 }

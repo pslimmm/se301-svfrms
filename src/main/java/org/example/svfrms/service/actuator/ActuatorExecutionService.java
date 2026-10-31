@@ -12,6 +12,8 @@ import java.util.function.Consumer;
 
 /** Single ordered consumer. Admission, completion counts and lifecycle share one short-held lock. */
 public final class ActuatorExecutionService implements AutoCloseable {
+    private static final Duration DEFAULT_SHUTDOWN_BUDGET = Duration.ofSeconds(10);
+
     private final BoundedControlQueue queue;
     private final Map<ChamberId, ChamberStateTracker> chamberStates;
     private final Map<ChamberId, ChamberSummaryTracker> chamberSummaries;
@@ -122,7 +124,7 @@ public final class ActuatorExecutionService implements AutoCloseable {
         }
     }
 
-    @Override public void close() throws InterruptedException { close(Duration.ofSeconds(10)); }
+    @Override public void close() throws InterruptedException { close(DEFAULT_SHUTDOWN_BUDGET); }
 
     /** One total budget covers stop insertion and joining; concurrent callers share the outcome. */
     public void close(Duration budget) throws InterruptedException {
