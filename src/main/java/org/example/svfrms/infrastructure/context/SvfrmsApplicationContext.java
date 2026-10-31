@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.example.svfrms.domain.actuator.ActuatorType;
 import java.util.function.Consumer;
 import java.util.random.RandomGenerator;
+import java.util.stream.Collectors;
 
 /** Pure constructor-injected composition root for the complete simulation. */
 public final class SvfrmsApplicationContext implements AutoCloseable {
@@ -119,7 +120,7 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
             for (int index = 0; index < STANDARD_CHAMBERS.size(); index++) {
                 ChamberSetup setup = STANDARD_CHAMBERS.get(index);
                 RandomGenerator random = randomSeed == null
-                        ? new java.util.Random()
+                        ? new Random()
                         : new SplittableRandom(randomSeed + 0x9E3779B97F4A7C15L * index);
                 tasks.add(completions.submit(new ChamberSimulationTask(new ChamberId(setup.id()), setup.crop(),
                         iterationsPerChamber, telemetry, resources, random, clock), null));
@@ -158,10 +159,10 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
     public ResourceAccountingService resources() { return resources; }
     public AlertManagementService alerts() { return alerts; }
     public Map<ChamberId, ChamberSnapshot> chamberStates() {
-        return chamberStates.entrySet().stream().collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> e.getValue().snapshot()));
+        return chamberStates.entrySet().stream().collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> e.getValue().snapshot()));
     }
     public Map<ChamberId, ChamberSummarySnapshot> chamberSummaries() {
-        return chamberSummaries.entrySet().stream().collect(java.util.stream.Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> e.getValue().snapshot()));
+        return chamberSummaries.entrySet().stream().collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, e -> e.getValue().snapshot()));
     }
     public List<String> sensorLogs() { return sensorLogs.snapshot(); }
     public ActuatorExecutionService actuatorService() { return actuatorService; }
@@ -241,7 +242,7 @@ public final class SvfrmsApplicationContext implements AutoCloseable {
 
     public void handleEvent(String type, String chamber, String crop, String message) {
         switch (type) {
-            case "LOG" -> sensorLogs.append(new java.util.Date(clock.millis()) + " : " + message);
+            case "LOG" -> sensorLogs.append(new Date(clock.millis()) + " : " + message);
             case "ALERT_LOG" -> output.accept("[" + chamber + "][" + crop + "][ALERT] " + message);
             case "CONTROL_LOG" -> output.accept("\t\u001B[32m[" + chamber + "][CONTROL] " + message + "\u001B[0m");
             case "CREATE_ALERT" -> {

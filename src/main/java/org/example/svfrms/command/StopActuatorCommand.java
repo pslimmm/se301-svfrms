@@ -1,13 +1,14 @@
 package org.example.svfrms.command;
 
 import org.example.svfrms.domain.chamber.*;
+import org.example.svfrms.domain.actuator.ActuatorType;
 
 import java.util.Optional;
 
 /** Queue sentinel used to stop the actuator consumer after pending work drains. */
 public final class StopActuatorCommand implements DeviceCommand {
     @Override
-    public Optional<org.example.svfrms.domain.actuator.ActuatorType> type() {
+    public Optional<ActuatorType> type() {
         return Optional.empty();
     }
 

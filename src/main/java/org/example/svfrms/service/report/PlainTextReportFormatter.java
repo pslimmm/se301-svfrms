@@ -1,6 +1,6 @@
 package org.example.svfrms.service.report;
 
-import org.example.svfrms.domain.chamber.ChamberId;
+import org.example.svfrms.domain.chamber.*;
 
 import java.util.*;
 
@@ -23,7 +23,7 @@ public final class PlainTextReportFormatter implements ReportFormatterStrategy {
         lines.addAll(snapshot.reportEntries());
         if (!snapshot.chamberSummaries().isEmpty()) {
             lines.add("--- chamber wise summary ---");
-            for (Map.Entry<ChamberId, org.example.svfrms.domain.chamber.ChamberSummarySnapshot> entry
+            for (Map.Entry<ChamberId, ChamberSummarySnapshot> entry
                     : snapshot.chamberSummaries().entrySet().stream()
                     .sorted(Comparator.comparing(item -> item.getKey().value())).toList()) {
                 var summary = entry.getValue();

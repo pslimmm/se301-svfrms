@@ -6,6 +6,7 @@ import org.example.svfrms.infrastructure.storage.ReportStoragePort;
 import org.example.svfrms.service.alert.*;
 import org.example.svfrms.service.resource.ResourceAccountingService;
 
+import java.io.IOException;
 import java.time.Clock;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
@@ -74,7 +75,7 @@ public final class DailyReportService extends AbstractReportGenerator {
         } finally { operations.unlock(); }
     }
 
-    public List<String> saveArchiveReport() throws java.io.IOException {
+    public List<String> saveArchiveReport() throws IOException {
         return generate();
     }
 
@@ -88,7 +89,7 @@ public final class DailyReportService extends AbstractReportGenerator {
     protected DailyReportSnapshot extractMetrics() {
         operations.lock();
         try {
-            Map<ChamberId, org.example.svfrms.domain.chamber.ChamberSummarySnapshot> summarySnapshots = chamberSummaries.entrySet().stream()
+            Map<ChamberId, ChamberSummarySnapshot> summarySnapshots = chamberSummaries.entrySet().stream()
                     .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> entry.getValue().snapshot()));
             AlertSnapshot alertSnapshot = alerts.snapshot();
             return new DailyReportSnapshot(clock.instant(), alertSnapshot.generatedAlertCount(),
