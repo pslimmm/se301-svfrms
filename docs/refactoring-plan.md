@@ -18,7 +18,7 @@ The specification requires Java 25+, a multi-file Maven application, preservatio
 
 Stage 7 adds immutable catalog registration, removal, assignment, and reassignment workflows, rejects duplicate/contradictory rule boundaries, and demonstrates Kale in an optional fifth chamber through configuration only. [Stage 7 validation](stage-7-validation.md) is the latest status, with 280 passing tests. Existing catalogs remain fixed for their application's lifetime; the default six crop profiles and four assignments are unchanged.
 
-Stage 8 completes the refactoring and packaging scope on 31 October 2026. [Stage 8 validation](stage-8-validation.md) supersedes the historical status above: 295 passing tests, repeated integration evidence, a standalone `run.jar`, and a submission ZIP with a five-page technical report plus Group 8 cover. Member names are blank as requested. Identical `README.pdf`/`report.pdf` aliases satisfy the specification's naming discrepancy. Remaining product enhancements have proposed acceptance criteria in the [feature backlog](feature-backlog.md); cooperative cancellation and persistence limitations remain explicit.
+Stage 8 initially completed the refactoring and packaging scope on 31 October 2026 with 295 passing tests and submission artifacts. [Stage 8 validation](stage-8-validation.md) now records the post-review state: 300 passing tests, sensor-operation admission retained through enqueueing, strict final-save completion for supervised runs, and restored checked/unchecked failure handling for the standalone report helper. Existing output artifacts predate these fixes; submission regeneration and its blank-name guard are outside the requested follow-up scope. Remaining product enhancements have proposed acceptance criteria in the [feature backlog](feature-backlog.md); cooperative cancellation and persistence limitations remain explicit.
 
 ## Behavior to preserve
 
@@ -174,7 +174,7 @@ Do not introduce Singleton global state, an Observer bus for synchronous bookkee
 
 ### Lifecycle and extension rules
 
-On normal completion, wait for all producers, close submission, and await the consumer after all admitted submissions and queued commands drain. Stage 4 uses explicit close state and a 100 ms blocking poll instead of the initially proposed typed stop signal, so closing a full queue needs no extra capacity. On failure/interruption, stop admission, cancel all workers (including blocked producers), and await termination with a bounded diagnostic timeout. Observe failures while workers are running, rather than only after joining producers in a fixed sequence. Do not print normal success or publish a complete report for an incomplete run.
+On normal completion, wait for all producers, close submission, and await the consumer after all admitted sensor operations, submissions, and queued commands drain. Sensor admission is retained through state commit, alert output, and enqueueing, without holding the admission monitor during those operations. Stage 4 uses explicit close state and a 100 ms blocking poll instead of the initially proposed typed stop signal, so closing a full queue needs no extra capacity. On failure/interruption, stop admission, cancel all workers (including blocked producers), and await termination with a bounded diagnostic timeout. Observe failures while workers are running, rather than only after joining producers in a fixed sequence. Complete reporting, worker cleanup, and strict final persistence before announcing success. The standalone save helper retains its separate print-and-return exception policy.
 
 Take a daily snapshot and append its history marker in one transaction. Archive movement and its history entry are another transaction. These operations can retain either legacy order without partial snapshots. Render and persist immutable snapshots outside the lock.
 
@@ -200,7 +200,7 @@ New sensor types extend typed readings, sampling, and rule data. New devices ext
 - [x] Stage 5: extract pure `RuleEvaluator` and immutable rule/profile values; apply evaluated effects atomically through `FarmState` and verify both the legacy table and custom catalog assignments.
 - [x] Extract evaluator, state owner, simulation, report service, and writer into separate files using constructor wiring. Stage 6 retains sensor/control coordination in `FarmApplication` and atomic transformations in `FarmState`, as justified above.
 - [x] Remove static mutable state after migrating callers; verify that two fresh application instances do not share counters, queues, or histories.
-- [x] Run characterization tests after each extraction, keeping the application runnable throughout. Historical stage reports record each check; Stage 8 passes all 295 executions.
+- [x] Run characterization tests after each extraction, keeping the application runnable throughout. Historical stage reports record each check; the latest post-review build passes all 300 executions.
 
 ### 3. Correct concurrency and lifecycle
 

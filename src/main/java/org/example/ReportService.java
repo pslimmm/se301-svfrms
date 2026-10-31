@@ -37,21 +37,26 @@ public final class ReportService {
 
     public void saveArchiveReport() {
         try {
-            saveArchiveReportStrict();
-        } catch (UncheckedIOException ignored) {
-            // Preserve the standalone legacy helper's error-reporting behavior.
+            writeArchiveReport();
+        } catch (Exception e) {
+            // The standalone helper prints checked and unchecked failures without propagating them.
+            output.line("Could not save archive report: " + e.getMessage());
         }
     }
 
     void saveArchiveReportStrict() {
-        FarmState.Snapshot snapshot = state.snapshot();
         try {
-            writer.write(reportFile, archiveLines(snapshot, timestamp.now()));
-            output.line("Archive report saved to: " + reportFile.toAbsolutePath());
+            writeArchiveReport();
         } catch (IOException e) {
             output.line("Could not save archive report: " + e.getMessage());
             throw new UncheckedIOException(e);
         }
+    }
+
+    private void writeArchiveReport() throws IOException {
+        FarmState.Snapshot snapshot = state.snapshot();
+        writer.write(reportFile, archiveLines(snapshot, timestamp.now()));
+        output.line("Archive report saved to: " + reportFile.toAbsolutePath());
     }
 
     private static List<String> dailyLines(FarmState.Snapshot snapshot) {

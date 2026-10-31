@@ -1,12 +1,19 @@
 # Stage 8: final integration and submission package
 
-Completed on 31 October 2026. Stages 6-7 were committed and pushed as `72e406a` before this stage. Stage 8 adds integration evidence and reproducible submission artifacts without changing production Java behavior.
+Initially completed on 31 October 2026. Stages 6-7 were committed and pushed as `72e406a` before this stage. The reviewed Stage 8 work and Terra's lifecycle fixes were subsequently committed and pushed as `22dbe18`. This record now includes the report-helper compatibility follow-up and 300-test validation. Submission regeneration is excluded from this follow-up by request; existing output artifacts predate these fixes.
 
 ## Original defects and final checks
 
 The original lost counters, unsafe collections and initialization, non-atomic reading/control bookkeeping, delimiter-encoded commands, ignored cancellation, and consumer-failure hangs are documented in the refactoring plan and Stage 1-7 reports. Final review confirms the chosen fixes: one state owner and private lock, immutable snapshots/configuration, typed commands, bounded interruptible queue coordination, supervised task completion, and callbacks/I/O outside state locks. A failure hang is distinguished from circular lock deadlock; no original reverse lock order was demonstrated.
 
-The missing final evidence was repeated integration under simultaneous producers, reports, and archiving, plus a runnable submission independent of an IDE. This stage supplies both. It does not change crop thresholds, random ranges, accounting, device formulas, report formats, startup assignments, or failure policies.
+The missing final evidence was repeated integration under simultaneous producers, reports, and archiving, plus a runnable submission independent of an IDE. The original stage supplied both. Crop thresholds, random ranges, accounting, device formulas, report formats, and startup assignments remain unchanged. Post-review corrections now distinguish the standalone helper's compatibility policy from strict supervised-run completion.
+
+## Post-review lifecycle and report-helper corrections
+
+- A sensor operation holds queue admission from before its state commit through its control submissions. Graceful close drains admitted operations even if an alert-output callback delays enqueueing. The consumer exits only after those operations finish and the queue empties; no farm-state lock is held during output or queue waits.
+- The supervised run calls the strict report-save path after worker cleanup. IOException produces one error message and propagates as UncheckedIOException; unchecked failures propagate unchanged. Either makes the run FAILED and prevents the saved/completion success messages. Successful persistence precedes the completion message.
+- The standalone `saveArchiveReport()` helper preserves the original catch-Exception policy. It prints checked and unchecked failures once and returns. It does not swallow Errors. A shared private write operation keeps snapshot/format/file behavior identical while the two callers retain distinct failure policies.
+- Review found that the earlier delegation swallowed a writer-thrown UncheckedIOException without logging, while SecurityException escaped. Two parameterized regression cases reproduced both failures before the fix. A third new case verifies an unchecked writer failure still fails the supervised run with its original exception and no completion message. The existing IOException run test now also checks a single error message and absence of success.
 
 ## Added integration evidence
 
@@ -21,8 +28,13 @@ Deadlines bound waits and cleanup. No sleep is used as proof of interleaving. Re
 
 ## Build and artifact validation
 
-- `mvn clean package`: 295 executions passed, zero failures/errors/skips. Freshly compiled 21 production and 15 test source files with Java 25. The existing Maven/Guice `sun.misc.Unsafe` warning remains non-failing.
+- Latest `mvn clean package`: 300 executions passed, zero failures/errors/skips. Freshly compiled 21 production and 15 test source files with Java 25. This includes the original 295 Stage 8 cases, two Terra lifecycle cases, and three unchecked-writer cases. The existing Maven/Guice `sun.misc.Unsafe` warning remains non-failing.
 - All 280 preceding cases continue to cover the independent six-crop rule table, six devices, legacy helpers, 400-reading default fixture, clock/output/writer boundaries, queue saturation/drain, cancellation/failure, and Kale extension/removal policies.
+- Latest built-JAR smoke: successful run exited 0 with 131 generated/archived/summed-chamber alerts and zero active alerts; save confirmation preceded completion. A real filesystem obstruction exited 1, printed the save error once, and printed neither saved nor completed success. Both ran in isolated `target/report-policy-smoke-*` directories. The random alert count is an observation, not a required constant.
+- `git diff --check` passed after the follow-up. The focused pre-fix test run failed exactly the two new standalone-helper cases, establishing regression sensitivity.
+
+The artifact checks below describe the original Stage 8 output, not regenerated output for the current source:
+
 - `scripts/build_report.py` generates a six-page PDF: a Group 8 cover with blank member-name lines as requested, followed by five technical pages. All pages are rendered and visually checked for legibility, clipping, tables, diagram, and pagination.
 - `scripts/package_submission.py` checks current test totals, source/JAR and report-source/PDF freshness, the manifest entry point, and test-only Maven dependencies. It packages only explicit source/docs/script paths and emits a SHA-256 manifest. It refuses a newly added runtime dependency until bundled-JAR packaging is configured.
 - `scripts/verify_submission.py` independently checks every ZIP checksum, required entries, byte-identical PDF aliases, Java 25 class versions, and `jdeps` output. It runs the exact JAR bytes from the ZIP through default and Kale entry points in fresh directories with 15-second deadlines. Both must exit zero, have empty stderr, and retain generated/archived/summed-chamber equality and zero active alerts. Evidence is written to `output/submission-validation.json` with the ZIP hash.
@@ -56,8 +68,8 @@ The Kale demonstration uses `java -cp run.jar org.example.CropExtensionDemo` and
 
 The final architecture is recorded in Stage 6 and diagrammed in the technical report. FarmApplication composes and supervises; FarmState owns transactions; RuleEvaluator evaluates immutable catalog data; simulation, console, reporting, clock, and writer boundaries remain separate. Command, sample-source Strategy, immutable catalog, and constructor injection solve specific problems without a framework or inheritance hierarchy.
 
-Cancellation remains cooperative; arbitrary callbacks can ignore interruption. The final writer is synchronous and has no timeout. State commit and command admission remain separate on a failed run. Legacy report-save failures print an error, so COMPLETED does not imply durable persistence; truncation is not crash-atomic. Compatibility bookkeeping helpers do not enforce every normal sensor-path invariant. No live configuration editing, retention, crash recovery, or stronger direct-input validation is claimed.
+Cancellation remains cooperative; arbitrary callbacks can ignore interruption. The final writer is synchronous and has no timeout. Sensor admission precedes the state commit, but enqueueing still occurs afterward, so failed runs can retain alerts without completed mitigation. COMPLETED requires a successful final write; it does not guarantee crash durability because truncation is not atomic. Only the standalone helper prints and returns on save exceptions. Compatibility bookkeeping helpers do not enforce every normal sensor-path invariant. No live configuration editing, retention, crash recovery, or stronger direct-input validation is claimed.
 
 [Feature backlog](feature-backlog.md) defines decisions and proposed acceptance evidence for omitted specification capabilities before implementation. The PDF and runnable crop demonstration are prepared; an actual team presentation and portal submission remain human activities. Team member names remain blank by explicit instruction.
 
-Stage 8 changes remain uncommitted for review. Earlier stage reports retain their historical validation counts and limitations.
+The compatibility follow-up is covered by the validation above. Earlier stage reports retain their historical validation counts and limitations. The existing packaging name guard conflicts with the requested blank-name cover and remains deferred with submission generation; generated PDFs/ZIP are stale relative to the current source and documentation.

@@ -60,7 +60,7 @@ Rule evaluation and clock calls occur before locking. Console callbacks, queue w
 
 ControlQueue wraps a capacity-five ArrayBlockingQueue. Submission is interruptible. A sensor operation retains admission through its control submissions, so closing admission drains already-admitted sensor operations as well as queued commands. The consumer checks close state with a bounded poll; no extra queue slot is required for a stop marker. Commands execute in enqueue order, and each accepted command executes once on a successful run.
 
-FarmApplication observes completed tasks through an ExecutorCompletionService. After all producers finish, it closes admission and awaits consumer drain. It then observes both report/archive tasks, shuts down workers, and saves the archive. The run state is NEW, RUNNING, COMPLETED, FAILED, or CANCELLED; a second run on the same instance is rejected.
+FarmApplication observes completed tasks through an ExecutorCompletionService. After all producers finish, it closes admission and awaits consumer drain. It then observes both report/archive tasks, shuts down workers, and saves the archive. Only a successful save is followed by the completion message and COMPLETED state. An IOException is printed and propagated as UncheckedIOException; unchecked failures also fail the run. The run state is NEW, RUNNING, COMPLETED, FAILED, or CANCELLED; a second run on the same instance is rejected.
 
 On failure, the queue aborts, blocked submissions are interrupted, futures are cancelled, and the executor is stopped. Cleanup waits up to five seconds and preserves interruption. A callback that ignores cancellation is diagnosed; daemon workers prevent it from pinning the CLI JVM. This is cooperative cancellation, not a guarantee that arbitrary user callbacks can be forcibly terminated.
 
@@ -106,7 +106,7 @@ Each scope permits one boundary per sensor/direction; opposite bounds must leave
 
 ### Validation summary
 
-The Maven suite includes characterization, concurrency, lifecycle, and extension cases plus Stage 8 repetitions. Packaging requires a nonempty suite with no failures, errors, or skipped tests. Deterministic fixtures cover exact thresholds, six device formulas/clamps, helper behavior, log/report text, sampling order, failure paths, and immutability.
+The latest clean Maven build passes 300 executions with no failures, errors, or skips. These include the original 295 Stage 8 cases, two admission/save-failure fixes, and three unchecked-writer regressions. The new helper tests first reproduced an escaping SecurityException and a silently swallowed UncheckedIOException, then passed after correction. Deterministic fixtures cover exact thresholds, six device formulas/clamps, helper behavior, log/report text, sampling order, failure paths, and immutability.
 
 | Scenario | Deterministic acceptance values |
 | --- | --- |
@@ -115,11 +115,11 @@ The Maven suite includes characterization, concurrency, lifecycle, and extension
 | High-alert run, repeated 10 times | 400 logs; 300 alerts/actions; 2060 L; 480 kWh; archived report equals state archive |
 | State/archive/report contention, repeated 5 times | 800 unique alerts each; generated = active + archived = summed chamber counts; 12000 kWh |
 
-The submission contains Maven source/tests, pom.xml, run.jar, and this report under both README.pdf and report.pdf to satisfy the specification's conflicting filenames. The aliases are byte-identical. There are no production third-party dependencies: JUnit is test-scoped, so the executable needs only Java 25+. Generated ZIP entries are allowlisted and checksummed; packaged CLI smoke checks use fresh working directories. Build/reproduction instructions and the detailed validation record accompany the source. [1, 3]
+The original submission contains Maven source/tests, pom.xml, run.jar, and this report under both README.pdf and report.pdf to satisfy the specification's conflicting filenames. Those artifacts predate the follow-up fixes; regeneration is outside the current requested scope. There are no production third-party dependencies: JUnit is test-scoped, so the executable needs only Java 25+. The latest built JAR passed successful-save and real write-failure smoke checks in fresh working directories. [1, 3]
 
 ### Practical limits
 
-COMPLETED means processing and worker cleanup succeeded; the legacy report-write error policy prints a message instead of failing the run. File output truncates the prior report and is not crash-atomic. A synchronous final writer has no timeout. Cancellation is cooperative, and state commit precedes command admission: a failed run can contain alerts whose mitigation did not complete. Exactly-once crash recovery is not provided.
+COMPLETED requires processing, worker cleanup, and a successful final save. The standalone saveArchiveReport helper separately preserves the legacy policy: checked and unchecked Exceptions print one failure message and return; Errors are not swallowed. File output truncates the prior report and is not crash-atomic, and the final synchronous writer has no timeout. Cancellation is cooperative. Sensor admission precedes its state commit, but enqueueing follows the commit: a failed run can retain alerts whose mitigation did not complete. Exactly-once crash recovery is not provided.
 
 Catalog changes require a new application; there is no UI, file loader, live editing, or persistence. The default clock captures its zone at construction, and zone labels depend on JDK locale data. Histories are unbounded within a finite run. Independent legacy helpers can bypass normal sensor bookkeeping. No stronger validation of arbitrary direct API inputs is claimed.
 

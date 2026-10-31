@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -102,6 +103,21 @@ class ReportingBoundaryTest {
         reports.saveArchiveReport();
         assertEquals(List.of("Could not save archive report: disk full"), output);
         assertFalse(Files.exists(directory.resolve("report.txt")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"security", "unchecked_io"})
+    void uncheckedWriterFailureRetainsTheStandaloneLegacyErrorPolicy(String kind) {
+        RuntimeException failure = kind.equals("security") ? new SecurityException("denied")
+            : new UncheckedIOException("wrapped failure", new IOException("disk full"));
+        List<String> output = new ArrayList<>();
+        Path path = directory.resolve("report.txt");
+        ReportService reports = new ReportService(new FarmState(), new ConsoleOutput(output::add),
+            path, (target, lines) -> { throw failure; }, Clock.fixed(INSTANT, ZoneId.of("UTC")));
+
+        assertDoesNotThrow(reports::saveArchiveReport);
+        assertEquals(List.of("Could not save archive report: " + failure.getMessage()), output);
+        assertFalse(Files.exists(path));
     }
 
     @Test

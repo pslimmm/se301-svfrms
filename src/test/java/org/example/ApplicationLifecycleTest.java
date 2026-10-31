@@ -50,13 +50,27 @@ class ApplicationLifecycleTest {
     @Test
     void archiveWriteFailureFailsTheSupervisedRun() {
         IOException diskFull = new IOException("disk full");
+        ConcurrentLinkedQueue<String> output = new ConcurrentLinkedQueue<>();
         FarmApplication app = new FarmApplication(CropCatalog.legacyDefaults(),
-            (chamber, sensor) -> 60, Clock.systemUTC(), message -> {}, directory.resolve("report.txt"),
+            (chamber, sensor) -> 60, Clock.systemUTC(), output::add, directory.resolve("report.txt"),
             (path, lines) -> { throw diskFull; });
         UncheckedIOException failure = assertThrows(UncheckedIOException.class, app::run);
         assertSame(diskFull, failure.getCause());
-        assertEquals(FarmApplication.RunState.FAILED, app.runState());
-        assertTrue(app.workersTerminated());
+        assertFailedWithoutCompletion(app, output);
+        assertEquals(1L, output.stream().filter("Could not save archive report: disk full"::equals).count());
+    }
+
+    @Test
+    void uncheckedWriterFailureStillFailsTheSupervisedRun() {
+        SecurityException denied = new SecurityException("denied");
+        ConcurrentLinkedQueue<String> output = new ConcurrentLinkedQueue<>();
+        FarmApplication app = new FarmApplication(CropCatalog.legacyDefaults(),
+            (chamber, sensor) -> 60, Clock.systemUTC(), output::add, directory.resolve("report.txt"),
+            (path, lines) -> { throw denied; });
+
+        assertSame(denied, assertThrows(SecurityException.class, app::run));
+        assertFailedWithoutCompletion(app, output);
+        assertFalse(Files.exists(directory.resolve("report.txt")));
     }
 
     @Test

@@ -28,7 +28,10 @@ Stage reports cover the [behavior baseline](docs/stage-1-validation.md),
 [simulation and reporting boundaries](docs/stage-6-validation.md),
 [crop extension workflows](docs/stage-7-validation.md), and
 [final integration and packaging](docs/stage-8-validation.md).
-The validation records describe the test suite. The
+The current clean build passes 300 tests, including unchecked report-writer
+regressions and graceful-close coverage. The standalone report helper prints
+failures and returns; supervised runs fail if the final report cannot be saved,
+and announce completion only after a successful save. The
 [refactoring plan](docs/refactoring-plan.md) describes the target architecture
 and the completed stages; the validation records document remaining limitations.
 
@@ -36,7 +39,9 @@ The optional [Kale demonstration](docs/stage-7-validation.md#running-the-demonst
 adds a fifth chamber through catalog data. Its thresholds are synthetic example
 inputs; the default CLI still runs the original four chambers.
 
-Build the Group 8 submission after running `mvn clean package`:
+Submission generation is outside the current follow-up scope. Existing files in
+`output/` predate the latest fixes. The optional submission workflow, if needed
+later, starts after running `mvn clean package`:
 
 ```powershell
 python -m pip install --target .tools/pdf -r scripts/pdf-requirements.txt
