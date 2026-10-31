@@ -1,6 +1,8 @@
 package org.example;
 
 import java.nio.file.Path;
+import java.io.UncheckedIOException;
+import java.io.IOException;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +36,21 @@ public final class ReportService {
     }
 
     public void saveArchiveReport() {
+        try {
+            saveArchiveReportStrict();
+        } catch (UncheckedIOException ignored) {
+            // Preserve the standalone legacy helper's error-reporting behavior.
+        }
+    }
+
+    void saveArchiveReportStrict() {
         FarmState.Snapshot snapshot = state.snapshot();
         try {
             writer.write(reportFile, archiveLines(snapshot, timestamp.now()));
             output.line("Archive report saved to: " + reportFile.toAbsolutePath());
-        } catch (Exception e) {
+        } catch (IOException e) {
             output.line("Could not save archive report: " + e.getMessage());
+            throw new UncheckedIOException(e);
         }
     }
 

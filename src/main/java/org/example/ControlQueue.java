@@ -37,18 +37,29 @@ final class ControlQueue {
 
     void submit(ControlRequest request) throws InterruptedException {
         Objects.requireNonNull(request);
-        Thread sender = Thread.currentThread();
+        beginSubmission();
+        try {
+            submitAdmitted(request);
+        } finally {
+            endSubmission();
+        }
+    }
+
+    void beginSubmission() {
         synchronized (admission) {
             requireOpen();
-            submitters.add(sender);
+            if (!submitters.add(Thread.currentThread())) throw new IllegalStateException("Nested submission");
         }
-        try {
-            // Never hold the admission monitor (or farm-state lock) during backpressure.
-            requests.put(request);
-        } finally {
-            synchronized (admission) {
-                submitters.remove(sender);
-            }
+    }
+
+    void submitAdmitted(ControlRequest request) throws InterruptedException {
+        // Never hold the admission monitor (or farm-state lock) during backpressure.
+        requests.put(Objects.requireNonNull(request));
+    }
+
+    void endSubmission() {
+        synchronized (admission) {
+            submitters.remove(Thread.currentThread());
         }
     }
 

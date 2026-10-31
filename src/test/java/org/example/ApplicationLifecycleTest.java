@@ -2,6 +2,9 @@ package org.example;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.time.Clock;
 import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -17,6 +20,44 @@ import static org.junit.jupiter.api.Assertions.*;
 @Timeout(20)
 class ApplicationLifecycleTest {
     @TempDir Path directory;
+
+    @Test
+    void closeDrainsSensorOperationAlreadyAdmittedBeforeItsControlIsQueued() throws Exception {
+        CountDownLatch alertEntered = new CountDownLatch(1);
+        CountDownLatch release = new CountDownLatch(1);
+        FarmApplication app = new FarmApplication(new Random(1), message -> {
+            if (message.contains("[ALERT]")) {
+                alertEntered.countDown();
+                try { release.await(); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            }
+        }, directory.resolve("report.txt"));
+        try (TestWorker<Void> producer = new TestWorker<>(() -> {
+                 app.processSensor("CH1", "Tomato", "Temperature", 30); return null;
+             }); TestWorker<Void> consumer = new TestWorker<>(() -> { app.new ControlTask().run(); return null; })) {
+            assertTrue(alertEntered.await(5, TimeUnit.SECONDS));
+            app.stopControlThread();
+            release.countDown();
+            producer.result();
+            consumer.result();
+            assertEquals(1, app.getChamberSummary("CH1").mitigationActions());
+            assertEquals(25, app.getChamberState("CH1").temperature());
+            assertTrue(app.pendingControls().isEmpty());
+        } finally {
+            release.countDown();
+        }
+    }
+
+    @Test
+    void archiveWriteFailureFailsTheSupervisedRun() {
+        IOException diskFull = new IOException("disk full");
+        FarmApplication app = new FarmApplication(CropCatalog.legacyDefaults(),
+            (chamber, sensor) -> 60, Clock.systemUTC(), message -> {}, directory.resolve("report.txt"),
+            (path, lines) -> { throw diskFull; });
+        UncheckedIOException failure = assertThrows(UncheckedIOException.class, app::run);
+        assertSame(diskFull, failure.getCause());
+        assertEquals(FarmApplication.RunState.FAILED, app.runState());
+        assertTrue(app.workersTerminated());
+    }
 
     @Test
     void successfulRunDrainsReportsTerminatesAndRejectsRestartAndLateWork() throws Exception {

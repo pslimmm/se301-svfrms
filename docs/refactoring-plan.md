@@ -18,6 +18,8 @@ The specification requires Java 25+, a multi-file Maven application, preservatio
 
 Stage 7 adds immutable catalog registration, removal, assignment, and reassignment workflows, rejects duplicate/contradictory rule boundaries, and demonstrates Kale in an optional fifth chamber through configuration only. [Stage 7 validation](stage-7-validation.md) is the latest status, with 280 passing tests. Existing catalogs remain fixed for their application's lifetime; the default six crop profiles and four assignments are unchanged.
 
+Stage 8 completes the refactoring and packaging scope on 31 October 2026. [Stage 8 validation](stage-8-validation.md) supersedes the historical status above: 295 passing tests, repeated integration evidence, a standalone `run.jar`, and a submission ZIP with a five-page technical report plus Group 8 cover. Member names are blank as requested. Identical `README.pdf`/`report.pdf` aliases satisfy the specification's naming discrepancy. Remaining product enhancements have proposed acceptance criteria in the [feature backlog](feature-backlog.md); cooperative cancellation and persistence limitations remain explicit.
+
 ## Behavior to preserve
 
 ### Simulation and lifecycle
@@ -198,7 +200,7 @@ New sensor types extend typed readings, sampling, and rule data. New devices ext
 - [x] Stage 5: extract pure `RuleEvaluator` and immutable rule/profile values; apply evaluated effects atomically through `FarmState` and verify both the legacy table and custom catalog assignments.
 - [x] Extract evaluator, state owner, simulation, report service, and writer into separate files using constructor wiring. Stage 6 retains sensor/control coordination in `FarmApplication` and atomic transformations in `FarmState`, as justified above.
 - [x] Remove static mutable state after migrating callers; verify that two fresh application instances do not share counters, queues, or histories.
-- [ ] Run characterization tests after each extraction, keeping the application runnable throughout.
+- [x] Run characterization tests after each extraction, keeping the application runnable throughout. Historical stage reports record each check; Stage 8 passes all 295 executions.
 
 ### 3. Correct concurrency and lifecycle
 
@@ -208,19 +210,19 @@ New sensor types extend typed readings, sampling, and rule data. New devices ext
 - [x] Use barriers/latches and bounded test deadlines, not sleeps as proof: simultaneous updates must retain exact totals and every log/alert; initialization must yield one state per chamber.
 - [x] Verify `generated = active + archived`, summed chamber alerts equals generated alerts, and successfully executed controls equal summed actions for the standard processing path.
 - [x] Test full-queue backpressure, empty/full shutdown, rejected late submission, producer interruption, consumer failure, and all worker termination. In a successful run, every accepted command executes once and the queue drains. Explicitly test and diagnose callbacks that ignore cancellation.
-- [ ] Exercise reports/archiving during updates and assert coherent snapshots and no lost/duplicated alerts. Include repeated stress runs with timeouts as supporting evidence, not a substitute for the locking argument.
+- [x] Exercise reports/archiving during updates and assert coherent snapshots and no lost/duplicated alerts. Stage 8 adds five barrier-coordinated six-worker repetitions and ten full high-alert runs, with deadlines and exact invariants.
 
 ### 4. Demonstrate extensibility
 
 - [x] Add a documented new-crop profile via data only and show it in a chamber; test registration, duplicate rejection, invalid ranges, and removal/reassignment rules. Stage 7 provides an opt-in Kale demo with explicit synthetic inputs and tests catalog isolation during a running simulation.
 - [x] Confirm all original crops and six devices remain supported, including Spinach/Cucumber and helpers unused by default startup. The legacy rule/control suites and exact-default catalog assertions remain passing in Stage 7.
-- [ ] Keep additional specification features in an explicit backlog with their behavior and acceptance tests defined before implementation.
+- [x] Keep additional specification features in an explicit backlog with their behavior and acceptance tests defined before implementation. See feature-backlog.md for pending domain decisions and proposed evidence.
 
 ### 5. Validate and package
 
-- [ ] Run the Maven test/package workflow on Java 25+ and smoke-test the executable JAR in a clean working directory.
-- [ ] Verify the default simulation produces 400 logs and the expected deterministic-fixture totals, a drained queue, zero final active alerts, and complete archived/summary counts.
-- [ ] Produce `run.jar` with any runtime dependencies included; confirm it requires no IDE or external classpath.
-- [ ] Prepare the required 3–6 page technical report plus cover page, component diagram, justified patterns, concurrency evidence, and crop-extension demonstration. Resolve the PDF naming discrepancy and include source in the submission ZIP.
+- [x] Run the Maven test/package workflow on Java 25+ and smoke-test the executable JAR in a clean working directory. Stage 8 verifies the exact JAR bytes from the ZIP through both entry points.
+- [x] Verify the default simulation produces 400 logs and the expected deterministic-fixture totals, a drained queue, zero final active alerts, and complete archived/summary counts.
+- [x] Produce `run.jar` with any runtime dependencies included; confirm it requires no IDE or external classpath. There are no production third-party dependencies; `jdeps` confirms `java.base` only.
+- [x] Prepare the required 3–6 page technical report plus cover page, component diagram, justified patterns, concurrency evidence, and crop-extension demonstration. The ZIP includes source and identical README.pdf/report.pdf aliases; the cover identifies Group 8 with names left blank by request.
 
 Completion means preserved characterized behavior, documented intentional defect corrections, no application-wide mutable globals, safe terminating workers, and a new crop supported through data without core rule changes.

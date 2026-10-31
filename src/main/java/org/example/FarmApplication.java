@@ -109,10 +109,16 @@ public final class FarmApplication {
 
     public void processSensor(String chamber, String crop, String sensor, double value) {
         checkInterrupted();
-        controlQueue.ensureAccepting();
-        FarmState.SensorResult result = farmState.processSensor(chamber, crop, sensor, value);
-        result.alerts().forEach(message -> output.alert(chamber, crop, message));
-        result.controls().forEach(request -> addControlRequest(request.chamberId(), request.deviceType()));
+        controlQueue.beginSubmission();
+        try {
+            FarmState.SensorResult result = farmState.processSensor(chamber, crop, sensor, value);
+            result.alerts().forEach(message -> output.alert(chamber, crop, message));
+            for (ControlRequest request : result.controls()) controlQueue.submitAdmitted(request);
+        } catch (InterruptedException e) {
+            throw interruptedOperation(e);
+        } finally {
+            controlQueue.endSubmission();
+        }
     }
 
     public void generateDailyReport() {
@@ -206,8 +212,8 @@ public final class FarmApplication {
             if (!workers.awaitTermination(5, TimeUnit.SECONDS)) {
                 throw new IllegalStateException("Workers did not terminate after completion");
             }
+            reports.saveArchiveReportStrict();
             output.line("System finished sensor processing.");
-            saveArchiveReport();
             runState.set(RunState.COMPLETED);
         } catch (InterruptedException e) {
             failure = e;

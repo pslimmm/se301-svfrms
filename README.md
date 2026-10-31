@@ -25,12 +25,36 @@ Stage reports cover the [behavior baseline](docs/stage-1-validation.md),
 [instance-owned state](docs/stage-3-validation.md),
 [supervised workers](docs/stage-4-validation.md),
 [immutable catalog and pure evaluation](docs/stage-5-validation.md),
-[simulation and reporting boundaries](docs/stage-6-validation.md), and
-[crop extension workflows](docs/stage-7-validation.md).
-The latest report records 280 passing tests. The
+[simulation and reporting boundaries](docs/stage-6-validation.md),
+[crop extension workflows](docs/stage-7-validation.md), and
+[final integration and packaging](docs/stage-8-validation.md).
+The validation records describe the test suite. The
 [refactoring plan](docs/refactoring-plan.md) describes the target architecture
-and remaining stages.
+and the completed stages; the validation records document remaining limitations.
 
 The optional [Kale demonstration](docs/stage-7-validation.md#running-the-demonstration)
 adds a fifth chamber through catalog data. Its thresholds are synthetic example
 inputs; the default CLI still runs the original four chambers.
+
+Build the Group 8 submission after running `mvn clean package`:
+
+```powershell
+python -m pip install --target .tools/pdf -r scripts/pdf-requirements.txt
+python scripts/build_report.py
+python scripts/package_submission.py
+python scripts/verify_submission.py
+```
+
+Enter the team members' names in `docs/report-metadata.json` before packaging.
+The generated `output/svfrms-group-8.zip` contains source, tests, `run.jar`, and
+the technical report under both specification filenames (`README.pdf` and
+`report.pdf`). The report has a Group 8 cover, followed
+by five technical pages. Editable content and metadata live in `docs/`;
+re-render and visually review the report after edits. Python/PDF packages are
+authoring tools only. The executable requires Java 25+ and no external libraries.
+
+Run `java -jar run.jar` from the extracted submission directory, or
+`java -cp run.jar org.example.CropExtensionDemo` for the optional demo. Each run
+replaces `archive/daily_report.txt` in its working directory. Use separate working
+directories to retain both outputs. The [Stage 8 record](docs/stage-8-validation.md)
+describes validation and the remaining concurrency/persistence limits.
