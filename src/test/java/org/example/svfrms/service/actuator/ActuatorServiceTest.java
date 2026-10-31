@@ -273,19 +273,30 @@ class ActuatorServiceTest {
         assertThat(service.isTerminated()).isTrue();
     }
 
-    @Test
+    @org.junit.jupiter.api.RepeatedTest(20)
     void closeDrainsAcceptedCommandsExactlyOnce() throws Exception {
         ChamberId chamber = new ChamberId("CH1");
         ChamberStateTracker state = new ChamberStateTracker(new ChamberSnapshot(24, 70, 40, 600, 70));
         ChamberSummaryTracker summary = new ChamberSummaryTracker();
+        var workerEntered = new CountDownLatch(1);
+        var releaseWorker = new CountDownLatch(1);
         ActuatorExecutionService service = new ActuatorExecutionService(
                 new BoundedControlQueue(16), Map.of(chamber, state), Map.of(chamber, summary),
-                new ResourceAccountingService(), ignored -> {});
+                new ResourceAccountingService(), ignored -> {
+                    workerEntered.countDown();
+                    try { if (!releaseWorker.await(5, TimeUnit.SECONDS)) throw new AssertionError("gate timed out"); }
+                    catch (InterruptedException failure) { Thread.currentThread().interrupt(); throw new AssertionError(failure); }
+                });
         service.start();
         var executor = Executors.newFixedThreadPool(9);
         CountDownLatch start = new CountDownLatch(1);
         AtomicInteger accepted = new AtomicInteger();
         try {
+            assertThat(service.submit(new ActuatorRequest(chamber, new WaterPumpCommand()), Duration.ofSeconds(1))).isTrue();
+            accepted.incrementAndGet();
+            assertThat(workerEntered.await(2, TimeUnit.SECONDS)).isTrue();
+            assertThat(service.submit(new ActuatorRequest(chamber, new WaterPumpCommand()), Duration.ofSeconds(1))).isTrue();
+            accepted.incrementAndGet();
             var producers = new java.util.ArrayList<java.util.concurrent.Future<?>>();
             for (int producer = 0; producer < 8; producer++) {
                 producers.add(executor.submit(() -> {
@@ -303,14 +314,18 @@ class ActuatorServiceTest {
                 }));
             }
             start.countDown();
-            service.close();
+            var closing = executor.submit(() -> { service.close(); return null; });
+            releaseWorker.countDown();
+            closing.get(5, TimeUnit.SECONDS);
             for (var producer : producers) producer.get(5, TimeUnit.SECONDS);
 
+            assertThat(accepted.get()).isGreaterThanOrEqualTo(2);
             assertThat(summary.snapshot().mitigationActions()).isEqualTo(accepted.get());
             assertThat(service.isTerminated()).isTrue();
             assertThatExceptionOfType(IllegalStateException.class)
                     .isThrownBy(() -> service.submit(new ActuatorRequest(chamber, new WaterPumpCommand()), Duration.ZERO));
         } finally {
+            releaseWorker.countDown();
             executor.shutdownNow();
             if (!service.isTerminated()) service.close();
         }

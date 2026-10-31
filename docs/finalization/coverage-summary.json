@@ -1,0 +1,225 @@
+{
+  "base": "fe7b6d27cc9f674bfec352cae55afea58a440a05",
+  "bundle": {
+    "branch": {
+      "covered": 289,
+      "missed": 34,
+      "ratio": 0.8947368421052632
+    },
+    "line": {
+      "covered": 922,
+      "missed": 36,
+      "ratio": 0.9624217118997912
+    }
+  },
+  "changed_decisions": [
+    {
+      "path": "src/main/java/org/example/svfrms/command/DeviceCommandFactory.java",
+      "line": 10,
+      "covered": 6,
+      "missed": 0
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/service/report/DailyReportService.java",
+      "line": 70,
+      "covered": 2,
+      "missed": 0
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/storage/FileReportStorageAdapter.java",
+      "line": 53,
+      "covered": 2,
+      "missed": 0
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/storage/FileReportStorageAdapter.java",
+      "line": 79,
+      "covered": 2,
+      "missed": 0
+    }
+  ],
+  "uncovered_changed_decisions": [],
+  "inherited_uncovered_decisions": [
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 123,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 148,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 157,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 163,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 184,
+      "covered": 4,
+      "missed": 2
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 185,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 193,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 232,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 235,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 305,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 316,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 318,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 319,
+      "covered": 0,
+      "missed": 2
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 322,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 332,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/infrastructure/context/SvfrmsApplicationContext.java",
+      "line": 336,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/service/telemetry/ThresholdEvaluationObserver.java",
+      "line": 86,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/service/actuator/ActuatorExecutionService.java",
+      "line": 67,
+      "covered": 5,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/service/actuator/ActuatorExecutionService.java",
+      "line": 84,
+      "covered": 2,
+      "missed": 2
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/service/actuator/ActuatorExecutionService.java",
+      "line": 159,
+      "covered": 3,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/service/actuator/ActuatorExecutionService.java",
+      "line": 161,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/service/actuator/ActuatorExecutionService.java",
+      "line": 193,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/service/actuator/ActuatorExecutionService.java",
+      "line": 195,
+      "covered": 0,
+      "missed": 2
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/service/actuator/ActuatorExecutionService.java",
+      "line": 199,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/svfrms/service/crop/DefaultCropThresholdStrategy.java",
+      "line": 85,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/SVFRMS.java",
+      "line": 29,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/SVFRMS.java",
+      "line": 30,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/SVFRMS.java",
+      "line": 54,
+      "covered": 3,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/SVFRMS.java",
+      "line": 72,
+      "covered": 1,
+      "missed": 1
+    },
+    {
+      "path": "src/main/java/org/example/SVFRMS.java",
+      "line": 73,
+      "covered": 1,
+      "missed": 1
+    }
+  ],
+  "scope": "100% of new/modified branch decisions; all inherited branches remain in bundle denominator"
+}

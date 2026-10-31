@@ -1,0 +1,25 @@
+{
+  "group": "3",
+  "members": [],
+  "members_deferred_by_user": true,
+  "source_base": "fe7b6d27cc9f674bfec352cae55afea58a440a05",
+  "branch": "refactor/svfrms-modernization-FINALIZED",
+  "tests": {
+    "tests": 280,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "coverage": {
+    "branch": {
+      "covered": 289,
+      "missed": 34,
+      "ratio": 0.8947368421052632
+    },
+    "line": {
+      "covered": 922,
+      "missed": 36,
+      "ratio": 0.9624217118997912
+    }
+  }
+}

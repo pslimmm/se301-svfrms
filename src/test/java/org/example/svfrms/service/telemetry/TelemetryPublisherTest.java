@@ -110,17 +110,38 @@ class TelemetryPublisherTest {
         assertThat(metrics.energyUsage()).isEqualTo(10);
     }
 
-    @Test
-    void subscribersCanBeAddedAndRemovedConcurrentlyWithPublishing() {
+    @org.junit.jupiter.api.RepeatedTest(20)
+    @org.junit.jupiter.api.Timeout(10)
+    void subscribersCanBeAddedAndRemovedConcurrentlyWithPublishing() throws Exception {
         TelemetryPublisher publisher = new TelemetryPublisher();
-        AtomicInteger calls = new AtomicInteger();
-        TelemetryObserver observer = ignored -> calls.incrementAndGet();
-        publisher.subscribe(observer);
+        AtomicInteger stableCalls = new AtomicInteger();
+        AtomicInteger optionalCalls = new AtomicInteger();
+        publisher.subscribe(ignored -> stableCalls.incrementAndGet());
+        TelemetryObserver optional = ignored -> optionalCalls.incrementAndGet();
+        var barrier = new java.util.concurrent.CyclicBarrier(2);
+        try (var pool = java.util.concurrent.Executors.newFixedThreadPool(2)) {
+            var publishing = pool.submit(() -> {
+                for (int i = 0; i < 1000; i++) {
+                    barrier.await(2, java.util.concurrent.TimeUnit.SECONDS);
+                    publisher.publish(reading());
+                }
+                return null;
+            });
+            var mutation = pool.submit(() -> {
+                for (int i = 0; i < 1000; i++) {
+                    barrier.await(2, java.util.concurrent.TimeUnit.SECONDS);
+                    publisher.subscribe(optional);
+                    publisher.unsubscribe(optional);
+                }
+                return null;
+            });
+            publishing.get(5, java.util.concurrent.TimeUnit.SECONDS);
+            mutation.get(5, java.util.concurrent.TimeUnit.SECONDS);
+        }
+        assertThat(stableCalls).hasValue(1000);
+        assertThat(optionalCalls.get()).isBetween(0,1000);
         publisher.publish(reading());
-        publisher.unsubscribe(observer);
-        publisher.publish(reading());
-
-        assertThat(calls).hasValue(1);
+        assertThat(stableCalls).hasValue(1001);
     }
 
     private static SensorReading reading() {

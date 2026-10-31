@@ -29,7 +29,7 @@ Status vocabulary: `PLANNED` = implementation/evidence needed; `PASS` = checked 
 | C19 | Run mvn clean test, mvn package, java -jar target/run.jar | AGENTS Verification Workflow | Every code task,9 | Fresh exit codes/logs after last source change; smoke has bounded owned subprocess | PLANNED |
 | C20 | Exact new branch refactor/svfrms-modernization-FINALIZED | User request | 1,9 | git branch --show-current exact match; ancestry from reviewed GPT base; no overwrite of existing branch | PLANNED |
 | C21 | All four donor versions considered/tested | User request | 1,2,7,9 | Pinned four-branch baseline logs and finding-by-finding adopt/adapt/reject rationale | PLANNED |
-| C22 | Meaningful code branch coverage plus concurrency schedules | User request; engineering gate | 2-7,9 | JaCoCo HTML/XML/check; 90% line/85% branch total; 100% branch new/modified classes; failure schedules | PLANNED |
+| C22 | Meaningful code branch coverage plus concurrency schedules | User request; engineering gate | 2-7,9 | JaCoCo HTML/XML/check; 90% line/85% branch total; 100% new/modified branch decisions; failure schedules | PLANNED |
 
 ## Section 3 discrepancies under the confirmed scope
 

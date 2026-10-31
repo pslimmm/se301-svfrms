@@ -100,6 +100,12 @@ class ReportOrderingTest {
         }
     }
 
+    @org.junit.jupiter.api.RepeatedTest(20)
+    void repeatedReportArchiveSchedulesRemainGrouped() throws Exception {
+        archiveCannotSplitDailyReportOutputInEitherOrder(false);
+        archiveCannotSplitDailyReportOutputInEitherOrder(true);
+    }
+
     private static DailyReportService reports(Consumer<String> output, ReportStoragePort storage) {
         return new DailyReportService(new ResourceAccountingService(), new AlertManagementService(), Map.of(),
                 new PlainTextReportFormatter(), storage, Clock.systemUTC(), output);
