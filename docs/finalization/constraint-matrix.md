@@ -1,12 +1,12 @@
 # FINALIZED constraint and requirement ledger
 
-Planning status only. **No row below is a claim that the future FINALIZED implementation has passed.** Evidence must refer to the exact final source/artifact hashes. Columns distinguish enforceable code/delivery constraints from required human facts and the Section 3 scope discrepancy.
+Execution status: technical PASS rows are backed by the final build, coverage and exact-package checks. Exact artifact hashes are recorded in submission/verification.json beside the ZIP; full specification compliance remains false for the disclosed format/scope and human facts. Columns distinguish enforceable code/delivery constraints from required human facts and the Section 3 scope discrepancy.
 
 Authority: attached `docs/SE301-Project-Specification.pdf` (PDF pages cited below), user-linked `.review/branches/gpt/docs/se301_project_specification.md`, `AGENTS.md`, and the user's exact target branch. Matching PDF/Markdown technical requirements were reviewed; historical research is supporting evidence, not a replacement specification. PDF §5 calls for README.pdf and §6 names report.pdf. The user instead requests DOCX document deliverables and a Markdown plan; record the report-format requirements as USER-DIRECTED-FORMAT-DEVIATION, deliver README.docx/report.docx, and do not claim PDF compliance.
 
 Status vocabulary: `PLANNED` = implementation/evidence needed; `PASS` = checked on final hashes; `FAIL` = known unmet acceptance; `OPEN-SCOPE` = interpretation unresolved; `DOCUMENTED-GAP` = user-selected omission disclosed explicitly, not an implemented feature; `HUMAN-PENDING` = factual confirmation unavailable; `USER-DIRECTED-FORMAT-DEVIATION` = requested DOCX output differs from the specification's PDF format, disclosed rather than passed. No N/A, exclusion or waiver without written rationale and source. The final release gate rejects FAIL, OPEN-SCOPE and incomplete required human confirmations. Static/source review and tests are bounded evidence, not a proof over every thread schedule.
 
-| ID | Requirement / constraint | Source | Owning task(s) | Required evidence | Initial status |
+| ID | Requirement / constraint | Source | Owning task(s) | Required evidence | Status |
 | --- | --- | --- | --- | --- | --- |
 | C01 | Enhance existing application; preserve behavior; no removed features or wholesale replacement | PDF pp. 6,8, §§4/Restrictions; AGENTS §1 | 1-9 | GPT ancestry; change/adoption ledger; independent original oracle unchanged; complete workflow tests | PASS |
 | C02 | Multiple logical source files and component packages, focused responsibilities | PDF p.6 §4.1; AGENTS §2 | 1,5,8,9 | Package/source inventory; SRP review with concrete before/after examples | PASS |
