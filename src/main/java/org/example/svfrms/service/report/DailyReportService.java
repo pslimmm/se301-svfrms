@@ -12,7 +12,8 @@ import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,10 @@ public final class DailyReportService extends AbstractReportGenerator {
     private final Map<ChamberId, ChamberSummaryTracker> chamberSummaries;
     private final Clock clock;
     private final Consumer<String> output;
-    private final CopyOnWriteArrayList<String> reportEntries = new CopyOnWriteArrayList<>();
+    // This lock groups only report operations. Alert ingestion never acquires it.
+    // Callbacks run without state locks; disk I/O occurs after extractMetrics returns.
+    private final ReentrantLock operations = new ReentrantLock();
+    private final List<String> reportEntries = new ArrayList<>();
 
     public DailyReportService(ResourceAccountingService resources, AlertManagementService alerts,
                              Map<ChamberId, ChamberSummaryTracker> chamberSummaries,
@@ -38,44 +42,64 @@ public final class DailyReportService extends AbstractReportGenerator {
     }
 
     public void recordReportEntry(String entry) {
-        reportEntries.add(Objects.requireNonNull(entry, "entry"));
+        operations.lock();
+        try {
+            reportEntries.add(Objects.requireNonNull(entry, "entry"));
+        
+        } finally { operations.unlock(); }
     }
 
     public void recordDailyReport() {
-        AlertSnapshot alertSnapshot = alerts.snapshot();
-        recordReportEntry("Daily Report");
-        output.accept("===== DAILY REPORT =====");
-        output.accept("Generated Alerts: " + alertSnapshot.generatedAlertCount());
-        output.accept("Active Alerts: " + alertSnapshot.activeAlerts().size());
-        output.accept("Water Usage: " + resources.waterUsage() + " L");
-        output.accept("Energy Usage: " + resources.energyUsage() + " kWh");
+        operations.lock();
+        try {
+            AlertSnapshot alertSnapshot = alerts.snapshot();
+            recordReportEntry("Daily Report");
+            output.accept("===== DAILY REPORT =====");
+            output.accept("Generated Alerts: " + alertSnapshot.generatedAlertCount());
+            output.accept("Active Alerts: " + alertSnapshot.activeAlerts().size());
+            output.accept("Water Usage: " + resources.waterUsage() + " L");
+            output.accept("Energy Usage: " + resources.energyUsage() + " kWh");
+        
+        } finally { operations.unlock(); }
     }
 
     public List<AlertEvent> archiveAlerts() {
-        List<AlertEvent> archived = alerts.archiveAlerts();
-        if (archived.isEmpty()) {
-            recordReportEntry("No alerts to archive");
-            output.accept("Archiving alerts... no active alerts to archive.");
-        } else {
-            recordReportEntry("Archived " + archived.size() + " alerts");
-            output.accept("Archiving alerts... " + archived.size() + " moved to archive.");
-        }
-        return archived;
+        operations.lock();
+        try {
+            List<AlertEvent> archived = alerts.archiveAlerts();
+            if (archived.isEmpty()) {
+                recordReportEntry("No alerts to archive");
+                output.accept("Archiving alerts... no active alerts to archive.");
+            } else {
+                recordReportEntry("Archived " + archived.size() + " alerts");
+                output.accept("Archiving alerts... " + archived.size() + " moved to archive.");
+            }
+            return archived;
+        
+        } finally { operations.unlock(); }
     }
 
     public List<String> saveArchiveReport() throws java.io.IOException {
         return generate();
     }
 
-    public List<String> reportEntries() { return List.copyOf(reportEntries); }
+    public List<String> reportEntries() {
+        operations.lock();
+        try { return List.copyOf(reportEntries); }
+        finally { operations.unlock(); }
+    }
 
     @Override
     protected DailyReportSnapshot extractMetrics() {
-        Map<ChamberId, org.example.svfrms.domain.chamber.ChamberSummarySnapshot> summarySnapshots = chamberSummaries.entrySet().stream()
-                .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> entry.getValue().snapshot()));
-        AlertSnapshot alertSnapshot = alerts.snapshot();
-        return new DailyReportSnapshot(clock.instant(), alertSnapshot.generatedAlertCount(),
-                alertSnapshot.activeAlerts().size(), resources.waterUsage(), resources.energyUsage(),
-                reportEntries, summarySnapshots, alertSnapshot.archivedAlerts());
+        operations.lock();
+        try {
+            Map<ChamberId, org.example.svfrms.domain.chamber.ChamberSummarySnapshot> summarySnapshots = chamberSummaries.entrySet().stream()
+                    .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> entry.getValue().snapshot()));
+            AlertSnapshot alertSnapshot = alerts.snapshot();
+            return new DailyReportSnapshot(clock.instant(), alertSnapshot.generatedAlertCount(),
+                    alertSnapshot.activeAlerts().size(), resources.waterUsage(), resources.energyUsage(),
+                    reportEntries, summarySnapshots, alertSnapshot.archivedAlerts());
+        
+        } finally { operations.unlock(); }
     }
 }
