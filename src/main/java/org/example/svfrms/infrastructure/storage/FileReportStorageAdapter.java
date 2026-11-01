@@ -35,8 +35,7 @@ public final class FileReportStorageAdapter implements ReportStoragePort {
             try {
                 files.replace(temporary, target, true);
             } catch (AtomicMoveNotSupportedException unsupported) {
-                // Never request non-atomic replacement: providers may delete the old target
-                // before a later move failure. Create only; an existing target fails visibly.
+                // Preserve repeated saves when the provider cannot replace atomically.
                 files.replace(temporary, target, false);
             }
         } catch (IOException | RuntimeException | Error failure) {
@@ -72,7 +71,7 @@ public final class FileReportStorageAdapter implements ReportStoragePort {
         }
         public void replace(Path temporary, Path target, boolean atomic) throws IOException {
             if (atomic) Files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
-            else Files.move(temporary, target);
+            else Files.move(temporary, target, StandardCopyOption.REPLACE_EXISTING);
         }
         public void deleteIfExists(Path file) throws IOException { Files.deleteIfExists(file); }
     }
